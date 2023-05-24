@@ -1,0 +1,181 @@
+.ellipseIcon,
+.frameChild,
+.frameInner,
+.frameItem {
+  position: relative;
+  border-radius: 50%;
+  width: 7.94rem;
+  height: 7.94rem;
+  object-fit: cover;
+  z-index: 3;
+}
+.ellipseIcon,
+.frameInner,
+.frameItem {
+  z-index: 2;
+  margin-left: -2.75rem;
+}
+.ellipseIcon,
+.frameInner {
+  z-index: 1;
+}
+.ellipseIcon {
+  z-index: 0;
+}
+.ellipseParent,
+.frameWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ellipseParent {
+  width: 23.5rem;
+  height: 7.94rem;
+  flex-direction: row;
+}
+.frameWrapper {
+  align-self: stretch;
+  flex-direction: column;
+}
+.findHousemates {
+  margin: 0;
+  align-self: stretch;
+  position: relative;
+  font-size: inherit;
+  font-weight: 700;
+  font-family: inherit;
+}
+.apply,
+.thisIsAn {
+  position: relative;
+  font-size: var(--font-size-lg);
+}
+.thisIsAn {
+  margin: 0;
+  line-height: 1.56rem;
+  color: var(--color-gray);
+  display: inline-block;
+  width: 39.06rem;
+}
+.apply {
+  font-weight: 600;
+  font-family: var(--font-inter);
+  color: var(--color-white);
+  text-align: left;
+}
+.applyWrapper,
+.frameParent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.applyWrapper {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: var(--color-black);
+  border-radius: var(--br-81xl);
+  width: 10rem;
+  height: 3.75rem;
+}
+.applyWrapper:hover {
+  background-color: var(--color-dimgray);
+  cursor: pointer;
+}
+.frameParent {
+  width: 53.13rem;
+  gap: var(--gap-5xl);
+  text-align: center;
+  font-size: var(--font-size-21xl);
+  color: var(--color-black);
+  font-family: var(--font-inter);
+}
+@media screen and (max-width: 1472px) {
+  .findHousemates {
+    font-size: var(--font-size-21xl);
+  }
+  .thisIsAn {
+    line-height: 1.56rem;
+  }
+  .apply,
+  .thisIsAn {
+    font-size: var(--font-size-lg);
+  }
+  .applyWrapper {
+    width: 10rem;
+    height: 3.75rem;
+  }
+  .frameParent {
+    width: 68.75rem;
+    padding-left: var(--padding-131xl);
+    padding-right: var(--padding-131xl);
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 960px) {
+  .frameChild {
+    width: 4.69rem;
+    height: 4.69rem;
+  }
+  .frameItem {
+    border-radius: 0;
+  }
+  .ellipseIcon,
+  .frameInner,
+  .frameItem {
+    width: 4.69rem;
+    height: 4.69rem;
+  }
+  .ellipseParent {
+    width: 10.31rem;
+    height: 4.69rem;
+    gap: var(--gap-57xs);
+  }
+  .frameWrapper {
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .findHousemates {
+    font-size: var(--font-size-13xl);
+  }
+  .thisIsAn {
+    line-height: 1.56rem;
+    align-self: stretch;
+    width: auto;
+  }
+  .apply,
+  .thisIsAn {
+    font-size: var(--font-size-base);
+  }
+  .applyWrapper {
+    width: 8.75rem;
+    height: 3.13rem;
+  }
+  .frameParent {
+    width: 40rem;
+    gap: var(--gap-5xl);
+    padding-left: var(--padding-21xl);
+    padding-right: var(--padding-21xl);
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 478px) {
+  .findHousemates {
+    font-size: var(--font-size-9xl);
+  }
+  .thisIsAn {
+    font-size: var(--font-size-base);
+  }
+  .frameParent {
+    padding-left: var(--padding-6xl);
+    padding-right: var(--padding-6xl);
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 568px) {
+  .frameParent {
+    align-self: stretch;
+    width: auto;
+  }
+}
