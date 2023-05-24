@@ -2,9 +2,9 @@ import type { NextPage } from "next";
 import { useCallback } from "react";
 import styles from "./frame-component.module.css";
 const FrameComponent: NextPage = () => {
-  // const onFrameButtonClick = useCallback(() => {
-  //   window.open("https://solarissociety.org");
-  // }, []);
+  const onFrameButtonClick = useCallback(() => {
+    window.open("https://solarissociety.org");
+  }, []);
 
   return (
     <section className={styles.frameParent}>
@@ -23,9 +23,9 @@ const FrameComponent: NextPage = () => {
         This is an invite-only directory of people you probably know that are
         looking for housing in San Francisco.
       </p>
-      {/* <button className={styles.applyWrapper} onClick={onFrameButtonClick}>
+      <button className={styles.applyWrapper} onClick={onFrameButtonClick}>
         <div className={styles.apply}>Apply</div>
-      </button> */}
+      </button>
     </section>
   );
 };
