@@ -1,7 +1,7 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Create Next App',
@@ -22,16 +22,12 @@ export default function RootLayout({
         />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+          //href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
         />
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
