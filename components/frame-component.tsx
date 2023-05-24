@@ -26,6 +26,14 @@ const FrameComponent: NextPage = () => {
       {/* <button className={styles.applyWrapper} onClick={onFrameButtonClick}>
         <div className={styles.apply}>Apply</div>
       </button> */}
+      <a
+        href="https://solarissociety.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.applyWrapper}
+      >
+        <div className={styles.apply}>Apply</div>
+      </a>
     </section>
   );
 };

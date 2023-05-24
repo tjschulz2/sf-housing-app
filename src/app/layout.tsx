@@ -20,10 +20,10 @@ export default function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <link
+        {/* <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-        />
+        /> */}
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </head>
