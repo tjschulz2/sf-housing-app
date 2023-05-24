@@ -1,4 +1,4 @@
-export const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAANOmngEAAAAAnH7dj8gddM7YcfguJtmIeqI90cQ%3DkutZzebBwfwwgUePPet9FAOH2qA3BG3iEoojTmAQ5Pfmgt2OUL"
+export const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAANOmngEAAAAAnH7dj8gddM7YcfguJtmIeqI90cQ%3DkutZzebBwfwwgUePPet9FAOH2qA3BG3iEoojTmAQ5Pfmgt2OUL";
 
 export async function fetchWithToken(url: string, options: RequestInit = {}): Promise<Response> {
     const defaultHeaders: Record<string, string> = {
