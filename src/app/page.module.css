@@ -6,7 +6,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: var(--padding-161xl) 16.31rem var(--padding-161xl) 16.38rem;
+  padding: var(--padding-161xl) var(--padding-242xl) var(--padding-161xl)
+    var(--padding-243xl);
   box-sizing: border-box;
   align-items: center;
   justify-content: flex-start;
@@ -24,14 +25,14 @@
     align-items: center;
     justify-content: flex-start;
     padding-left: 0;
-    padding-top: 5rem;
+    padding-top: var(--padding-161xl);
     padding-right: 0;
     box-sizing: border-box;
   }
 }
 @media screen and (max-width: 478px) {
   .macbookPro168 {
-    padding-top: var(--padding-21xl);
+    padding-top: var(--padding-161xl);
     box-sizing: border-box;
   }
 }

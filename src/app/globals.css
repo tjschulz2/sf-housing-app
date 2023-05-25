@@ -17,15 +17,22 @@ body {
   /* Colors */
   --color-white: #fff;
   --color-black: #000;
+  --color-cornflowerblue-100: #3191e7;
+  --color-cornflowerblue-200: #2b83d0;
   --color-dimgray: #4f4f4f;
   --color-gray: rgba(0, 0, 0, 0.72);
+  --color-dimgray: #4f4f4f;
 
   /* Gaps */
   --gap-5xl: 1.5rem;
+  --gap-21xl: 2.5rem;
+  --gap-5xs: 0.5rem;
   --gap-57xs: -2.75rem;
 
   /* Paddings */
   --padding-161xl: 11.25rem;
+  --padding-242xl: 16.31rem;
+  --padding-243xl: 16.38rem;
   --padding-131xl: 9.38rem;
   --padding-21xl: 2.5rem;
   --padding-6xl: 1.56rem;
