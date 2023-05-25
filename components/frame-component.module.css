@@ -6,7 +6,7 @@
   border-radius: 50%;
   width: 7.94rem;
   height: 7.94rem;
-  object-fit: contain;
+  object-fit: cover;
   z-index: 3;
 }
 .ellipseIcon,
@@ -117,9 +117,6 @@
   .frameChild {
     width: 4.69rem;
     height: 4.69rem;
-  }
-  .frameItem {
-    border-radius: 0;
   }
   .ellipseIcon,
   .frameInner,
