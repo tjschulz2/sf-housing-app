@@ -6,7 +6,7 @@
   border-radius: 50%;
   width: 7.94rem;
   height: 7.94rem;
-  object-fit: cover;
+  object-fit: contain;
   z-index: 3;
 }
 .ellipseIcon,
