@@ -131,17 +131,19 @@
     .topArea {
         border-bottom: 0px;
     }
+    .inviteSettingsContainer {
+        display: flex;
+        flex-direction: row-reverse;
+    }
   }
 
 
   @media (max-width: 490px) {
     .container {
-        /* max-width: 300px; */
-        padding: 24px 24px;
-        min-width: 490px;
+        padding: 16px 16px;
+        max-width: 490px;
     }
     .containerGrid {
       grid-template-columns: repeat(1, 1fr);
-      padding: 0 24px;
     }
   }

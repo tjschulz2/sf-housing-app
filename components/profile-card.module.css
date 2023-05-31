@@ -139,9 +139,8 @@
     font-size: var(--font-size-lg);
     color: var(--color-black);
   }
-  .frameA:hover {
-    /* cursor: pointer; */
-  }
+  /* .frameA:hover {
+  } */
   .lookingToLive {
     margin: 0;
     align-self: stretch;
@@ -158,8 +157,7 @@
     width: 20.06rem;
   }
   .frameContainer,
-  .frameParent,
-  .macbookPro1622 {
+  .frameParent {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -171,8 +169,7 @@
     gap: var(--gap-base);
     color: var(--color-darkslategray);
   }
-  .frameParent,
-  .macbookPro1622 {
+  .frameParent {
     box-sizing: border-box;
   }
   .frameParent {
@@ -182,16 +179,4 @@
     /* width: 22.56rem; */
     padding: 1.5rem;
     gap: var(--gap-base);
-  }
-  .macbookPro1622 {
-    position: relative;
-    background-color: var(--color-white);
-    width: 100%;
-    height: 69.81rem;
-    overflow: hidden;
-    padding: 1.38rem;
-    text-align: left;
-    font-size: var(--font-size-base);
-    color: var(--color-white);
-    font-family: var(--font-inter);
   }
