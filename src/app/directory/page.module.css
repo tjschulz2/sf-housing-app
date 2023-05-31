@@ -135,6 +135,9 @@
         display: flex;
         flex-direction: row-reverse;
     }
+    .inviteButton {
+        margin-right: 0px;
+    }
   }
 
 
@@ -145,5 +148,12 @@
     }
     .containerGrid {
       grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  @media (max-width: 406px) {
+    .container {
+        max-width: 406px;
+        padding: 0px 0px;
     }
   }
