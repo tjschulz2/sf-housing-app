@@ -19,7 +19,7 @@ const Directory: NextPage = () => {
             </Link>
           </div>
         </div>
-        <div>
+        <div className={styles.sectionButtons}>
           <Link href="/people" className={styles.selectedText}>People looking</Link>
           <Link href="/organizing" className={styles.unselectedText}>People organizing</Link>
           <Link href="/existing" className={styles.unselectedText}>Existing communities</Link>

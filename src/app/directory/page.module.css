@@ -1,7 +1,6 @@
 .selectedText {
     font-weight: bold;
     color: black;
-    margin-right: 24px;
     text-decoration: none;
     border-bottom: 4px solid black;
 }
@@ -9,7 +8,6 @@
 .unselectedText {
     text-decoration: none;
     color: var(--color-gray-100);
-    margin-right: 24px;
 }
 
 .topArea {
@@ -32,6 +30,12 @@
     font-weight: 600;
     text-decoration: none;
     margin-right: 24px;
+}
+
+.sectionButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
 }
 
 .inviteButton:hover {
@@ -64,13 +68,11 @@
     align-items: center;
 }
 
-
-
 /* Grid stuff */
 
 .container {
     margin: 0 auto;
-    padding: 40px 80px;
+    padding: 80px 80px;
     box-sizing: border-box;
     max-width: 1625px;
 }
@@ -84,7 +86,7 @@
   @media (max-width: 1625px) {
     .container {
         max-width: 1400px;
-        padding: 0 60px;
+        padding: 60px 60px;
     }
     .containerGrid {
       grid-template-columns: repeat(3, 1fr);
@@ -94,7 +96,7 @@
   @media (max-width: 1275px) {
     .container {
         max-width: 1000px;
-        padding: 0 60px;
+        padding: 60px 60px;
     }
     .containerGrid {
       grid-template-columns: repeat(2, 1fr);
@@ -104,22 +106,42 @@
   @media (max-width: 885px) {
     .container {
         max-width: 650px;
-        padding: 0 60px;
+        padding: 60px 60px;
     }
     .containerGrid {
       grid-template-columns: repeat(1, 1fr);
     }
   }
 
+  @media (max-width: 578px) {
+    .directoryInviteSettings {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: left;
+        padding-bottom: 16px;
+        gap: 24px;
+    }
+
+    .sectionButtons {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .topArea {
+        border-bottom: 0px;
+    }
+  }
+
 
   @media (max-width: 490px) {
     .container {
-        max-width: 300px;
-        padding: 0 24px;
+        /* max-width: 300px; */
+        padding: 24px 24px;
+        min-width: 490px;
     }
     .containerGrid {
       grid-template-columns: repeat(1, 1fr);
-      max-width: 300px;
       padding: 0 24px;
     }
   }
