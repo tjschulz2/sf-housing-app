@@ -1,0 +1,125 @@
+.selectedText {
+    font-weight: bold;
+    color: black;
+    margin-right: 24px;
+    text-decoration: none;
+    border-bottom: 4px solid black;
+}
+
+.unselectedText {
+    text-decoration: none;
+    color: var(--color-gray-100);
+    margin-right: 24px;
+}
+
+.topArea {
+    border-bottom: 1px solid #808080;
+    margin-bottom: 80px;
+}
+
+.directoryInviteSettings {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.inviteButton {
+    border-radius: 100px;
+    padding: 18px 30px 18px 30px;
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 24px;
+}
+
+.inviteButton:hover {
+    background-color: var(--color-gray-100);
+}
+
+.settingsButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #E2E2E2;
+    text-decoration: none;
+}
+
+.settingsButton:hover {
+    background-color: #d5d5d5;
+}
+
+.gearIcon {
+    width: 50%;
+    height: 50%;
+}
+
+.inviteSettingsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+/* Grid stuff */
+
+.container {
+    margin: 0 auto;
+    padding: 40px 80px;
+    box-sizing: border-box;
+    max-width: 1625px;
+}
+
+.containerGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    grid-gap: 24px;
+  }
+
+  @media (max-width: 1625px) {
+    .container {
+        max-width: 1400px;
+        padding: 0 60px;
+    }
+    .containerGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 1275px) {
+    .container {
+        max-width: 1000px;
+        padding: 0 60px;
+    }
+    .containerGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 885px) {
+    .container {
+        max-width: 650px;
+        padding: 0 60px;
+    }
+    .containerGrid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+
+  @media (max-width: 490px) {
+    .container {
+        max-width: 300px;
+        padding: 0 24px;
+    }
+    .containerGrid {
+      grid-template-columns: repeat(1, 1fr);
+      max-width: 300px;
+      padding: 0 24px;
+    }
+  }

@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
+import Link from 'next/link'
 
 type HomePageComponentProps = {
   referralCode?: string;
@@ -27,14 +28,22 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) =
       );
     } else {
       return (
-        <a
-          href="https://solarissociety.org"
+        <Link 
+          href="/directory"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.applyWrapper}
         >
           <div className={styles.apply}>Apply</div>
-        </a>
+        </Link>
+        // <a
+        //   href="https://solarissociety.org"
+        //   target="_blank"
+        //   rel="noopener noreferrer"
+        //   className={styles.applyWrapper}
+        // >
+        //   <div className={styles.apply}>Apply</div>
+        // </a>
       );
     }
   };

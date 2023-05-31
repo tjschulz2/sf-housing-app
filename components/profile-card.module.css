@@ -1,0 +1,197 @@
+.image3Icon {
+    position: relative;
+    border-radius: 10000px;
+    width: 8.13rem;
+    height: 8.13rem;
+    object-fit: cover;
+  }
+  .contactMe {
+    position: relative;
+    font-weight: 600;
+    color: #fff;
+  }
+  .contactMeWrapper {
+    text-decoration: none;
+    border-radius: var(--br-81xl);
+    background-color: var(--color-cornflowerblue-100);
+    width: 9.5rem;
+    height: 2.69rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+  }
+  .contactMeWrapper:hover {
+    background-color: var(--color-steelblue);
+    cursor: pointer;
+  }
+  .vectorIcon {
+    width: 1.09rem;
+    height: 1.08rem;
+  }
+  .a9io,
+  .vectorIcon {
+    position: relative;
+  }
+  .a9io:hover {
+    color: var(--color-steelblue);
+  }
+  .vectorParent {
+    text-decoration: none;
+    width: 4rem;
+    height: 1.19rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.56rem;
+    color: var(--color-cornflowerblue-100);
+  }
+  .vectorParent:hover {
+    cursor: pointer;
+  }
+  .locationIcon {
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .sanFrancisco {
+    margin: 0;
+    position: relative;
+  }
+  .locationParent {
+    width: 8.44rem;
+    height: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+    color: var(--color-gray-100);
+  }
+  .frameGroup,
+  .image3Parent {
+    display: flex;
+    align-items: flex-start;
+  }
+  .frameGroup {
+    width: 9.5rem;
+    height: 6.69rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+  .image3Parent {
+    align-self: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .maxKrieger {
+    margin: 0;
+    position: relative;
+    font-size: inherit;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .maxkriegers {
+    text-decoration: none;
+    position: relative;
+    font-size: var(--font-size-base);
+    color: var(--color-cornflowerblue-100);
+  }
+  .maxkriegers:hover {
+    color: var(--color-steelblue);
+  }
+  .vectorIcon1 {
+    position: relative;
+    width: 1.08rem;
+    height: 0.88rem;
+  }
+  .maxKriegerParent {
+    width: 100%;
+    height: 1.38rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+  }
+  .followedBy980 {
+    flex: 1;
+    position: relative;
+    font-size: 0.88rem;
+    color: var(--color-gray-100);
+    display: inline-block;
+    width: 100%;
+  }
+  .frameA {
+    text-decoration: none;
+    align-self: stretch;
+    height: 2.69rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: var(--font-size-lg);
+    color: var(--color-black);
+  }
+  .frameA:hover {
+    /* cursor: pointer; */
+  }
+  .lookingToLive {
+    margin: 0;
+    align-self: stretch;
+    position: relative;
+  }
+  .wants {
+    font-weight: 600;
+  }
+  .wants1YearLeaseContainer {
+    margin: 0;
+    flex: 1;
+    position: relative;
+    display: inline-block;
+    width: 20.06rem;
+  }
+  .frameContainer,
+  .frameParent,
+  .macbookPro1622 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .frameContainer {
+    align-self: stretch;
+    height: 10.44rem;
+    gap: var(--gap-base);
+    color: var(--color-darkslategray);
+  }
+  .frameParent,
+  .macbookPro1622 {
+    box-sizing: border-box;
+  }
+  .frameParent {
+    border-radius: 16px;
+    background-color: transparent;
+    border: 1px solid #898989;
+    /* width: 22.56rem; */
+    padding: 1.5rem;
+    gap: var(--gap-base);
+  }
+  .macbookPro1622 {
+    position: relative;
+    background-color: var(--color-white);
+    width: 100%;
+    height: 69.81rem;
+    overflow: hidden;
+    padding: 1.38rem;
+    text-align: left;
+    font-size: var(--font-size-base);
+    color: var(--color-white);
+    font-family: var(--font-inter);
+  }
