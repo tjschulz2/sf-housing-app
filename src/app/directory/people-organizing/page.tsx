@@ -1,4 +1,3 @@
-'use client';
 import styles from './page.module.css';
 import { NextPage } from 'next';
 import ProfileCard from '../../../../components/profile-card';
