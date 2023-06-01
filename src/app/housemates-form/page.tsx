@@ -43,7 +43,7 @@ const MyForm: NextPage = () => {
         <div className={styles.container}>
             <form className={styles.form}>
                 <Link href="/directory">Back to directory</Link>
-                <h1>Lets add some information</h1>
+                <h1>Let&#39;s add some information</h1>
                 <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
                 
                 <div>
@@ -113,7 +113,7 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>What's a link that best describes you?</h2>
+                        <h2>What&#39;s a link that best describes you?</h2>
                         <p className={styles.maxCharacters}>Personal website, forum page, blog, Instagram, etc.</p>
                         <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
                     </label>
@@ -121,8 +121,8 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>What's your email address?</h2>
-                        <p className={styles.maxCharacters}>We'll use this to contact you about new people looking for housing + communities.</p>
+                        <h2>What&#39;s your email address?</h2>
+                        <p className={styles.maxCharacters}>We&#39;ll use this to contact you about new people looking for housing + communities.</p>
                         <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
                     </label>
                 </div>

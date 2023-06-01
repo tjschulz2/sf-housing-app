@@ -48,7 +48,7 @@ const MyForm: NextPage = () => {
                 
                 <div>
                     <label>
-                        <h2>What should your ideal housemate(s) be interested in/doing?</h2>
+                        <h2>What should your ideal housemate(s) be interested in doing?</h2>
                         <p className={styles.maxCharacters}>52 characters max</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <span style={{ fontWeight: 'bold', marginRight: '5px', width: '50%' }}>Looking to live with people</span>
@@ -113,7 +113,7 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>What's a link that best describes you?</h2>
+                        <h2>Whats a link that best describes you?</h2>
                         <p className={styles.maxCharacters}>Personal website, forum page, blog, Instagram, etc.</p>
                         <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
                     </label>
@@ -121,8 +121,8 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>What's your email address?</h2>
-                        <p className={styles.maxCharacters}>We'll use this to contact you about new people looking for housing + communities.</p>
+                        <h2>Whats your email address?</h2>
+                        <p className={styles.maxCharacters}>Well use this to contact you about new people looking for housing + communities.</p>
                         <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
                     </label>
                 </div>
