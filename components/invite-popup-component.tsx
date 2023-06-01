@@ -31,11 +31,14 @@ const InvitePopup = () => {
         <div>
             <a href='#' className={styles.inviteButton} onClick={() => setIsOpen(true)}>Invite a friend</a>
             <Popup open={isOpen} closeOnDocumentClick onClose={closeModal}>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative', marginBottom: '16px', marginLeft: '16px', marginRight: '16px' }}>
                     <button onClick={closeModal} style={{ position: 'absolute', top: 0, right: 0 }}>x</button>
                     <h2>Invite a friend</h2>
-                    <p>Only refer people you know, trust, or think would be a good fit for this directory. Referring randoms will get your referral link reversed.</p>
-                    <button onClick={copyToClipboard}>{referralLink}</button>
+                    <p style={{ color: 'grey' }}>Only refer people you know, trust, or think would be a good fit for this directory. Referring randoms will get your referral link reversed.</p>
+                    <div className={styles.referralClipboard} onClick={copyToClipboard}>
+                        <img style={{ marginRight: '8px' }} src='./link.svg' />
+                        {referralLink}
+                    </div>
                 </div>
             </Popup>
         </div>
