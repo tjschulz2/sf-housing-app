@@ -26,11 +26,11 @@ const Directory: NextPage = () => {
         </div>
       </div>
       <div className={ styles.directoryContainer }>
-        <div className={styles.lookingHousematesContainer}>
+        {/* <div className={styles.lookingHousematesContainer}>
           <h2>Do you already have a community/coliving house?</h2>
           <p className={styles.addInfoText}>Add your information below and we'll add you to the "Existing communities" directory so you can be discovered by people looking for housing</p>
           <Link className={styles.addMeButton} href="/form">Add community houses</Link>
-        </div>
+        </div> */}
         <h2>Today</h2>
         <div className={styles.containerGrid}>
           {data.map((index) => (
