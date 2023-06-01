@@ -67,11 +67,11 @@ const MyForm: NextPage = () => {
                     <h2>What type of housing do you want?</h2>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousingType, 'lease')}>
                         <div className={`${styles.option} ${housingType === 'lease' ? styles.optionSelected : ''}`}></div>
-                        1-year lease (easier to find)
+                        1-year lease (easier to organize, less money)
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousingType, 'short')}>
                         <div className={`${styles.option} ${housingType === 'short' ? styles.optionSelected : ''}`}></div>
-                        Short-term stay (harder to find)
+                        Short-term stay (harder to find, more money)
                     </div>
                 </div>
 
@@ -95,25 +95,25 @@ const MyForm: NextPage = () => {
                     <h2>How many housemates do you want to live with?</h2>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousemates, '1-2')}>
                         <div className={`${styles.option} ${housemates === '1-2' ? styles.optionSelected : ''}`}></div>
-                        1-2
+                        1-2 (low commitment)
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousemates, '3-5')}>
                         <div className={`${styles.option} ${housemates === '3-5' ? styles.optionSelected : ''}`}></div>
-                        3-5
+                        3-5 (medium commitment)
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousemates, '6-12')}>
                         <div className={`${styles.option} ${housemates === '6-12' ? styles.optionSelected : ''}`}></div>
-                        6-12
+                        6-12 (high commitment)
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousemates, '12+')}>
                         <div className={`${styles.option} ${housemates === '12+' ? styles.optionSelected : ''}`}></div>
-                        12+
+                        12+ (this isn&#39;t a joke, don&#39;t do this if you are not prepared to do this full time)
                     </div>
                 </div>
 
                 <div>
                     <label>
-                        <h2>Whats a link that best describes you?</h2>
+                        <h2>What&#39;s a link that best describes you?</h2>
                         <p className={styles.maxCharacters}>Personal website, forum page, blog, Instagram, etc.</p>
                         <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
                     </label>
@@ -121,8 +121,8 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>Whats your email address?</h2>
-                        <p className={styles.maxCharacters}>Well use this to contact you about new people looking for housing + communities.</p>
+                        <h2>What&#39;s your email address?</h2>
+                        <p className={styles.maxCharacters}>We&#39;ll use this to contact you about new people looking for housing + communities.</p>
                         <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
                     </label>
                 </div>

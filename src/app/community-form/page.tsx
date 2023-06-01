@@ -6,8 +6,7 @@ import styles from './page.module.css'; // Assuming you have a CSS module at thi
 import { NextPage } from 'next';
 
 const MyForm: NextPage = () => {
-    const [housingType, setHousingType] = useState('');
-    const [moveIn, setMoveIn] = useState('');
+    const [roomPrice, setRoomPrice] = useState('');
     const [housemates, setHousemates] = useState('');
     const [contactMethod, setContactMethod] = useState('');
     const [link, setLink] = useState('');
@@ -15,6 +14,9 @@ const MyForm: NextPage = () => {
     const [phone, setPhone] = useState('');
     const [description, setDescription] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    
 
     const handleOptionClick = (setOption: React.Dispatch<React.SetStateAction<string>>, value: string) => {
         setOption((prev: string) => prev === value ? '' : value);
@@ -29,14 +31,30 @@ const MyForm: NextPage = () => {
     const handleInputChange = (setStateFunc: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>): void => {
         setStateFunc(event.target.value);
     }
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files.length > 0 ? event.target.files[0] : null;
+      
+        if (!file) return;
+      
+        setSelectedImage(file);
+      
+        const reader = new FileReader();
+      
+        reader.onloadend = () => {
+          setImagePreview(reader.result as string);
+        };
+      
+        reader.readAsDataURL(file);
+      };
+      
 
     useEffect(() => {
-        if (description && housingType && moveIn && housemates && contactMethod && link && email && (contactMethod !== 'phone' || phone)) {
+        if (description && roomPrice && housemates && contactMethod && link && email && (contactMethod !== 'phone' || phone)) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
-    }, [description, housingType, moveIn, housemates, contactMethod, link, email, phone]);
+    }, [description, roomPrice, housemates, contactMethod, link, email, phone, selectedImage, imagePreview]);
 
 
     return (
@@ -49,14 +67,14 @@ const MyForm: NextPage = () => {
                 <div>
                     <label>
                         <h2>What should your ideal housemate(s) be interested in doing?</h2>
-                        <p className={styles.maxCharacters}>52 characters max</p>
+                        <p className={styles.maxCharacters}>62 characters max</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 'bold', marginRight: '5px', width: '50%' }}>Looking to live with people</span>
+                            <span style={{ fontWeight: 'bold', marginRight: '5px', width: '35%' }}>Looking for people</span>
                             <input 
                                 className={styles.inputStyle} 
                                 type="text" 
-                                placeholder="researching and building AI companies" 
-                                maxLength={52}
+                                placeholder="building early stage startups" 
+                                maxLength={62}
                                 onChange={handleInputChange(setDescription)}
                             />
                         </div>
@@ -64,35 +82,35 @@ const MyForm: NextPage = () => {
                 </div>
 
                 <div>
-                    <h2>What type of housing do you want?</h2>
-                    <div className={styles.options} onClick={() => handleOptionClick(setHousingType, 'lease')}>
-                        <div className={`${styles.option} ${housingType === 'lease' ? styles.optionSelected : ''}`}></div>
-                        1-year lease (easier to find)
+                    <h2>How much does the average room cost?</h2>
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, 'less1000')}>
+                        <div className={`${styles.option} ${roomPrice === 'less1000' ? styles.optionSelected : ''}`}></div>
+                        &lt;$1000 / month
                     </div>
-                    <div className={styles.options} onClick={() => handleOptionClick(setHousingType, 'short')}>
-                        <div className={`${styles.option} ${housingType === 'short' ? styles.optionSelected : ''}`}></div>
-                        Short-term stay (harder to find)
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, '1000to1500')}>
+                        <div className={`${styles.option} ${roomPrice === '1000to1500' ? styles.optionSelected : ''}`}></div>
+                        $1000 - $1500 / month
+                    </div>
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, '1500to2000')}>
+                        <div className={`${styles.option} ${roomPrice === '1500to2000' ? styles.optionSelected : ''}`}></div>
+                        $1500 - $2000 / month
+                    </div>
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, '2000to2500')}>
+                        <div className={`${styles.option} ${roomPrice === '2000to2500' ? styles.optionSelected : ''}`}></div>
+                        $2000 - $2500 / month
+                    </div>
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, '2500to3000')}>
+                        <div className={`${styles.option} ${roomPrice === '2500to3000' ? styles.optionSelected : ''}`}></div>
+                        $2500 - $3000 / month
+                    </div>
+                    <div className={styles.options} onClick={() => handleOptionClick(setRoomPrice, '3000plus')}>
+                        <div className={`${styles.option} ${roomPrice === '3000plus' ? styles.optionSelected : ''}`}></div>
+                        $3000+ / month
                     </div>
                 </div>
 
                 <div>
-                    <h2>When do you want to move in?</h2>
-                    <div className={styles.options} onClick={() => handleOptionClick(setMoveIn, 'ASAP')}>
-                        <div className={`${styles.option} ${moveIn === 'ASAP' ? styles.optionSelected : ''}`}></div>
-                        ASAP
-                    </div>
-                    <div className={styles.options} onClick={() => handleOptionClick(setMoveIn, '3months')}>
-                        <div className={`${styles.option} ${moveIn === '3months' ? styles.optionSelected : ''}`}></div>
-                        &lt;3 months
-                    </div>
-                    <div className={styles.options} onClick={() => handleOptionClick(setMoveIn, 'over3months')}>
-                        <div className={`${styles.option} ${moveIn === 'over3months' ? styles.optionSelected : ''}`}></div>
-                        3+ months
-                    </div>
-                </div>
-
-                <div>
-                    <h2>How many housemates do you want to live with?</h2>
+                    <h2>How many housemates do you live with?</h2>
                     <div className={styles.options} onClick={() => handleOptionClick(setHousemates, '1-2')}>
                         <div className={`${styles.option} ${housemates === '1-2' ? styles.optionSelected : ''}`}></div>
                         1-2
@@ -113,15 +131,26 @@ const MyForm: NextPage = () => {
 
                 <div>
                     <label>
-                        <h2>Whats a link that best describes you?</h2>
-                        <p className={styles.maxCharacters}>Personal website, forum page, blog, Instagram, etc.</p>
+                        <h2>What&#39;s a link that best describes the community?</h2>
+                        <p className={styles.maxCharacters}>Community website or Twitter page preferred. If none, then share a link that represents you</p>
                         <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
                     </label>
                 </div>
 
                 <div>
+                    <h2>Upload an image or logo of your community</h2>
+                    <p className={styles.maxCharacters}>Optional. If you upload nothing, we will use your Twitter profile picture. JPG, JPEG, and PNG only.</p>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <input type="file" onChange={handleImageChange} />
+                        {imagePreview && (
+                            <img style={{ width: '100px', height: '100px', marginTop: '24px' }} src={imagePreview} alt="Image preview" />
+                        )}
+                    </div>
+                </div>
+
+                <div>
                     <label>
-                        <h2>Whats your email address?</h2>
+                        <h2>What&#39;s your email address?</h2>
                         <p className={styles.maxCharacters}>Well use this to contact you about new people looking for housing + communities.</p>
                         <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
                     </label>
@@ -135,11 +164,15 @@ const MyForm: NextPage = () => {
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setContactMethod, 'email')}>
                         <div className={`${styles.option} ${contactMethod === 'email' ? styles.optionSelected : ''}`}></div>
-                        Email address
+                        Email address (we will use the one you signed up with)
                     </div>
                     <div className={styles.options} onClick={() => handleOptionClick(setContactMethod, 'twitter')}>
                         <div className={`${styles.option} ${contactMethod === 'twitter' ? styles.optionSelected : ''}`}></div>
                         Twitter DMs (make sure your DMs are on)
+                    </div>
+                    <div className={styles.options} onClick={() => handleOptionClick(setContactMethod, 'website')}>
+                        <div className={`${styles.option} ${contactMethod === 'website' ? styles.optionSelected : ''}`}></div>
+                        Website form (ensure you put this down in the link above)
                     </div>
 
                     {contactMethod === 'phone' && 
