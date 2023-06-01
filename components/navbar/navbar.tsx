@@ -26,6 +26,7 @@ export default function Navbar() {
     <div className={styles.sectionButtons}>
       {navConfig.map((tab) => (
         <Link
+          key={tab.path}
           href={tab.path}
           className={
             tab.path === currentPath
