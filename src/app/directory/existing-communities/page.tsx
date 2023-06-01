@@ -3,6 +3,7 @@ import styles from './page.module.css';
 import { NextPage } from 'next';
 import ProfileCard from '../../../../components/profile-card';
 import Link from 'next/link'
+import InvitePopup from '../../../../components/invite-popup-component';
 
 const Directory: NextPage = () => {
   const data = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -13,7 +14,7 @@ const Directory: NextPage = () => {
         <div className={styles.directoryInviteSettings}>
           <h1>Directory</h1>
           <div className={styles.inviteSettingsContainer}>
-            <Link className={styles.inviteButton} href="/referral">Invite a friend</Link>
+            <InvitePopup />
             <Link className={styles.settingsButton} href="/settings">
               <img className={styles.gearIcon} alt="" src="/gearIcon.svg" />
             </Link>
