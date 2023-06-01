@@ -29,8 +29,8 @@ const Directory: NextPage = () => {
       <div className={ styles.directoryContainer }>
         <div className={styles.lookingHousematesContainer}>
           <h2>Do you already have a community/coliving house?</h2>
-          <text className={styles.addInfoText}>Add your information below and we will add you to the Existing communities directory so you can be discovered by people looking for housing</text>
-          <Link className={styles.addMeButton} href="/form">Add community houses</Link>
+          <text className={styles.addInfoText}>Add your information and we will add you to the Existing communities directory so you can be discovered by people looking for housing</text>
+          <Link className={styles.addMeButton} href="/form">Add my community house</Link>
         </div>
         <h2>Today</h2>
         <div className={styles.containerGrid}>
