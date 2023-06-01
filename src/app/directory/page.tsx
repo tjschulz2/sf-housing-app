@@ -14,7 +14,6 @@ const Directory: NextPage = () => {
         <div className={styles.directoryInviteSettings}>
           <h1>Directory</h1>
           <div className={styles.inviteSettingsContainer}>
-            <Link className={styles.inviteButton} href="/referral">Invite a friend</Link>
             <InvitePopup />
             <Link className={styles.settingsButton} href="/settings">
               <img className={styles.gearIcon} alt="" src="/gearIcon.svg" />
