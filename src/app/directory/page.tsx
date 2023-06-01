@@ -27,7 +27,7 @@ const Directory: NextPage = () => {
       </div>
       <div className={ styles.directoryContainer }>
         <div className={styles.lookingHousematesContainer}>
-          <h2>👋 Are you looking for housemates?</h2>
+          <h2>Are you looking for housemates?</h2>
           <text className={styles.addInfoText}>Add your information below and we'll add you to the "People looking" directory so you can be discovered by communities and organizers</text>
           <Link className={styles.addMeButton} href="/form">Add me</Link>
         </div>
