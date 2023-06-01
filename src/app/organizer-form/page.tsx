@@ -43,7 +43,7 @@ const MyForm: NextPage = () => {
         <div className={styles.container}>
             <form className={styles.form}>
                 <Link href="/directory/people-organizing">Back to directory</Link>
-                <h1>Start a new house/apartment</h1>
+                <h1>Start a new house or apartment</h1>
                 <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
                 
                 <div>

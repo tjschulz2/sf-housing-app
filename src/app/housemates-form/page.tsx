@@ -43,12 +43,12 @@ const MyForm: NextPage = () => {
         <div className={styles.container}>
             <form className={styles.form}>
                 <Link href="/directory">Back to directory</Link>
-                <h1>Let's add some information</h1>
+                <h1>Lets add some information</h1>
                 <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
                 
                 <div>
                     <label>
-                        <h2>What should your ideal housemate(s) be interested in/doing?</h2>
+                        <h2>What should your ideal housemate(s) be interested in doing?</h2>
                         <p className={styles.maxCharacters}>52 characters max</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <span style={{ fontWeight: 'bold', marginRight: '5px', width: '50%' }}>Looking to live with people</span>
