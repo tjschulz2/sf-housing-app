@@ -1,7 +1,7 @@
 'use client';
 import styles from './page.module.css';
 import { NextPage } from 'next';
-import ProfileCard from '../../../components/profile-card';
+import ProfileCard from '../../../../components/profile-card';
 import Link from 'next/link'
 
 const Directory: NextPage = () => {
@@ -20,16 +20,16 @@ const Directory: NextPage = () => {
           </div>
         </div>
         <div className={styles.sectionButtons}>
-          <Link href="/directory" className={styles.selectedText}>People looking</Link>
-          <Link href="/directory/people-organizing" className={styles.unselectedText}>People organizing</Link>
+          <Link href="/directory" className={styles.unselectedText}>People looking</Link>
+          <Link href="/directory/people-organizing" className={styles.selectedText}>People organizing</Link>
           <Link href="/directory/existing-communities" className={styles.unselectedText}>Existing communities</Link>
         </div>
       </div>
       <div className={ styles.directoryContainer }>
         <div className={styles.lookingHousematesContainer}>
-          <h2>👋 Are you looking for housemates?</h2>
-          <text className={styles.addInfoText}>Add your information below and we'll add you to the "People looking" directory so you can be discovered by communities and organizers</text>
-          <Link className={styles.addMeButton} href="/form">Add me</Link>
+          <h2>Do you want to organize a community house(s)?</h2>
+          <text className={styles.addInfoText}>Add your information below and we'll add you to the "People organizing" directory so you can be discovered by people looking for housemates</text>
+          <Link className={styles.addMeButton} href="/form">Become organizer</Link>
         </div>
         <h2>Today</h2>
         <div className={styles.containerGrid}>

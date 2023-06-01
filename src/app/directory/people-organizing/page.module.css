@@ -51,7 +51,7 @@
 .addMeButton {
     border-radius: 100px;
     padding: 18px 30px 18px 30px;
-    background-color: rgb(18, 74, 187);
+    background-color: rgb(110, 17, 171);
     color: white;
     font-weight: 600;
     text-decoration: none;
@@ -60,7 +60,7 @@
 }
 
 .addMeButton:hover {
-    background-color: rgb(18, 74, 187, 0.8);
+    background-color: rgb(90, 14, 140);
 }
 
 .sectionButtons {
