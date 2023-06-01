@@ -1,0 +1,13 @@
+.inviteButton {
+    border-radius: 100px;
+    padding: 18px 30px 18px 30px;
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 24px;
+}
+
+.inviteButton:hover {
+    background-color: var(--color-gray-100);
+}
