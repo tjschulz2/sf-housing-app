@@ -1,22 +1,33 @@
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from 'next/link'
+import { supabase } from '../lib/supabaseClient'
 
 type HomePageComponentProps = {
   referralCode?: string;
 };
 
 const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) => {
+  async function signInWithTwitter() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'twitter',
+    })
+}
+
+async function signout() {
+    const { error } = await supabase.auth.signOut()
+}
+
   const renderContent = () => {
     if (referralCode === 'twitter') {
       return (
         <div className={styles.signInWithTwitterParent}>
-          <a className={styles.signInWithTwitter} href="https://twitter.com">
+          <Link className={styles.signInWithTwitter} href="/?referralCode=twitter" onClick={signInWithTwitter}>
             <div className={styles.vectorParent}>
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
               <div className={styles.signInWith}>Sign in with Twitter</div>
             </div>
-          </a>
+          </Link>
           <div className={styles.vectorGroup}>
             <img className={styles.vectorIcon1} alt="" src="/vector1.svg" />
             <p className={styles.youHaveBeenContainer}>
