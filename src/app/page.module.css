@@ -1,4 +1,4 @@
-.macbookPro168 {
+.home {
   position: relative;
   background-color: var(--color-white);
   width: 100%;
@@ -13,7 +13,7 @@
   justify-content: flex-start;
 }
 @media screen and (max-width: 1472px) {
-  .macbookPro168 {
+  .home {
     padding-left: 0;
     padding-top: var(--padding-131xl);
     padding-right: 0;
@@ -21,7 +21,7 @@
   }
 }
 @media screen and (max-width: 960px) {
-  .macbookPro168 {
+  .home {
     align-items: center;
     justify-content: flex-start;
     padding-left: 0;
@@ -31,7 +31,7 @@
   }
 }
 @media screen and (max-width: 478px) {
-  .macbookPro168 {
+  .home {
     padding-top: var(--padding-161xl);
     box-sizing: border-box;
   }

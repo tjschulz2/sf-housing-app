@@ -1,0 +1,25 @@
+.selectedText {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  border-bottom: 4px solid black;
+}
+
+.unselectedText {
+  text-decoration: none;
+  color: var(--color-gray-100);
+}
+
+.sectionButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+@media (max-width: 578px) {
+  .sectionButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
