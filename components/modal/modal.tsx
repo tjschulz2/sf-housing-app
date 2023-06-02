@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, MouseEventHandler } from "react";
 import styles from "./modal.module.css";
 
 type ModalProps = {
@@ -9,14 +9,12 @@ type ModalProps = {
 };
 
 export default function Modal({ isOpen, closeModal, children }: ModalProps) {
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
-  const onClick = useCallback(
-    ({ target }) => {
+  const onClick: MouseEventHandler<HTMLDialogElement> = useCallback(
+    (e) => {
       const { current: el } = modalRef;
-      console.log(el);
-      console.log(target);
-      if (target === el) {
+      if (e.target === el) {
         closeModal();
       }
     },
@@ -25,6 +23,9 @@ export default function Modal({ isOpen, closeModal, children }: ModalProps) {
 
   useEffect(() => {
     const { current: el } = modalRef;
+    if (!el) {
+      return;
+    }
     if (isOpen) {
       el.showModal();
     } else {
