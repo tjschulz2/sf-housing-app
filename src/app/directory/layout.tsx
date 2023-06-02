@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
 import Navbar from "../../../components/navbar/navbar";
 import Link from "next/link";
-import InviteButton from "../../../components/invite-button/invite-button";
+// import InviteButton from "../../../components/invite-button/invite-button";
 import InvitePopup from '../../../components/invite-popup-component'
 
 export default function DirectoryLayout({
