@@ -1,4 +1,3 @@
-'use client';
 import styles from "./page.module.css";
 import Navbar from "../../../components/navbar/navbar";
 import Link from "next/link";
