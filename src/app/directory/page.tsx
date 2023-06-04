@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
 
-const Directory: NextPage = () => {
+async function Directory() {
   const data = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (
@@ -26,6 +26,6 @@ const Directory: NextPage = () => {
       </div>
     </>
   );
-};
+}
 
 export default Directory;
