@@ -6,8 +6,8 @@ type User = {
 
 declare namespace NodeJS {
   export interface ProcessEnv {
-    SUPABASE_URL: string;
-    SUPABASE_ANON_KEY: string;
+    NEXT_PUBLIC_SUPABASE_CLIENT: string;
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
   }
 }
 
