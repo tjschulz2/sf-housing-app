@@ -14,6 +14,23 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) =
     })
 }
 
+// supabase.auth.onAuthStateChange(async (event, session) => {
+//   console.log(`Supabase auth event: ${event}`);
+
+//   if (session) {
+//     console.log('Session:', session);
+//   } else {
+//     console.log('No session');
+//   }
+
+//   if (event === 'SIGNED_IN' && session) {
+//     console.log('User signed in!');
+//     console.log(session.user);
+//   }
+// });
+
+
+
 async function signout() {
     const { error } = await supabase.auth.signOut()
 }

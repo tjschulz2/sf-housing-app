@@ -1,4 +1,4 @@
-export const BEARER_TOKEN = process.env.TWITTER_API_KEY as string;
+export const BEARER_TOKEN = process.env.NEXT_PUBLIC_TWITTER_API_KEY as string;
 
 export async function fetchWithToken(url: string, options: RequestInit = {}): Promise<Response> {
     const defaultHeaders: Record<string, string> = {
