@@ -1,6 +1,5 @@
-import { Database } from "../database.types.js";
-import { supabase } from "../supabaseClient.js";
-import { createRedisClient } from "../redisClient.js";
+import { supabase } from "../supabaseClient";
+import { createRedisClient } from "../redisClient";
 import { RedisClientType } from "redis";
 
 // ----- Users & Profiles -----
