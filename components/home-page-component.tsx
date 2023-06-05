@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from 'next/link'
 import { supabase } from '../lib/supabaseClient'
-import React, { useState, useEffect } from 'react';
 
 type HomePageComponentProps = {
   referralCode?: string;
@@ -15,15 +14,20 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) =
     })
 }
 
-// const [session, setSession] = useState(null);
+// supabase.auth.onAuthStateChange(async (event, session) => {
+//   console.log(`Supabase auth event: ${event}`);
 
-// useEffect(() => {
-//   setSession(supabase.auth.session());
+//   if (session) {
+//     console.log('Session:', session);
+//   } else {
+//     console.log('No session');
+//   }
 
-//   supabase.auth.onAuthStateChange((_event, session) => {
-//     setSession(session);
-//   });
-// }, []);
+//   if (event === 'SIGNED_IN' && session) {
+//     console.log('User signed in!');
+//     console.log(session.user);
+//   }
+// });
 
 
 
