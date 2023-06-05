@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from 'next/link'
 import { supabase } from '../lib/supabaseClient'
+import React, { useState, useEffect } from 'react';
 
 type HomePageComponentProps = {
   referralCode?: string;
@@ -13,6 +14,18 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) =
       provider: 'twitter',
     })
 }
+
+// const [session, setSession] = useState(null);
+
+// useEffect(() => {
+//   setSession(supabase.auth.session());
+
+//   supabase.auth.onAuthStateChange((_event, session) => {
+//     setSession(session);
+//   });
+// }, []);
+
+
 
 async function signout() {
     const { error } = await supabase.auth.signOut()
