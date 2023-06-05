@@ -1,5 +1,4 @@
 import { supabase } from "../supabaseClient";
-import { createRedisClient } from "../redisClient";
 import { RedisClientType } from "redis";
 
 // ----- Users & Profiles -----
