@@ -3,8 +3,22 @@ import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
+import { supabase } from "../../lib/supabaseClient";
+import { getCurrentUser } from "../../lib/utils/auth";
+import { handleSignIn, handleSignOut } from "../../lib/utils/process";
 
 const Home: NextPage = () => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === "SIGNED_IN") {
+      console.log("Auth event: signed in");
+      await getCurrentUser();
+      handleSignIn();
+    }
+    if (event === "SIGNED_OUT") {
+      handleSignOut();
+    }
+  });
+
   const referralCode = useSearchParams().get("referralCode");
   const normalizedReferralCode = Array.isArray(referralCode)
     ? referralCode[0]

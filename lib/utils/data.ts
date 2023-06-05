@@ -6,10 +6,15 @@ import { RedisClientType } from "redis";
 export async function createUser(
   newUser: Database["public"]["Tables"]["users"]["Insert"]
 ) {
-  const { error } = await supabase.from("users").insert(newUser);
+  const { data, error } = await supabase
+    .from("users")
+    .upsert(newUser, { onConflict: "user_id" });
+
   if (error) {
     console.error(error);
-    return error;
+  } else {
+    console.log(data);
+    return data;
   }
 }
 

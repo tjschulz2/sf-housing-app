@@ -169,6 +169,7 @@ interface Database {
           email: string | null;
           name: string | null;
           phone_number: string | null;
+          twitter_avatar_url: string | null;
           twitter_id: string | null;
           user_id: string;
           website_url: string | null;
@@ -180,6 +181,7 @@ interface Database {
           email?: string | null;
           name?: string | null;
           phone_number?: string | null;
+          twitter_avatar_url?: string | null;
           twitter_id?: string | null;
           user_id: string;
           website_url?: string | null;
@@ -191,6 +193,7 @@ interface Database {
           email?: string | null;
           name?: string | null;
           phone_number?: string | null;
+          twitter_avatar_url?: string | null;
           twitter_id?: string | null;
           user_id?: string;
           website_url?: string | null;
