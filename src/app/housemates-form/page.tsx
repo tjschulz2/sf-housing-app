@@ -49,14 +49,11 @@ const MyForm: NextPage = () => {
                 <div>
                     <label>
                         <h2>What should your ideal housemate(s) be interested in doing?</h2>
-                        <p className={styles.maxCharacters}>52 characters max</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 'bold', marginRight: '5px', width: '50%' }}>Looking to live with people</span>
                             <input 
                                 className={styles.inputStyle} 
                                 type="text" 
                                 placeholder="researching and building AI companies" 
-                                maxLength={52}
                                 onChange={handleInputChange(setDescription)}
                             />
                         </div>
