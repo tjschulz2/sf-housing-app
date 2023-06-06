@@ -1,50 +1,52 @@
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
-import Link from 'next/link'
-import { supabase } from '../lib/supabaseClient'
+import Link from "next/link";
+import { supabase } from "../lib/supabaseClient";
+import { getCurrentUser, signInWithTwitter } from "../lib/utils/auth";
 
 type HomePageComponentProps = {
   referralCode?: string;
 };
 
-const HomePageComponent: NextPage<HomePageComponentProps> = ({ referralCode }) => {
-  async function signInWithTwitter() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
-    })
-}
+const HomePageComponent: NextPage<HomePageComponentProps> = ({
+  referralCode,
+}) => {
+  // supabase.auth.onAuthStateChange(async (event, session) => {
+  //   console.log(`Supabase auth event: ${event}`);
 
-// supabase.auth.onAuthStateChange(async (event, session) => {
-//   console.log(`Supabase auth event: ${event}`);
+  //   if (session) {
+  //     console.log('Session:', session);
+  //   } else {
+  //     console.log('No session');
+  //   }
 
-//   if (session) {
-//     console.log('Session:', session);
-//   } else {
-//     console.log('No session');
-//   }
+  //   if (event === 'SIGNED_IN' && session) {
+  //     console.log('User signed in!');
+  //     console.log(session.user);
+  //   }
+  // });
 
-//   if (event === 'SIGNED_IN' && session) {
-//     console.log('User signed in!');
-//     console.log(session.user);
-//   }
-// });
-
-
-
-async function signout() {
-    const { error } = await supabase.auth.signOut()
-}
+  async function signout() {
+    const { error } = await supabase.auth.signOut();
+  }
 
   const renderContent = () => {
-    if (referralCode === 'twitter') {
+    if (referralCode === "twitter") {
       return (
         <div className={styles.signInWithTwitterParent}>
-          <Link className={styles.signInWithTwitter} href="/?referralCode=twitter" onClick={signInWithTwitter}>
+          <Link
+            className={styles.signInWithTwitter}
+            href="/?referralCode=twitter"
+            onClick={signInWithTwitter}
+          >
             <div className={styles.vectorParent}>
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
               <div className={styles.signInWith}>Sign in with Twitter</div>
             </div>
           </Link>
+          <button onClick={getCurrentUser}>check session</button>
+          <button onClick={signout}>sign out</button>
+
           <div className={styles.vectorGroup}>
             <img className={styles.vectorIcon1} alt="" src="/vector1.svg" />
             <p className={styles.youHaveBeenContainer}>
@@ -56,7 +58,7 @@ async function signout() {
       );
     } else {
       return (
-        <Link 
+        <Link
           href="/directory"
           target="_blank"
           rel="noopener noreferrer"
@@ -90,7 +92,8 @@ async function signout() {
         Find housemates & coliving communities in the San Francisco tech scene
       </h1>
       <p className={styles.thisIsAn}>
-        This is an invite-only directory of people you probably know that are looking for housing in San Francisco.
+        This is an invite-only directory of people you probably know that are
+        looking for housing in San Francisco.
       </p>
       {renderContent()}
     </section>
