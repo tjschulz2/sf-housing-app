@@ -141,11 +141,43 @@
   }
   /* .frameA:hover {
   } */
+  /* .lookingToLive {
+    margin: 0;
+    align-self: stretch;
+    position: relative;
+  } */
   .lookingToLive {
     margin: 0;
     align-self: stretch;
     position: relative;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
   }
+  
+  .expanded {
+    -webkit-line-clamp: none;
+  }
+  
+  .content {
+    padding-right: 68px; /* reserve space for the button */
+    position: relative;
+    line-height: 1.2em; /* adjust to match your text size */
+    max-height: 2.4em; /* adjust to match your text size */
+  }
+  
+  .seeMore {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: var(--color-cornflowerblue-100);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+  }
+
   .wants {
     font-weight: 600;
   }

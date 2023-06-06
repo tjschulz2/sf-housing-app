@@ -1,6 +1,7 @@
+'use client';
 import type { NextPage } from "next";
 import styles from "./profile-card.module.css";
-import Link from 'next/link'
+import SeeMoreButton from "./see-more-button/see-more-button";
 
   const ProfileCard: NextPage= () => {
     return (
@@ -50,9 +51,13 @@ import Link from 'next/link'
               Followed by 980+ people you follow
             </sub>
           </div>
-          <p className={styles.lookingToLive} id="looking-for-text">
-            Looking to live with people researching and building AI companies
-          </p>
+          <div className={styles.lookingToLive} id="looking-for-text">
+            <div className={styles.content}>
+              <span className={styles.wants}>About me: </span>
+              Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god
+              <SeeMoreButton seeMoreText="Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god" />
+            </div>
+          </div>
           <p className={styles.wants1YearLeaseContainer} id="wants-text">
             <span className={styles.wants}>Wants:</span>
             <span> 1-year lease, 2-4 roommates</span>
