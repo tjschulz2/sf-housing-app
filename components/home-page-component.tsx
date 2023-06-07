@@ -18,7 +18,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   const [originatorName, setOriginatorName] = useState<string | null>(null);
 
   interface Referral {
-    referral_code: string | null;
+    referral_id: number | null;
     originator_id: string;
   }
 
@@ -26,8 +26,8 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     const fetchReferral = async () => {
       const { data, error } = await supabase
         .from("referrals")
-        .select("referral_code, originator_id")
-        .eq("referral_code", referralCode)
+        .select("referral_id, originator_id")
+        .eq("referral_id", referralCode)
         .filter('recipient_id', 'is.null', true);
 
       if (error) throw error;

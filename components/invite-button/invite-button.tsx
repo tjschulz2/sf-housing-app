@@ -31,7 +31,7 @@ export default function InviteButton() {
   const generateReferralCode = async () => {
     try {
       // Use a UUID generator to generate the referral code
-      const referralCode = uuidv4();
+      const referralCode = Math.floor(Math.random() * 1000000000000000)
       referralLink = `http://directorysf.com/?referralCode=${referralCode}`
   
       // Insert a new record into your `referrals` table
@@ -39,8 +39,7 @@ export default function InviteButton() {
         .from('referrals')
         .insert([
           { 
-            referral_id: 1234, // THIS CODE IS FAKE, REPLACE
-            referral_code: referralCode,
+            referral_id: referralCode,
             originator_id: '6ebdd1c1-f36e-4613-931f-4f7dc40463b8' // THIS IS FAKE CODE, REPLACE
           },
         ]);
