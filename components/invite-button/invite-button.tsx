@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Modal from "../modal/modal";
 import styles from "./invite-button.module.css";
+import { supabase } from "../../lib/supabaseClient";
+import { v4 as uuidv4 } from 'uuid';
 
-const referralLink = "http://yourReferralLink.com";
+let referralLink = 'http://directorysf.com/?referralCode='
 
 const copyToClipboard = async () => {
   try {
@@ -18,12 +20,38 @@ export default function InviteButton() {
   const [isOpen, setIsOpen] = useState(false);
 
   function openModal() {
+    generateReferralCode();
     setIsOpen(true);
   }
 
   function closeModal() {
     setIsOpen(false);
   }
+
+  const generateReferralCode = async () => {
+    try {
+      // Use a UUID generator to generate the referral code
+      const referralCode = uuidv4();
+      referralLink = `http://directorysf.com/?referralCode=${referralCode}`
+  
+      // Insert a new record into your `referrals` table
+      const { data, error } = await supabase
+        .from('referrals')
+        .insert([
+          { 
+            referral_id: 1234, // THIS CODE IS FAKE, REPLACE
+            referral_code: referralCode,
+            originator_id: '6ebdd1c1-f36e-4613-931f-4f7dc40463b8' // THIS IS FAKE CODE, REPLACE
+          },
+        ]);
+  
+      if (error) throw error;
+      
+      console.log('Referral code generated:', referralCode);
+    } catch (error) {
+      console.error('Failed to generate referral code:', error);
+    }
+  };
 
   return (
     <>

@@ -1,8 +1,10 @@
+'use client';
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 import { getCurrentUser, signInWithTwitter } from "../lib/utils/auth";
+import React, { useState, useEffect } from 'react'
 
 type HomePageComponentProps = {
   referralCode?: string;
@@ -11,27 +13,57 @@ type HomePageComponentProps = {
 const HomePageComponent: NextPage<HomePageComponentProps> = ({
   referralCode,
 }) => {
-  // supabase.auth.onAuthStateChange(async (event, session) => {
-  //   console.log(`Supabase auth event: ${event}`);
 
-  //   if (session) {
-  //     console.log('Session:', session);
-  //   } else {
-  //     console.log('No session');
-  //   }
+  const [isValidReferral, setIsValidReferral] = useState(false);
+  const [originatorName, setOriginatorName] = useState<string | null>(null);
 
-  //   if (event === 'SIGNED_IN' && session) {
-  //     console.log('User signed in!');
-  //     console.log(session.user);
-  //   }
-  // });
+  interface Referral {
+    referral_code: string | null;
+    originator_id: string;
+  }
+
+  useEffect(() => {
+    const fetchReferral = async () => {
+      const { data, error } = await supabase
+        .from("referrals")
+        .select("referral_code, originator_id")
+        .eq("referral_code", referralCode)
+        .filter('recipient_id', 'is.null', true);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setIsValidReferral(true);
+        // Now fetch the originator's name
+        const originatorId = (data[0] as Referral).originator_id;
+        if (originatorId) {
+          const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("name")
+          .eq("user_id", originatorId);
+
+          if (userError) throw userError;
+
+          if (userData && userData.length > 0) {
+            setOriginatorName(userData[0].name);
+          }
+        }
+      } else {
+        setIsValidReferral(false);
+      }
+    };
+
+    if (referralCode) {
+      fetchReferral();
+    }
+  }, [referralCode]);
 
   async function signout() {
     const { error } = await supabase.auth.signOut();
   }
 
   const renderContent = () => {
-    if (referralCode === "twitter") {
+    if (isValidReferral) {
       return (
         <div className={styles.signInWithTwitterParent}>
           <Link
@@ -44,36 +76,28 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
               <div className={styles.signInWith}>Sign in with Twitter</div>
             </div>
           </Link>
-          <button onClick={getCurrentUser}>check session</button>
-          <button onClick={signout}>sign out</button>
-
           <div className={styles.vectorGroup}>
             <img className={styles.vectorIcon1} alt="" src="/vector1.svg" />
             <p className={styles.youHaveBeenContainer}>
               <span>{`You have been invited by `}</span>
-              <span className={styles.maxKrieger}>Max Krieger</span>
+              <span className={styles.maxKrieger}>{originatorName}</span>
             </p>
           </div>
         </div>
       );
     } else {
       return (
-        <Link
-          href="/directory"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.applyWrapper}
-        >
-          <div className={styles.apply}>Apply</div>
-        </Link>
-        // <a
-        //   href="https://solarissociety.org"
-        //   target="_blank"
-        //   rel="noopener noreferrer"
-        //   className={styles.applyWrapper}
-        // >
-        //   <div className={styles.apply}>Apply</div>
-        // </a>
+        <div>
+          {referralCode && <p>Invalid referral code</p>}
+          <Link
+            href="/directory"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.applyWrapper}
+          >
+            <div className={styles.apply}>Apply</div>
+          </Link>
+        </div>
       );
     }
   };
