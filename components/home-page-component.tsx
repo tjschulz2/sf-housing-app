@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
-import { getCurrentUser, signInWithTwitter } from "../lib/utils/auth";
+import { signInWithTwitter } from "../lib/utils/auth";
 import React, { useState, useEffect } from 'react'
 
 type HomePageComponentProps = {

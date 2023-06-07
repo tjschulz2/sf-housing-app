@@ -3,52 +3,77 @@ import { useState } from "react";
 import Modal from "../modal/modal";
 import styles from "./invite-button.module.css";
 import { supabase } from "../../lib/supabaseClient";
-import { v4 as uuidv4 } from 'uuid';
+import { getCurrentUser } from "../../lib/utils/auth";
 
-let referralLink = 'http://directorysf.com/?referralCode='
 
-const copyToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(referralLink);
-    alert("Referral link copied to clipboard!");
-  } catch (err) {
-    console.error("Failed to copy text: ", err);
-  }
-};
+let referralBaseLink = 'http://directorysf.com/?referralCode='
 
 export default function InviteButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [referralLink, setReferralLink] = useState('');
 
-  function openModal() {
-    generateReferralCode();
-    setIsOpen(true);
-  }
+  const openModal = async () => {
+    const userId = await getSessionData();
+    if (userId) {
+      await generateReferralCode(userId);
+      setIsOpen(true);
+    }
+  };
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const getSessionData = async () => {
+    const session = await getCurrentUser();
+    if (session && session.twitterID) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('user_id')
+        .eq('twitter_id', session.twitterID);
 
-  const generateReferralCode = async () => {
+      if (error) {
+        console.error('Error fetching user:', error);
+        return null;
+      }
+
+      if (data && data.length > 0) {
+        return data[0].user_id;
+      }
+    }
+    return null;
+  };
+
+  const generateReferralCode = async (userId: string) => {
     try {
-      // Use a UUID generator to generate the referral code
-      const referralCode = Math.floor(Math.random() * 1000000000000000)
-      referralLink = `http://directorysf.com/?referralCode=${referralCode}`
-  
+      const referralCode = Math.floor(Math.random() * 1000000000000000);
+      const newReferralLink = referralBaseLink + referralCode;
+      setReferralLink(newReferralLink);
+
       // Insert a new record into your `referrals` table
       const { data, error } = await supabase
         .from('referrals')
         .insert([
           { 
             referral_id: referralCode,
-            originator_id: '6ebdd1c1-f36e-4613-931f-4f7dc40463b8' // THIS IS FAKE CODE, REPLACE
+            originator_id: userId,
           },
         ]);
-  
+
       if (error) throw error;
-      
+
       console.log('Referral code generated:', referralCode);
     } catch (error) {
       console.error('Failed to generate referral code:', error);
+    }
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      alert('Referral link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
     }
   };
 
