@@ -8,6 +8,9 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     NEXT_PUBLIC_SUPABASE_CLIENT: string;
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+    SUPABASE_JWT_SECRET: string;
+    REDIS_URL: string;
+    TWITTER_API_KEY: string;
   }
 }
 

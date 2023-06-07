@@ -28,3 +28,8 @@ export async function signInWithTwitter() {
     provider: "twitter",
   });
 }
+
+async function signOut() {
+  await supabase.auth.signOut();
+  // trigger router.refresh() from calling component
+}

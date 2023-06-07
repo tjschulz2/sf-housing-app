@@ -24,7 +24,8 @@ export async function handleSignIn() {
 
   // display loading animation?
   // check if record exists for user in public.users, if not:
-  // -- create record using signed in session data
+  // -- check referral code in localstorage (store this on initial page load), if exists, look up and "claim"
+  // -- create user using signed in session data
   // -- pull follow/follower data from twitter, store in Redis
   // redirect user to /directory
   // on /directory load, for any visible users without intersection counts, compute and push to public.follow_intersections

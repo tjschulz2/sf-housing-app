@@ -8,7 +8,8 @@ export async function createUser(
 ) {
   const { data, error } = await supabase
     .from("users")
-    .upsert(newUser, { onConflict: "user_id" });
+    .upsert(newUser, { onConflict: "user_id" })
+    .select();
 
   if (error) {
     console.error(error);
@@ -99,7 +100,7 @@ export async function getAvailableReferrals(userID: string) {
 // ----- Redis: Twitter follow data -----
 
 export async function storeFollows(
-  redisClient: RedisClientType,
+  redisClient: RedisClientType<any, any, any>,
   userID: string,
   follows: Array<string>
 ) {
@@ -107,12 +108,12 @@ export async function storeFollows(
     console.error("Failed to create Redis client");
   } else {
     const redisKey = `user-follows:${userID}`;
-    return await redisClient.SADD(redisKey, follows);
+    return await redisClient.sAdd(redisKey, follows);
   }
 }
 
 export async function storeFollowers(
-  redisClient: RedisClientType,
+  redisClient: RedisClientType<any, any, any>,
   userID: string,
   followers: Array<string>
 ) {
@@ -120,7 +121,7 @@ export async function storeFollowers(
     console.error("Failed to create Redis client");
   } else {
     const redisKey = `user-followers:${userID}`;
-    return await redisClient.SADD(redisKey, followers);
+    return await redisClient.sAdd(redisKey, followers);
   }
 }
 
@@ -159,9 +160,44 @@ export async function getFollowIntersections(
   return results;
 }
 
+export async function fetchFromTwitter(
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> {
+  const defaultHeaders: Record<string, string> = {
+    Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+  };
+
+  options.headers = options.headers
+    ? { ...(options.headers as Record<string, string>), ...defaultHeaders }
+    : defaultHeaders;
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response;
+}
+
 export const twitter = {
   follows: {
-    getFromTwitter: async () => {},
+    getFromTwitter: async (twitterID: string) => {
+      const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
+      let cursor = null;
+      let follows: User[] = [];
+
+      do {
+        const res = await fetchFromTwitter(
+          `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+        );
+        const data = await res.json();
+        follows = [...follows, ...data.data];
+        cursor = data.meta.next_token;
+      } while (cursor);
+
+      return follows;
+    },
     setToStore: async () => {},
   },
   followers: {
