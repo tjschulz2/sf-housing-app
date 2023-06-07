@@ -139,13 +139,14 @@
     font-size: var(--font-size-lg);
     color: var(--color-black);
   }
-  /* .frameA:hover {
-  } */
-  /* .lookingToLive {
-    margin: 0;
-    align-self: stretch;
-    position: relative;
-  } */
+  .frameALink {
+    text-decoration: none;
+  }
+
+  .frameALink:hover > * {
+    opacity: 0.7;
+  }
+
   .lookingToLive {
     margin: 0;
     align-self: stretch;

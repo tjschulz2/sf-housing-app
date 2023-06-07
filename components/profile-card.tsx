@@ -33,24 +33,22 @@ import SeeMoreButton from "./see-more-button/see-more-button";
           </div>
         </div>
         <div className={styles.frameContainer}>
-          <div className={styles.frameA}>
-            <div className={styles.maxKriegerParent}>
-              <h4 className={styles.maxKrieger} id="twitter-name">
-                Max Krieger
-              </h4>
-              <a
-                className={styles.maxkriegers}
-                href="twitter.com"
-                target="_blank"
-              >
-                @maxkriegers
-              </a>
-              <img className={styles.vectorIcon1} alt="" src="/twitter-logo.svg" />
+          <a href="https://twitter.com/maxkriegers" target="_blank" className={styles.frameALink}>
+            <div className={styles.frameA}>
+              <div className={styles.maxKriegerParent}>
+                <h4 className={styles.maxKrieger} id="twitter-name">
+                  Max Krieger
+                </h4>
+                <div className={styles.maxkriegers}>
+                  @maxkriegers
+                </div>
+                <img className={styles.vectorIcon1} alt="" src="/twitter-logo.svg" />
+              </div>
+              <sub className={styles.followedBy980} id="followed-by">
+                Followed by 980+ people you follow
+              </sub>
             </div>
-            <sub className={styles.followedBy980} id="followed-by">
-              Followed by 980+ people you follow
-            </sub>
-          </div>
+          </a>
           <div className={styles.lookingToLive} id="looking-for-text">
             <div className={styles.content}>
               <span className={styles.wants}>About me: </span>
