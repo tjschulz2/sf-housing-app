@@ -5,7 +5,6 @@ export async function createRedisClient() {
     console.error("Environment Variable 'REDIS_URL' undefined");
     return;
   }
-
   try {
     const client = createClient({
       url: process.env.REDIS_URL,

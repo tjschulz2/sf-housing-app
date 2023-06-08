@@ -1,20 +1,44 @@
 import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
+import { getCurrentUser } from "./auth";
 
 // ----- Users & Profiles -----
+
+export async function getUserData(userID?: string) {
+  // Returns all data from public.users for current user, if it exists
+
+  // If userID not passed, attempts to retrieve from session
+  userID = userID ?? (await getCurrentUser())?.userID;
+  if (!userID) {
+    throw "failed to find userID";
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", userID);
+
+  if (error) {
+    console.error(error);
+  } else if (data) {
+    return data[0];
+  }
+}
 
 export async function createUser(
   newUser: Database["public"]["Tables"]["users"]["Insert"]
 ) {
   const { data, error } = await supabase
     .from("users")
-    .upsert(newUser, { onConflict: "user_id" });
+    .upsert(newUser, { onConflict: "user_id" })
+    .select();
 
   if (error) {
     console.error(error);
+    throw "error";
   } else {
     console.log(data);
-    return data;
+    return data[0];
   }
 }
 
@@ -98,21 +122,21 @@ export async function getAvailableReferrals(userID: string) {
 
 // ----- Redis: Twitter follow data -----
 
-export async function storeFollows(
-  redisClient: RedisClientType,
+export async function storeFollowing(
+  redisClient: RedisClientType<any, any, any>,
   userID: string,
   follows: Array<string>
 ) {
   if (!redisClient) {
     console.error("Failed to create Redis client");
   } else {
-    const redisKey = `user-follows:${userID}`;
-    return await redisClient.SADD(redisKey, follows);
+    const redisKey = `user-following:${userID}`;
+    return await redisClient.sAdd(redisKey, follows);
   }
 }
 
 export async function storeFollowers(
-  redisClient: RedisClientType,
+  redisClient: RedisClientType<any, any, any>,
   userID: string,
   followers: Array<string>
 ) {
@@ -120,12 +144,12 @@ export async function storeFollowers(
     console.error("Failed to create Redis client");
   } else {
     const redisKey = `user-followers:${userID}`;
-    return await redisClient.SADD(redisKey, followers);
+    return await redisClient.sAdd(redisKey, followers);
   }
 }
 
 export async function getFollowIntersection(
-  redisClient: RedisClientType,
+  redisClient: RedisClientType<any, any, any>,
   userID1: string,
   userID2: string
 ) {
@@ -159,14 +183,66 @@ export async function getFollowIntersections(
   return results;
 }
 
+export async function fetchFromTwitter(
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> {
+  const defaultHeaders: Record<string, string> = {
+    Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+  };
+
+  options.headers = options.headers
+    ? { ...(options.headers as Record<string, string>), ...defaultHeaders }
+    : defaultHeaders;
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response;
+}
+
 export const twitter = {
-  follows: {
-    getFromTwitter: async () => {},
-    setToStore: async () => {},
+  following: {
+    getFromTwitter: async (twitterID: string) => {
+      // server-only
+      const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
+      let cursor = null;
+      let following: User[] = [];
+
+      do {
+        const res = await fetchFromTwitter(
+          `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+        );
+        const data = await res.json();
+        following = [...following, ...data.data];
+        cursor = data.meta.next_token;
+      } while (cursor);
+
+      return following;
+    },
+    setToStore: storeFollowing,
   },
   followers: {
-    getFromTwitter: async () => {},
-    setToStore: async () => {},
+    getFromTwitter: async (twitterID: string) => {
+      // server-only
+      const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/followers`;
+      let cursor = null;
+      let followers: User[] = [];
+
+      do {
+        const res = await fetchFromTwitter(
+          `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+        );
+        const data = await res.json();
+        followers = [...followers, ...data.data];
+        cursor = data.meta.next_token;
+      } while (cursor);
+
+      return followers;
+    },
+    setToStore: storeFollowers,
   },
   followIntersection: {
     compute: async () => {},

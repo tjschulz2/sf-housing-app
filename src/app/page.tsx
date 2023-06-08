@@ -1,12 +1,16 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import { signInWithTwitter as signInWithTwitterAuth, signUpWithTwitter as signUpWithTwitterAuth } from "../../lib/utils/auth";
+import {
+  signInWithTwitter as signInWithTwitterAuth,
+  signUpWithTwitter as signUpWithTwitterAuth,
+} from "../../lib/utils/auth";
 import { getSessionData, handleSignIn } from "../../lib/utils/process";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -23,17 +27,17 @@ const Home: NextPage = () => {
   useEffect(() => {
     const checkUser = async () => {
       const isSignUp = localStorage.getItem("isSignUp") === "true";
-        if (isSignUp) {
-          await handleSignIn();
+      if (isSignUp) {
+        await handleSignIn();
+        router.push("/directory");
+      } else {
+        const signInSuccessful = await getSessionData();
+        if (signInSuccessful) {
           router.push("/directory");
-        } else {
-          const signInSuccessful = await getSessionData();
-          if (signInSuccessful) {
-            router.push("/directory");
-          }
         }
-        // Clear localStorage after authentication is complete
-        localStorage.removeItem("isSignUp");
+      }
+      // Clear localStorage after authentication is complete
+      localStorage.removeItem("isSignUp");
     };
     checkUser();
   }, []);
@@ -45,8 +49,8 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.home}>
-      <HomePageComponent 
-        referralCode={normalizedReferralCode} 
+      <HomePageComponent
+        referralCode={normalizedReferralCode}
         signInWithTwitter={signInWithTwitter}
         signUpWithTwitter={signUpWithTwitter}
       />

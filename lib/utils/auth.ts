@@ -1,6 +1,7 @@
 import { supabase } from "../supabaseClient";
 
 export async function getCurrentUser() {
+  // Returns most pertinent data from active session
   const { data, error } = await supabase.auth.getSession();
   if (error) {
     console.error(error);

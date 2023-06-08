@@ -8,6 +8,9 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     NEXT_PUBLIC_SUPABASE_CLIENT: string;
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+    SUPABASE_JWT_SECRET: string;
+    REDIS_URL: string;
+    TWITTER_API_KEY: string;
   }
 }
 
@@ -24,7 +27,7 @@ interface Database {
           description: string | null;
           image_url: string | null;
           name: string | null;
-          owner_id: number | null;
+          owner_id: string | null;
           rent_max: number | null;
           rent_min: number | null;
           resident_count: number | null;
@@ -37,7 +40,7 @@ interface Database {
           description?: string | null;
           image_url?: string | null;
           name?: string | null;
-          owner_id?: number | null;
+          owner_id?: string | null;
           rent_max?: number | null;
           rent_min?: number | null;
           resident_count?: number | null;
@@ -50,35 +53,37 @@ interface Database {
           description?: string | null;
           image_url?: string | null;
           name?: string | null;
-          owner_id?: number | null;
+          owner_id?: string | null;
           rent_max?: number | null;
           rent_min?: number | null;
           resident_count?: number | null;
           website_url?: string | null;
         };
+        Relationships: [];
       };
       follow_intersections: {
         Row: {
-          created_at: string | null;
           id: number;
           intersection_count: number | null;
-          user_1_id: number | null;
-          user_2_id: number | null;
+          last_updated: string | null;
+          user_1_id: string | null;
+          user_2_id: string | null;
         };
         Insert: {
-          created_at?: string | null;
           id?: number;
           intersection_count?: number | null;
-          user_1_id?: number | null;
-          user_2_id?: number | null;
+          last_updated?: string | null;
+          user_1_id?: string | null;
+          user_2_id?: string | null;
         };
         Update: {
-          created_at?: string | null;
           id?: number;
           intersection_count?: number | null;
-          user_1_id?: number | null;
-          user_2_id?: number | null;
+          last_updated?: string | null;
+          user_1_id?: string | null;
+          user_2_id?: string | null;
         };
+        Relationships: [];
       };
       housing_search_profiles: {
         Row: {
@@ -108,6 +113,7 @@ interface Database {
           pref_move_in?: string | null;
           user_id?: number;
         };
+        Relationships: [];
       };
       organizer_profiles: {
         Row: {
@@ -137,29 +143,41 @@ interface Database {
           pref_lease_start?: number | null;
           user_id?: string;
         };
+        Relationships: [];
       };
       referrals: {
         Row: {
           created_at: string | null;
           originator_id: string;
           recipient_id: string | null;
-          referral_code: string | null;
           referral_id: number;
         };
         Insert: {
           created_at?: string | null;
           originator_id: string;
           recipient_id?: string | null;
-          referral_code?: string | null;
           referral_id?: number;
         };
         Update: {
           created_at?: string | null;
           originator_id?: string;
           recipient_id?: string | null;
-          referral_code?: string | null;
           referral_id?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: "referrals_originator_id_fkey";
+            columns: ["originator_id"];
+            referencedRelation: "users";
+            referencedColumns: ["user_id"];
+          },
+          {
+            foreignKeyName: "referrals_recipient_id_fkey";
+            columns: ["recipient_id"];
+            referencedRelation: "users";
+            referencedColumns: ["user_id"];
+          }
+        ];
       };
       users: {
         Row: {
@@ -167,9 +185,11 @@ interface Database {
           community_id: number | null;
           created_at: string | null;
           email: string | null;
+          follows_last_refresh: string | null;
           name: string | null;
           phone_number: string | null;
           twitter_avatar_url: string | null;
+          twitter_handle: string | null;
           twitter_id: string | null;
           user_id: string;
           website_url: string | null;
@@ -179,9 +199,11 @@ interface Database {
           community_id?: number | null;
           created_at?: string | null;
           email?: string | null;
+          follows_last_refresh?: string | null;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
+          twitter_handle?: string | null;
           twitter_id?: string | null;
           user_id: string;
           website_url?: string | null;
@@ -191,13 +213,16 @@ interface Database {
           community_id?: number | null;
           created_at?: string | null;
           email?: string | null;
+          follows_last_refresh?: string | null;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
+          twitter_handle?: string | null;
           twitter_id?: string | null;
           user_id?: string;
           website_url?: string | null;
         };
+        Relationships: [];
       };
     };
     Views: {
