@@ -2,6 +2,7 @@ import styles from "./page.module.css";
 import Navbar from "../../../components/navbar/navbar";
 import Link from "next/link";
 import InviteButton from "../../../components/invite-button/invite-button";
+import { signout } from "../../../lib/utils/auth";
 
 export default function DirectoryLayout({
   children,
@@ -19,6 +20,7 @@ export default function DirectoryLayout({
             <Link className={styles.settingsButton} href="/settings">
               <img className={styles.gearIcon} alt="" src="/gearIcon.svg" />
             </Link>
+            <Link href="/logout" className={styles.signOutButton}>Sign out</Link>
           </div>
         </div>
         <Navbar />
