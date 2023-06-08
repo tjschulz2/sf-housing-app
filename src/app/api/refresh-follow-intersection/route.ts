@@ -5,6 +5,8 @@ import { twitter } from "../../../../lib/utils/data";
 import { headers } from "next/headers";
 import { getFollowIntersection } from "../../../../lib/utils/data";
 import { supabase } from "../../../../lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
+import { JwtPayload } from "jsonwebtoken";
 
 export async function POST(request: Request) {
   const headersList = headers();
@@ -16,9 +18,14 @@ export async function POST(request: Request) {
     if (!jwt) {
       throw "missing header: accessToken";
     }
-    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET);
+    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
+      JwtPayload;
     console.log(user);
     const { sub: userID } = user;
+
+    if (!userID) {
+      throw "failed to retrieve userID";
+    }
 
     const redisClient = await createRedisClient();
     if (!redisClient) {

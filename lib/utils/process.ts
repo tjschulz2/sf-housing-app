@@ -1,7 +1,10 @@
 import { getCurrentUser } from "./auth";
 import { createUser, getUserData } from "./data";
+import { getCurrentTimestamp } from "./general";
+import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
+  const signInStart = Date.now();
   // Process handles the full sign-in process for: existing users, new users, unadmitted users
   console.log("handle sign-in process");
 
@@ -23,13 +26,21 @@ export async function handleSignIn() {
         twitter_id: currentUser.twitterID,
         name: currentUser.twitterName,
         twitter_avatar_url: currentUser.twitterAvatarURL,
+        twitter_handle: currentUser.twitterHandle,
       });
     }
 
-    await refreshTwitterFollowsIfNeeded(userData, 168, currentUser.accessToken);
+    await refreshTwitterFollowsIfNeeded(
+      userData,
+      24 * 30,
+      currentUser.accessToken
+    );
   } catch (err) {
     console.error(err);
   }
+
+  const signInComplete = Date.now();
+  console.log("sign-in process took: ", signInComplete - signInStart, "ms");
 
   // display loading animation?
   // check if record exists for user in public.users, if not:
@@ -51,16 +62,29 @@ async function refreshTwitterFollowsIfNeeded(
     const msSinceRefresh = now.getTime() - lastRefresh.getTime();
     const hoursSinceRefresh = msSinceRefresh / (1000 * 60 * 60);
     if (hoursSinceRefresh < minCacheHours) {
-      // if insufficient time has elapsed since last refresh, return (do nothing)
+      // If insufficient time has elapsed since last refresh, return (do nothing)
+      console.log("skipping refresh");
       return;
     }
   }
-  // if 'follows_last_refresh' is falsy (null), follow data has never been stored
-  await fetch("/api/refresh-twitter-follows", {
+  // If 'follows_last_refresh' is falsy (null), follow data has never been stored. If hoursSinceRefresh >= minCacheHours, due for refresh
+  const refreshResponse = await fetch("/api/refresh-twitter-follows", {
     headers: {
       accessToken,
     },
   });
+
+  if (refreshResponse.status === 200) {
+    console.log("refreshed twitter follows");
+    const { error } = await supabase
+      .from("users")
+      .update({ follows_last_refresh: getCurrentTimestamp() })
+      .eq("user_id", userData.user_id);
+
+    if (error) {
+      throw "failed to update follow refresh timestamp";
+    }
+  }
 }
 
 export async function handleSignOut() {

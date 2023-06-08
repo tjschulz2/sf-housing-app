@@ -130,7 +130,7 @@ export async function storeFollowing(
   if (!redisClient) {
     console.error("Failed to create Redis client");
   } else {
-    const redisKey = `user-follows:${userID}`;
+    const redisKey = `user-following:${userID}`;
     return await redisClient.sAdd(redisKey, follows);
   }
 }

@@ -29,8 +29,8 @@ const Home: NextPage = () => {
     if (event === "SIGNED_IN" && !authenticated) {
       setAuthenticated(true);
       console.log("SIGNIN REGISTERED");
-      // await handleSignIn();
-      // router.replace("/directory");
+      await handleSignIn();
+      router.replace("/directory");
     }
     if (event === "SIGNED_OUT") {
       handleSignOut();
