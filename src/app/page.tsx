@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Home: NextPage = () => {
-  const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
 
   const signInWithTwitter = async () => {
