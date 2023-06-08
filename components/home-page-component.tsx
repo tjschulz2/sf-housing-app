@@ -64,7 +64,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
         <div className={styles.signInWithTwitterParent}>
           <Link
             className={styles.signInWithTwitter}
-            href="/?referralCode=${referralCode}"
+            href={`/?referralCode=${referralCode}`}
             onClick={signUpWithTwitter}
           >
             <div className={styles.vectorParent}>

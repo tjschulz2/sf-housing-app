@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
 import { supabase } from "../../lib/supabaseClient";
@@ -11,35 +11,33 @@ import { useRouter } from "next/navigation";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false);
 
   const signInWithTwitter = async () => {
-    setIsSignUp(false);
     await signInWithTwitterAuth();
   };
 
   const signUpWithTwitter = async () => {
-    setIsSignUp(true);
+    localStorage.setItem("isSignUp", "true");
     await signUpWithTwitterAuth();
   };
 
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event === "SIGNED_IN") {
-      console.log("Auth event: signed in");
-      if (isSignUp) {
-        await handleSignIn();
-        router.push("/directory");
-      } else {
-        const signInSuccessful = await getSessionData();
-        if (signInSuccessful) {
+  useEffect(() => {
+    const checkUser = async () => {
+      const isSignUp = localStorage.getItem("isSignUp") === "true";
+        if (isSignUp) {
+          await handleSignIn();
           router.push("/directory");
+        } else {
+          const signInSuccessful = await getSessionData();
+          if (signInSuccessful) {
+            router.push("/directory");
+          }
         }
-      }
-    }
-    if (event === "SIGNED_OUT") {
-      handleSignOut();
-    }
-  });
+        // Clear localStorage after authentication is complete
+        localStorage.removeItem("isSignUp");
+    };
+    checkUser();
+  }, []);
 
   const referralCode = useSearchParams().get("referralCode");
   const normalizedReferralCode = Array.isArray(referralCode)
