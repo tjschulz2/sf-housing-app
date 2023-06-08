@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { storeFollows, storeFollowers } from "../../../../lib/utils/data";
+import { storeFollowing, storeFollowers } from "../../../../lib/utils/data";
 import { createRedisClient } from "../../../../lib/redisClient";
 import { verify } from "jsonwebtoken";
 import { twitter } from "../../../../lib/utils/data";
+import { headers } from "next/headers";
+import { User, Session } from "@supabase/supabase-js";
 import { JwtPayload } from "jsonwebtoken";
 
 // const test: JwtPayload = {
@@ -33,10 +35,15 @@ import { JwtPayload } from "jsonwebtoken";
 //   session_id: "9b79a8c5-3c5f-4078-a7b8-afcf28cc3cb4",
 // };
 
-export async function POST(request: Request) {
-  const jwt = await request.text();
-  // verify jwt in request body OR use supabase next auth middleware
+export async function GET() {
+  const headersList = headers();
+  // verify jwt from req header OR use supabase next auth middleware
   try {
+    const jwt = headersList.get("accessToken");
+    if (!jwt) {
+      throw "missing header: accessToken";
+    }
+
     const user = verify(jwt, process.env.SUPABASE_JWT_SECRET);
     console.log(user);
     const { sub: userID } = user;
@@ -45,10 +52,11 @@ export async function POST(request: Request) {
     console.log(twitterID);
     if (userID && typeof userID === "string") {
       // Retrieve twitter follow data
-      const userFollows = (await twitter.follows.getFromTwitter(twitterID)).map(
-        (follow) => follow.username
-      );
-      console.log(userFollows);
+      const userFollowing = (
+        await twitter.following.getFromTwitter(twitterID)
+      ).map((twUser) => twUser.username);
+
+      console.log(userFollowing);
       const userFollowers = ["b", "c", "d"];
 
       const redisClient = await createRedisClient();
@@ -56,17 +64,17 @@ export async function POST(request: Request) {
         throw "server error - no redis client";
       }
 
-      const followStorageResult = await storeFollows(
+      const followingStorageResult = await storeFollowing(
         redisClient,
         userID,
-        userFollows
+        userFollowing
       );
       const followerStorageResult = await storeFollowers(
         redisClient,
         userID,
         userFollowers
       );
-      console.log(followStorageResult, followerStorageResult);
+      console.log(followingStorageResult, followerStorageResult);
       redisClient.quit();
     }
   } catch (err) {

@@ -8,12 +8,14 @@ import { getCurrentUser } from "../../lib/utils/auth";
 import { handleSignIn, handleSignOut } from "../../lib/utils/process";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { access } from "fs";
 
 async function testPullTwitterData() {
   const user = await getCurrentUser();
-  return await fetch("/api/store-twitter-follows", {
-    method: "POST",
-    body: user?.accessToken,
+  return await fetch("/api/refresh-twitter-follows", {
+    headers: {
+      accessToken: user?.accessToken ?? "",
+    },
   });
 }
 

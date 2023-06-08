@@ -27,7 +27,7 @@ interface Database {
           description: string | null;
           image_url: string | null;
           name: string | null;
-          owner_id: number | null;
+          owner_id: string | null;
           rent_max: number | null;
           rent_min: number | null;
           resident_count: number | null;
@@ -40,7 +40,7 @@ interface Database {
           description?: string | null;
           image_url?: string | null;
           name?: string | null;
-          owner_id?: number | null;
+          owner_id?: string | null;
           rent_max?: number | null;
           rent_min?: number | null;
           resident_count?: number | null;
@@ -53,7 +53,7 @@ interface Database {
           description?: string | null;
           image_url?: string | null;
           name?: string | null;
-          owner_id?: number | null;
+          owner_id?: string | null;
           rent_max?: number | null;
           rent_min?: number | null;
           resident_count?: number | null;
@@ -62,25 +62,25 @@ interface Database {
       };
       follow_intersections: {
         Row: {
-          created_at: string | null;
           id: number;
           intersection_count: number | null;
-          user_1_id: number | null;
-          user_2_id: number | null;
+          last_updated: string | null;
+          user_1_id: string | null;
+          user_2_id: string | null;
         };
         Insert: {
-          created_at?: string | null;
           id?: number;
           intersection_count?: number | null;
-          user_1_id?: number | null;
-          user_2_id?: number | null;
+          last_updated?: string | null;
+          user_1_id?: string | null;
+          user_2_id?: string | null;
         };
         Update: {
-          created_at?: string | null;
           id?: number;
           intersection_count?: number | null;
-          user_1_id?: number | null;
-          user_2_id?: number | null;
+          last_updated?: string | null;
+          user_1_id?: string | null;
+          user_2_id?: string | null;
         };
       };
       housing_search_profiles: {
@@ -146,21 +146,18 @@ interface Database {
           created_at: string | null;
           originator_id: string;
           recipient_id: string | null;
-          referral_code: string | null;
           referral_id: number;
         };
         Insert: {
           created_at?: string | null;
           originator_id: string;
           recipient_id?: string | null;
-          referral_code?: string | null;
           referral_id?: number;
         };
         Update: {
           created_at?: string | null;
           originator_id?: string;
           recipient_id?: string | null;
-          referral_code?: string | null;
           referral_id?: number;
         };
       };
@@ -170,6 +167,7 @@ interface Database {
           community_id: number | null;
           created_at: string | null;
           email: string | null;
+          follows_last_refresh: string | null;
           name: string | null;
           phone_number: string | null;
           twitter_avatar_url: string | null;
@@ -182,6 +180,7 @@ interface Database {
           community_id?: number | null;
           created_at?: string | null;
           email?: string | null;
+          follows_last_refresh?: string | null;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
@@ -194,6 +193,7 @@ interface Database {
           community_id?: number | null;
           created_at?: string | null;
           email?: string | null;
+          follows_last_refresh?: string | null;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
