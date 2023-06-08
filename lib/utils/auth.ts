@@ -1,5 +1,4 @@
 import { supabase } from "../supabaseClient";
-import { handleSignIn } from "./process";
 
 export async function getCurrentUser() {
   const { data, error } = await supabase.auth.getSession();
