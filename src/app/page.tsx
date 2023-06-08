@@ -1,12 +1,11 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import { useState, useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import { supabase } from "../../lib/supabaseClient";
-import { getCurrentUser, signInWithTwitter as signInWithTwitterAuth, signUpWithTwitter as signUpWithTwitterAuth } from "../../lib/utils/auth";
-import { getSessionData, handleSignIn, handleSignOut } from "../../lib/utils/process";
+import { signInWithTwitter as signInWithTwitterAuth, signUpWithTwitter as signUpWithTwitterAuth } from "../../lib/utils/auth";
+import { getSessionData, handleSignIn } from "../../lib/utils/process";
 import { useRouter } from "next/navigation";
 
 const Home: NextPage = () => {
