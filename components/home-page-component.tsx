@@ -3,17 +3,17 @@ import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
-import { signInWithTwitter } from "../lib/utils/auth";
 import React, { useState, useEffect } from 'react'
 
 type HomePageComponentProps = {
   referralCode?: string;
+  signInWithTwitter?: any;
+  signUpWithTwitter?: any;
 };
 
 const HomePageComponent: NextPage<HomePageComponentProps> = ({
-  referralCode,
+  referralCode, signInWithTwitter, signUpWithTwitter
 }) => {
-
   const [isValidReferral, setIsValidReferral] = useState(false);
   const [originatorName, setOriginatorName] = useState<string | null>(null);
 
@@ -58,18 +58,14 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     }
   }, [referralCode]);
 
-  async function signout() {
-    const { error } = await supabase.auth.signOut();
-  }
-
   const renderContent = () => {
     if (isValidReferral) {
       return (
         <div className={styles.signInWithTwitterParent}>
           <Link
             className={styles.signInWithTwitter}
-            href="/?referralCode=twitter"
-            onClick={signInWithTwitter}
+            href="/?referralCode=${referralCode}"
+            onClick={signUpWithTwitter}
           >
             <div className={styles.vectorParent}>
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
@@ -87,7 +83,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
       );
     } else {
       return (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {referralCode && <p>Invalid referral code</p>}
           <Link
             href="/directory"
@@ -97,6 +93,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           >
             <div className={styles.apply}>Apply</div>
           </Link>
+          <Link href="" className={styles.signInSmall} onClick={signInWithTwitter}>Already have an account? Sign in</Link>
         </div>
       );
     }

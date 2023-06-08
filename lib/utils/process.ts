@@ -1,5 +1,6 @@
-import { getCurrentUser } from "./auth";
+import { getCurrentUser, signout } from "./auth";
 import { createUser } from "./data";
+import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
   console.log("handle signin process");
@@ -33,3 +34,35 @@ export async function handleSignIn() {
 export async function handleSignOut() {
   console.log("trigger signout process");
 }
+
+export const getSessionData = async () => {
+  const session = await getCurrentUser();
+  console.log(session)
+  if (session && session.twitterID) {
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('twitter_id', session.twitterID);
+
+      if (userError) {
+        console.error('Error fetching user data:', userError.message);
+        return false;
+      }
+
+      if (userData && userData.length > 0) {
+        // Existing user, redirect to the directory page
+        await handleSignIn()
+        return true;
+        //router.push('/directory');
+      } else {
+        // New user, prompt to request an invitation
+        // or show a message indicating they need an invitation
+        signout()
+        alert('You need to be referred');
+        console.log('User needs an invitation');
+        return false;
+        // Display appropriate UI here
+      }
+  }
+  return false;
+};

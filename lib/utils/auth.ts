@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import { handleSignIn } from "./process";
 
 export async function getCurrentUser() {
   const { data, error } = await supabase.auth.getSession();
@@ -23,7 +24,17 @@ export async function getCurrentUser() {
   }
 }
 
+export async function signout() {
+  const { error } = await supabase.auth.signOut();
+}
+
 export async function signInWithTwitter() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "twitter",
+  });
+}
+
+export async function signUpWithTwitter() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "twitter",
   });
