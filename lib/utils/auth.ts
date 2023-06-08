@@ -24,13 +24,18 @@ export async function getCurrentUser() {
   }
 }
 
+export async function signout() {
+  const { error } = await supabase.auth.signOut();
+}
+
 export async function signInWithTwitter() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "twitter",
   });
 }
 
-async function signOut() {
-  await supabase.auth.signOut();
-  // trigger router.refresh() from calling component
+export async function signUpWithTwitter() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "twitter",
+  });
 }

@@ -2,28 +2,80 @@
 import { useState } from "react";
 import Modal from "../modal/modal";
 import styles from "./invite-button.module.css";
+import { supabase } from "../../lib/supabaseClient";
+import { getCurrentUser } from "../../lib/utils/auth";
 
-const referralLink = "http://yourReferralLink.com";
 
-const copyToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(referralLink);
-    alert("Referral link copied to clipboard!");
-  } catch (err) {
-    console.error("Failed to copy text: ", err);
-  }
-};
+let referralBaseLink = 'http://directorysf.com/?referralCode='
 
 export default function InviteButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [referralLink, setReferralLink] = useState('');
 
-  function openModal() {
-    setIsOpen(true);
-  }
+  const openModal = async () => {
+    const userId = await getSessionData();
+    if (userId) {
+      await generateReferralCode(userId);
+      setIsOpen(true);
+    }
+  };
 
-  function closeModal() {
+  const getSessionData = async () => {
+    const session = await getCurrentUser();
+    if (session && session.twitterID) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('user_id')
+        .eq('twitter_id', session.twitterID);
+
+      if (error) {
+        console.error('Error fetching user:', error);
+        return null;
+      }
+
+      if (data && data.length > 0) {
+        return data[0].user_id;
+      }
+    }
+    return null;
+  };
+
+  const generateReferralCode = async (userId: string) => {
+    try {
+      const referralCode = Math.floor(Math.random() * 1000000000000000);
+      const newReferralLink = referralBaseLink + referralCode;
+      setReferralLink(newReferralLink);
+
+      // Insert a new record into your `referrals` table
+      const { data, error } = await supabase
+        .from('referrals')
+        .insert([
+          { 
+            referral_id: referralCode,
+            originator_id: userId,
+          },
+        ]);
+
+      if (error) throw error;
+
+      console.log('Referral code generated:', referralCode);
+    } catch (error) {
+      console.error('Failed to generate referral code:', error);
+    }
+  };
+
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      alert('Referral link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   return (
     <>

@@ -1,0 +1,16 @@
+.seeMore {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: var(--color-cornflowerblue-100);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+}
+
+@media (max-width: 578px) {
+  .inviteButton {
+    margin-right: 0px;
+  }
+}

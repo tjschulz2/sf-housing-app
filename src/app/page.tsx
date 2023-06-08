@@ -1,11 +1,14 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import { supabase } from "../../lib/supabaseClient";
-import { getCurrentUser } from "../../lib/utils/auth";
-import { handleSignIn, handleSignOut } from "../../lib/utils/process";
+import {
+  signInWithTwitter as signInWithTwitterAuth,
+  signUpWithTwitter as signUpWithTwitterAuth,
+} from "../../lib/utils/auth";
+import { getSessionData, handleSignIn } from "../../lib/utils/process";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { access } from "fs";
@@ -23,19 +26,32 @@ const Home: NextPage = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
 
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log(`Auth event: ${event}`);
+  const signInWithTwitter = async () => {
+    await signInWithTwitterAuth();
+  };
 
-    if (event === "SIGNED_IN" && !authenticated) {
-      setAuthenticated(true);
-      console.log("SIGNIN REGISTERED");
-      await handleSignIn();
-      router.replace("/directory");
-    }
-    if (event === "SIGNED_OUT") {
-      handleSignOut();
-    }
-  });
+  const signUpWithTwitter = async () => {
+    localStorage.setItem("isSignUp", "true");
+    await signUpWithTwitterAuth();
+  };
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const isSignUp = localStorage.getItem("isSignUp") === "true";
+      if (isSignUp) {
+        await handleSignIn();
+        router.push("/directory");
+      } else {
+        const signInSuccessful = await getSessionData();
+        if (signInSuccessful) {
+          router.push("/directory");
+        }
+      }
+      // Clear localStorage after authentication is complete
+      localStorage.removeItem("isSignUp");
+    };
+    checkUser();
+  }, []);
 
   const referralCode = useSearchParams().get("referralCode");
   const normalizedReferralCode = Array.isArray(referralCode)
@@ -44,9 +60,11 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.home}>
-      <button onClick={testPullTwitterData}>test pull twitter data</button>
-      <button onClick={getCurrentUser}>getCurrentUser</button>
-      <HomePageComponent referralCode={normalizedReferralCode} />
+      <HomePageComponent
+        referralCode={normalizedReferralCode}
+        signInWithTwitter={signInWithTwitter}
+        signUpWithTwitter={signUpWithTwitter}
+      />
     </div>
   );
 };

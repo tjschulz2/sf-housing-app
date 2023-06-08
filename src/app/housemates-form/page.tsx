@@ -26,9 +26,11 @@ const MyForm: NextPage = () => {
         }
     }
 
-    const handleInputChange = (setStateFunc: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setStateFunc(event.target.value);
-    }
+    function handleInputChange(callback: (value: string) => void) {
+        return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          callback(event.target.value);
+        };
+      }
 
     useEffect(() => {
         if (description && housingType && moveIn && housemates && contactMethod && link && email && (contactMethod !== 'phone' || phone)) {
@@ -48,15 +50,12 @@ const MyForm: NextPage = () => {
                 
                 <div>
                     <label>
-                        <h2>What should your ideal housemate(s) be interested in doing?</h2>
-                        <p className={styles.maxCharacters}>52 characters max</p>
+                        <h2>Introduce yourself. This is what will help you stand out.</h2>
+                        <p className={styles.maxCharacters}>What are you working on? What is important to you? Who type of environment do you want to live in? What are you interested in?</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 'bold', marginRight: '5px', width: '50%' }}>Looking to live with people</span>
-                            <input 
+                            <textarea 
                                 className={styles.inputStyle} 
-                                type="text" 
-                                placeholder="researching and building AI companies" 
-                                maxLength={52}
+                                placeholder="" 
                                 onChange={handleInputChange(setDescription)}
                             />
                         </div>

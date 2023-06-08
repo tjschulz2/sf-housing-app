@@ -1,6 +1,7 @@
+'use client';
 import type { NextPage } from "next";
 import styles from "./profile-card.module.css";
-import Link from 'next/link'
+import SeeMoreButton from "./see-more-button/see-more-button";
 
   const ProfileCard: NextPage= () => {
     return (
@@ -32,27 +33,29 @@ import Link from 'next/link'
           </div>
         </div>
         <div className={styles.frameContainer}>
-          <div className={styles.frameA}>
-            <div className={styles.maxKriegerParent}>
-              <h4 className={styles.maxKrieger} id="twitter-name">
-                Max Krieger
-              </h4>
-              <a
-                className={styles.maxkriegers}
-                href="twitter.com"
-                target="_blank"
-              >
-                @maxkriegers
-              </a>
-              <img className={styles.vectorIcon1} alt="" src="/twitter-logo.svg" />
+          <a href="https://twitter.com/maxkriegers" target="_blank" className={styles.frameALink}>
+            <div className={styles.frameA}>
+              <div className={styles.maxKriegerParent}>
+                <h4 className={styles.maxKrieger} id="twitter-name">
+                  Max Krieger
+                </h4>
+                <div className={styles.maxkriegers}>
+                  @maxkriegers
+                </div>
+                <img className={styles.vectorIcon1} alt="" src="/twitter-logo.svg" />
+              </div>
+              <sub className={styles.followedBy980} id="followed-by">
+                Followed by 980+ people you follow
+              </sub>
             </div>
-            <sub className={styles.followedBy980} id="followed-by">
-              Followed by 980+ people you follow
-            </sub>
+          </a>
+          <div className={styles.lookingToLive} id="looking-for-text">
+            <div className={styles.content}>
+              <span className={styles.wants}>About me: </span>
+              Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god
+              <SeeMoreButton seeMoreText="Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god" />
+            </div>
           </div>
-          <p className={styles.lookingToLive} id="looking-for-text">
-            Looking to live with people researching and building AI companies
-          </p>
           <p className={styles.wants1YearLeaseContainer} id="wants-text">
             <span className={styles.wants}>Wants:</span>
             <span> 1-year lease, 2-4 roommates</span>
