@@ -4,6 +4,15 @@ type User = {
   username: string;
 };
 
+type ReferralDetails = {
+  referralCreatedAt: string | null;
+  originatorID: string;
+  recipientID: string | null;
+  referralID: number;
+  originatorName: any;
+  status: string;
+};
+
 declare namespace NodeJS {
   export interface ProcessEnv {
     NEXT_PUBLIC_SUPABASE_CLIENT: string;

@@ -4,55 +4,65 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import {
-  signInWithTwitter as signInWithTwitterAuth,
-  signUpWithTwitter as signUpWithTwitterAuth,
-} from "../../lib/utils/auth";
-import { getSessionData, handleSignIn } from "../../lib/utils/process";
-import { useRouter } from "next/navigation";
+import { handleHomePageLoad } from "../../lib/utils/process";
 import { useState } from "react";
+import { getReferralDetails } from "../../lib/utils/data";
 
 const Home: NextPage = () => {
-  const router = useRouter();
-
-  const signInWithTwitter = async () => {
-    await signInWithTwitterAuth();
-  };
-
-  const signUpWithTwitter = async () => {
-    localStorage.setItem("isSignUp", "true");
-    await signUpWithTwitterAuth();
-  };
+  const referralCode = useSearchParams().get("referralCode");
+  const [referralDetails, setReferralDetails] =
+    useState<null | ReferralDetails>(null);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const isSignUp = localStorage.getItem("isSignUp") === "true";
-      if (isSignUp) {
-        await handleSignIn();
-        router.push("/directory");
-      } else {
-        const signInSuccessful = await getSessionData();
-        if (signInSuccessful) {
-          router.push("/directory");
-        }
+    async function handleReferral() {
+      if (!referralCode) {
+        return;
       }
-      // Clear localStorage after authentication is complete
-      localStorage.removeItem("isSignUp");
-    };
-    checkUser();
+      const referralDetails = await getReferralDetails(referralCode);
+      console.log(referralDetails);
+      if (!referralDetails?.recipientID) {
+        localStorage.setItem("referral-code", referralCode);
+        // @ts-ignore
+        setReferralDetails(referralDetails);
+      }
+    }
+    handleReferral();
   }, []);
 
-  const referralCode = useSearchParams().get("referralCode");
-  const normalizedReferralCode = Array.isArray(referralCode)
-    ? referralCode[0]
-    : referralCode;
+  // const signInWithTwitter = async () => {
+  //   await signInWithTwitterAuth();
+  // };
+
+  // const signUpWithTwitter = async () => {
+  //   localStorage.setItem("isSignUp", "true");
+  //   await signUpWithTwitterAuth();
+  // };
+
+  // useEffect(() => {
+  //   const checkUser = async () => {
+  //     const isSignUp = localStorage.getItem("isSignUp") === "true";
+  //     if (isSignUp) {
+  //       await handleSignIn();
+  //       // router.push("/directory");
+  //     } else {
+  //       const signInSuccessful = await getSessionData();
+  //       if (signInSuccessful) {
+  //         // router.push("/directory");
+  //       }
+  //     }
+  //     // Clear localStorage after authentication is complete
+  //     localStorage.removeItem("isSignUp");
+  //   };
+  //   checkUser();
+  // }, []);
 
   return (
     <div className={styles.home}>
       <HomePageComponent
-        referralCode={normalizedReferralCode}
-        signInWithTwitter={signInWithTwitter}
-        signUpWithTwitter={signUpWithTwitter}
+        referralDetails={referralDetails}
+        // referralCode={normalizedReferralCode}
+        // signInWithTwitter={signInWithTwitter}
+        // signUpWithTwitter={signUpWithTwitter}
       />
     </div>
   );

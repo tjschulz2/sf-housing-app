@@ -1,5 +1,10 @@
 import { getCurrentUser, signout } from "./auth";
-import { createUser, getUserData } from "./data";
+import {
+  createUser,
+  getUserData,
+  getReferralDetails,
+  claimReferral,
+} from "./data";
 import { getCurrentTimestamp } from "./general";
 import { supabase } from "../supabaseClient";
 
@@ -19,6 +24,21 @@ export async function handleSignIn() {
     // -- check referral code in localstorage (store this on initial page load), if exists, look up and "claim" + createUser()
 
     if (!userData) {
+      const referralID = localStorage.getItem("referral-code");
+      if (referralID) {
+        const referralDetails = await getReferralDetails(referralID);
+        if (referralDetails?.status === "unclaimed") {
+          const claimResult = await claimReferral(
+            referralID,
+            currentUser.userID
+          );
+          if (claimResult?.status !== "success") {
+            console.error("failed to claim referral");
+            return { status: "error" };
+          }
+        }
+      }
+
       // If userData undefined, user does not have an entry in public.users
       userData = await createUser({
         user_id: currentUser.userID,
@@ -122,3 +142,12 @@ export const getSessionData = async () => {
   }
   return false;
 };
+
+export async function handleHomePageLoad(referralCode: string | null) {
+  // On initial page load,
+  if (referralCode) {
+    localStorage.setItem("referral-code", referralCode);
+    const referralDetails = (await getReferralDetails(referralCode))?.[0];
+    console.log(referralDetails);
+  }
+}
