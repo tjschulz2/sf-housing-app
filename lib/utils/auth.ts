@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import { handleSignIn } from "./process";
 
 export async function getCurrentUser() {
   // Returns most pertinent data from active session
@@ -33,7 +34,10 @@ export async function signInWithTwitter() {
     provider: "twitter",
   });
   if (error) {
-    console.error("failed to authenticate user");
+    return { status: "error", message: "failed to authenticate user" };
+  } else {
+    const signInResult = await handleSignIn();
+    return signInResult;
   }
 }
 

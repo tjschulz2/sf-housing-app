@@ -5,10 +5,10 @@ type User = {
 };
 
 type ReferralDetails = {
-  referralCreatedAt: string | null;
-  originatorID: string;
-  recipientID: string | null;
-  referralID: number;
+  referralCreatedAt: string | null | undefined;
+  originatorID: string | undefined;
+  recipientID: string | null | undefined;
+  referralID: number | undefined;
   originatorName: any;
   status: string;
 };

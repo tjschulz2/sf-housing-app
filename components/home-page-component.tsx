@@ -56,6 +56,12 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   //   }
   // }, [referralCode]);
 
+  async function signIn() {
+    const signInResult = await signInWithTwitter();
+    // Do something with result, trigger alert, etc.
+    console.log(signInResult);
+  }
+
   const renderContent = () => {
     if (referralDetails?.status === "unclaimed") {
       return (
@@ -63,7 +69,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           <Link
             className={styles.signInWithTwitter}
             href={`/?referralCode=${referralDetails.referralID}`}
-            onClick={signInWithTwitter}
+            onClick={signIn}
           >
             <div className={styles.vectorParent}>
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
@@ -101,11 +107,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           >
             <div className={styles.apply}>Apply</div>
           </Link>
-          <Link
-            href=""
-            className={styles.signInSmall}
-            // onClick={signInWithTwitter}
-          >
+          <Link href="" className={styles.signInSmall} onClick={signIn}>
             Already have an account? Sign in
           </Link>
         </div>

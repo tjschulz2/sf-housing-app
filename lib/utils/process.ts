@@ -9,9 +9,10 @@ import { getCurrentTimestamp } from "./general";
 import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
-  const signInStart = Date.now();
   // Process handles the full sign-in process for: existing users, new users, unadmitted users
   console.log("handle sign-in process");
+
+  const signInStart = Date.now();
 
   try {
     const currentUser = await getCurrentUser();
@@ -20,26 +21,25 @@ export async function handleSignIn() {
     }
 
     let userData = await getUserData();
-    // check if record exists for user in public.users, if not:
-    // -- check referral code in localstorage (store this on initial page load), if exists, look up and "claim" + createUser()
 
     if (!userData) {
+      // This block only executes for new users (if 'userData' is falsy, no public.users record exists)
       const referralID = localStorage.getItem("referral-code");
-      if (referralID) {
-        const referralDetails = await getReferralDetails(referralID);
-        if (referralDetails?.status === "unclaimed") {
-          const claimResult = await claimReferral(
-            referralID,
-            currentUser.userID
-          );
-          if (claimResult?.status !== "success") {
-            console.error("failed to claim referral");
-            return { status: "error" };
-          }
-        }
+      if (!referralID) {
+        throw "failed to find referral code";
       }
 
-      // If userData undefined, user does not have an entry in public.users
+      const referralDetails = await getReferralDetails(referralID);
+      if (referralDetails.status !== "unclaimed") {
+        throw `referral status is ${referralDetails.status}`;
+      }
+
+      const claimResult = await claimReferral(referralID, currentUser.userID);
+      if (claimResult.status !== "success") {
+        throw "failed to claim referral";
+      }
+
+      // At this point, we have successfully claimed a referral for a user. Add them to public.users
       userData = await createUser({
         user_id: currentUser.userID,
         email: currentUser.twitterEmail,
@@ -57,11 +57,13 @@ export async function handleSignIn() {
     );
   } catch (err) {
     console.error(err);
+    return { status: "error", message: err };
   }
 
   const signInComplete = Date.now();
   console.log("sign-in process took: ", signInComplete - signInStart, "ms");
 
+  return { status: "success" };
   // display loading animation?
   // check if record exists for user in public.users, if not:
   // -- check referral code in localstorage (store this on initial page load), if exists, look up and "claim"
@@ -142,12 +144,3 @@ export const getSessionData = async () => {
   }
   return false;
 };
-
-export async function handleHomePageLoad(referralCode: string | null) {
-  // On initial page load,
-  if (referralCode) {
-    localStorage.setItem("referral-code", referralCode);
-    const referralDetails = (await getReferralDetails(referralCode))?.[0];
-    console.log(referralDetails);
-  }
-}

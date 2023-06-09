@@ -4,29 +4,33 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import { handleHomePageLoad } from "../../lib/utils/process";
 import { useState } from "react";
 import { getReferralDetails } from "../../lib/utils/data";
+import { getCurrentUser } from "../../lib/utils/auth";
+import { useRouter } from "next/navigation";
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const referralCode = useSearchParams().get("referralCode");
   const [referralDetails, setReferralDetails] =
     useState<null | ReferralDetails>(null);
 
   useEffect(() => {
-    async function handleReferral() {
+    async function handlePageLoad() {
+      if ((await getCurrentUser())?.userID) {
+        router.replace("/directory");
+      }
       if (!referralCode) {
         return;
       }
       const referralDetails = await getReferralDetails(referralCode);
       console.log(referralDetails);
-      if (!referralDetails?.recipientID) {
+      if (referralDetails.status === "unclaimed") {
         localStorage.setItem("referral-code", referralCode);
-        // @ts-ignore
         setReferralDetails(referralDetails);
       }
     }
-    handleReferral();
+    handlePageLoad();
   }, []);
 
   // const signInWithTwitter = async () => {

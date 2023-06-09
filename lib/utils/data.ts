@@ -78,7 +78,7 @@ export async function genReferral(userID: string) {
 }
 
 export async function getReferralDetails(referralCode: string) {
-  let status = "";
+  let status = "unavailable";
 
   const { data, error } = await supabase
     .from("referrals")
@@ -91,27 +91,26 @@ export async function getReferralDetails(referralCode: string) {
 
   if (error) {
     console.error(error);
-  } else {
-    const details = data[0];
-
-    if (!details) {
-      status = "invalid";
-    } else if (details.recipient_id) {
-      status = "claimed";
-    } else {
-      status = "unclaimed";
-    }
-
-    return {
-      referralCreatedAt: details?.created_at,
-      originatorID: details?.originator_id,
-      recipientID: details?.recipient_id,
-      referralID: details?.referral_id,
-      // @ts-ignore
-      originatorName: details?.originator.name,
-      status,
-    };
   }
+  const details = data?.[0];
+
+  if (!details) {
+    status = "invalid";
+  } else if (details.recipient_id) {
+    status = "claimed";
+  } else {
+    status = "unclaimed";
+  }
+
+  return {
+    referralCreatedAt: details?.created_at,
+    originatorID: details?.originator_id,
+    recipientID: details?.recipient_id,
+    referralID: details?.referral_id,
+    // @ts-ignore
+    originatorName: details?.originator.name,
+    status,
+  };
 }
 
 export async function claimReferral(referralID: string, userID: string) {
@@ -121,11 +120,10 @@ export async function claimReferral(referralID: string, userID: string) {
     .eq("referral_id", referralID)
     .is("recipient_id", null)
     .select();
-  if (error) {
-    console.error("failed to claim referral");
-  } else if (data[0]?.recipient_id === userID) {
-    return { status: "success" };
+  if (error || data[0]?.recipient_id !== userID) {
+    return { status: "error", message: "failed to claim referral" };
   }
+  return { status: "success" };
 }
 
 async function decAvailableReferrals(userID: string) {
