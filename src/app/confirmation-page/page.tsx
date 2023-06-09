@@ -12,13 +12,19 @@ const ConfirmationPage: NextPage = () => {
     const [code, setCode] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
     const router = useRouter();
-    const email = localStorage.getItem('email') || '';
+    const [email, setEmail] = useState('');
 
     function handleInputChange(callback: (value: string) => void) {
         return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           callback(event.target.value);
         };
       }
+
+      useEffect(() => {
+        if (typeof window !== "undefined") {
+            setEmail(localStorage.getItem('email') || '');
+        }
+    }, []);
 
       useEffect(() => {
         const numberRegex = /^\d{4}$/;
