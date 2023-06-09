@@ -29,7 +29,7 @@ const Home: NextPage = () => {
       const isSignUp = localStorage.getItem("isSignUp") === "true";
       if (isSignUp) {
         await handleSignIn();
-        router.push("/directory");
+        router.push("/email-signup");
       } else {
         const signInSuccessful = await getSessionData();
         if (signInSuccessful) {

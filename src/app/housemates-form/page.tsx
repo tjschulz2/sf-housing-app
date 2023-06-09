@@ -54,7 +54,7 @@ const MyForm: NextPage = () => {
                         <p className={styles.maxCharacters}>What are you working on? What is important to you? Who type of environment do you want to live in? What are you interested in?</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <textarea 
-                                className={styles.inputStyle} 
+                                className={styles.textareaStyle} 
                                 placeholder="" 
                                 onChange={handleInputChange(setDescription)}
                             />

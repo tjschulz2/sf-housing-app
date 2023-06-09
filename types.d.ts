@@ -193,6 +193,7 @@ interface Database {
           twitter_id: string | null;
           user_id: string;
           website_url: string | null;
+          contact_email: string | null;
         };
         Insert: {
           available_referrals?: number | null;
@@ -207,6 +208,7 @@ interface Database {
           twitter_id?: string | null;
           user_id: string;
           website_url?: string | null;
+          contact_email: string | null;
         };
         Update: {
           available_referrals?: number | null;
@@ -221,6 +223,7 @@ interface Database {
           twitter_id?: string | null;
           user_id?: string;
           website_url?: string | null;
+          contact_email: string | null;
         };
         Relationships: [];
       };
