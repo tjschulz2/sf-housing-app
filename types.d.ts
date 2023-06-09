@@ -106,60 +106,72 @@ interface Database {
       housing_search_profiles: {
         Row: {
           created_at: string | null
-          pref_contact_method: number | null
+          link: string | null
+          pref_contact_method: string | null
           pref_housemate_count: number | null
           pref_housemate_details: string | null
           pref_housing_type: number | null
-          pref_move_in: string | null
-          user_id: number
+          pref_move_in: number | null
+          profile_id: number
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
-          pref_contact_method?: number | null
+          link?: string | null
+          pref_contact_method?: string | null
           pref_housemate_count?: number | null
           pref_housemate_details?: string | null
           pref_housing_type?: number | null
-          pref_move_in?: string | null
-          user_id: number
+          pref_move_in?: number | null
+          profile_id: number
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
-          pref_contact_method?: number | null
+          link?: string | null
+          pref_contact_method?: string | null
           pref_housemate_count?: number | null
           pref_housemate_details?: string | null
           pref_housing_type?: number | null
-          pref_move_in?: string | null
-          user_id?: number
+          pref_move_in?: number | null
+          profile_id?: number
+          user_id?: string | null
         }
         Relationships: []
       }
       organizer_profiles: {
         Row: {
           created_at: string
-          pref_contact_method: number | null
+          link: string | null
+          pref_contact_method: string | null
           pref_house_details: string | null
           pref_housemate_count: number | null
           pref_housing_type: number | null
           pref_lease_start: number | null
-          user_id: string
+          profile_id: number
+          user_id: string | undefined
         }
         Insert: {
           created_at?: string
-          pref_contact_method?: number | null
+          link?: string | null
+          pref_contact_method?: string | null
           pref_house_details?: string | null
           pref_housemate_count?: number | null
           pref_housing_type?: number | null
           pref_lease_start?: number | null
-          user_id: string
+          profile_id: number
+          user_id: string | undefined
         }
         Update: {
           created_at?: string
-          pref_contact_method?: number | null
+          link?: string | null
+          pref_contact_method?: string | null
           pref_house_details?: string | null
           pref_housemate_count?: number | null
           pref_housing_type?: number | null
           pref_lease_start?: number | null
-          user_id?: string
+          profile_id?: number
+          user_id?: string | undefined
         }
         Relationships: []
       }
@@ -263,3 +275,5 @@ interface Database {
     }
   }
 }
+
+

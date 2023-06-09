@@ -2,6 +2,16 @@
     width: 100%;
     padding: 16px;
     box-sizing: border-box;
+    font-family: var(--font-inter);
+    /* Other styling as required (border, outline, etc.) */
+}
+
+.textareaStyle {
+    width: 100%;
+    height: 100px;
+    padding: 16px;
+    box-sizing: border-box;
+    font-family: var(--font-inter);
     /* Other styling as required (border, outline, etc.) */
 }
 
