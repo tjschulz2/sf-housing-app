@@ -91,12 +91,13 @@ const MyForm: NextPage = () => {
                 <div>
                     <label>
                         <h2>Introduce yourself and share what you want the house to be about.</h2>
-                        <p className={styles.maxCharacters}>What should people be interested in doing? What are you working on? What type of environment do you want to live in?</p>
+                        <p className={styles.maxCharacters}>Who are you? Who is the ideal person you want to live with?</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <textarea 
                                 className={styles.textareaStyle} 
-                                placeholder="Building startups...AGI...A focused environment..." 
+                                placeholder="I want to live with people exploring AI with the intent to build a company. Ideally, we build projects together and eventually find great companies to start." 
                                 onChange={handleInputChange(setDescription)}
+                                autoFocus={true}
                             />
                         </div>
                     </label>
