@@ -12,8 +12,7 @@ import { handleSignIn } from "../../lib/utils/process";
 const Home: NextPage = () => {
   const router = useRouter();
   const referralCode = useSearchParams().get("referralCode");
-  const [referralDetails, setReferralDetails] =
-    useState<null | ReferralDetails>(null);
+  const [referralDetails, setReferralDetails] = useState<ReferralDetails>(null);
 
   useEffect(() => {
     async function handlePageLoad() {
@@ -21,10 +20,10 @@ const Home: NextPage = () => {
         const referral = await getReferralDetails(referralCode);
         if (referral.status === "unclaimed") {
           localStorage.setItem("referral-code", referralCode);
-          setReferralDetails(referral);
         } else {
           alert(`This referral is ${referral.status}`);
         }
+        setReferralDetails(referral);
       } else {
         const signInResult = await handleSignIn();
         if (signInResult?.status === "success") {

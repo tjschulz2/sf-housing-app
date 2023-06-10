@@ -6,7 +6,7 @@ import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
 
 type HomePageComponentProps = {
-  referralDetails: ReferralDetails | null;
+  referralDetails: ReferralDetails;
 };
 
 const HomePageComponent: NextPage<HomePageComponentProps> = ({

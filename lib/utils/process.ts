@@ -16,6 +16,7 @@ export async function handleSignIn() {
     const currentUser = await getUserSession();
     if (!currentUser) {
       // User doesn't have an active session, meaning they haven't tried to sign in
+      console.log("No session found");
       return;
     }
 
@@ -78,7 +79,7 @@ async function refreshTwitterFollowsIfNeeded(
     if (hoursSinceRefresh < minCacheHours) {
       // If insufficient time has elapsed since last refresh, return (do nothing)
       console.log(
-        `skipping refresh - only ${hoursSinceRefresh} hours elapsed since refresh. Minimum ${minCacheHours} hours required`
+        `skipping refresh -  ${hoursSinceRefresh}/${minCacheHours} hours elapsed since refresh`
       );
       return;
     }

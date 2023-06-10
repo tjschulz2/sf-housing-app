@@ -1,5 +1,4 @@
 import { supabase } from "../supabaseClient";
-import { handleSignIn } from "./process";
 
 export async function getUserSession() {
   // Returns most pertinent data from active session

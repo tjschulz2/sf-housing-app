@@ -11,7 +11,7 @@ type ReferralDetails = {
   referralID: number | undefined;
   originatorName: any;
   status: string;
-};
+} | null;
 
 declare namespace NodeJS {
   export interface ProcessEnv {
