@@ -139,3 +139,139 @@ export const getSessionData = async () => {
   }
   return false;
 };
+
+export const addHousingData = async (
+  description: string, 
+  housingType: string, 
+  moveIn: string, 
+  housemates: string, 
+  link: string, 
+  contactMethod: string, 
+  userID: string | undefined, 
+  twitterHandle: string | null, 
+  phone: string  
+) => {
+  // Translate options into numbers
+  const housingTypeOptions = ['lease', 'short']
+  const moveInOptions = ['ASAP', '3months', 'over3months']
+  const housematesOptions = ['1-2', '3-5', '6-12', '12+']
+  const contactMethodOptions = ['phone', 'email', 'twitter']
+
+  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1
+  const moveInNum = moveInOptions.indexOf(moveIn) + 1
+  const housematesNum = housematesOptions.indexOf(housemates) + 1
+  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1
+
+  // Get the actual contact method
+  let actualContactMethod
+  if(contactMethodNum === 1) {
+    actualContactMethod = phone
+  } else if(contactMethodNum === 3) {
+    actualContactMethod = twitterHandle
+  } else {
+    // Fetch email from Supabase
+    let { data, error } = await supabase
+      .from('users')
+      .select('contact_email')
+      .eq('user_id', userID)
+      
+    if(error) {
+      throw new Error(`Failed to fetch email: ${error.message}`)
+    }
+
+    actualContactMethod = data?.[0]?.contact_email
+  }
+
+  // Generate a random 10-digit ID
+  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000
+
+  // Insert data into the database
+  const { error: insertError } = await supabase
+    .from('housing_search_profiles')
+    .insert([
+      {
+        profile_id: profileId,
+        pref_housemate_details: description,
+        pref_housing_type: housingTypeNum,
+        link: link,
+        pref_move_in: moveInNum,
+        pref_housemate_count: housematesNum,
+        pref_contact_method: actualContactMethod,
+        user_id: userID,
+      },
+    ])
+
+  if(insertError) {
+    throw new Error(`Failed to insert data: ${insertError.message}`)
+  }
+
+  return true
+}
+
+export const addOrganizerData = async (
+  description: string, 
+  housingType: string, 
+  moveIn: string, 
+  housemates: string, 
+  link: string, 
+  contactMethod: string, 
+  userID: string | undefined, 
+  twitterHandle: string | null, 
+  phone: string  
+) => {
+  // Translate options into numbers
+  const housingTypeOptions = ['lease', 'short']
+  const moveInOptions = ['ASAP', '3months', 'over3months']
+  const housematesOptions = ['1-2', '3-5', '6-12', '12+']
+  const contactMethodOptions = ['phone', 'email', 'twitter']
+
+  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1
+  const moveInNum = moveInOptions.indexOf(moveIn) + 1
+  const housematesNum = housematesOptions.indexOf(housemates) + 1
+  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1
+
+  // Get the actual contact method
+  let actualContactMethod
+  if(contactMethodNum === 1) {
+    actualContactMethod = phone
+  } else if(contactMethodNum === 3) {
+    actualContactMethod = twitterHandle
+  } else {
+    // Fetch email from Supabase
+    let { data, error } = await supabase
+      .from('users')
+      .select('contact_email')
+      .eq('user_id', userID)
+      
+    if(error) {
+      throw new Error(`Failed to fetch email: ${error.message}`)
+    }
+
+    actualContactMethod = data?.[0]?.contact_email
+  }
+
+  // Generate a random 10-digit ID
+  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000
+
+  // Insert data into the database
+  const { error: insertError } = await supabase
+    .from('organizer_profiles')
+    .insert([
+      {
+        profile_id: profileId,
+        pref_house_details: description,
+        pref_housing_type: housingTypeNum,
+        link: link,
+        pref_lease_start: moveInNum,
+        pref_housemate_count: housematesNum,
+        pref_contact_method: actualContactMethod,
+        user_id: userID,
+      },
+    ])
+
+  if(insertError) {
+    throw new Error(`Failed to insert data: ${insertError.message}`)
+  }
+
+  return true
+}

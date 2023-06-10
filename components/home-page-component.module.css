@@ -140,8 +140,8 @@
   text-align: left;
   }
   .signInSmall {
-    color: grey;
     text-decoration: none;
+    color: var(--color-gray);
   }
   .signInSmall:hover {
     opacity: 0.7;
@@ -182,7 +182,8 @@
       font-size: var(--font-size-21xl);
     }
     
-    .apply
+    .signInSmall,
+    .apply,
     .thisIsAn {
       font-size: var(--font-size-lg);
     }
@@ -239,6 +240,7 @@
       font-size: var(--font-size-13xl);
     }
 
+    .signInSmall,
     .apply,
     .thisIsAn {
       font-size: var(--font-size-base);
@@ -290,7 +292,8 @@
     .findHousemates {
       font-size: var(--font-size-9xl);
     }
-  
+    
+    .signInSmall,
     .thisIsAn {
       font-size: var(--font-size-base);
     }

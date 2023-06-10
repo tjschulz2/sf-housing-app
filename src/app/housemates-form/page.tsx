@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css'; // Assuming you have a CSS module at this path
 import { NextPage } from 'next';
+import { addHousingData } from '../../../lib/utils/process';
+import { getCurrentUser } from '../../../lib/utils/auth';
+import { useRouter } from 'next/navigation';
 
 const MyForm: NextPage = () => {
     const [housingType, setHousingType] = useState('');
@@ -11,34 +14,68 @@ const MyForm: NextPage = () => {
     const [housemates, setHousemates] = useState('');
     const [contactMethod, setContactMethod] = useState('');
     const [link, setLink] = useState('');
-    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [description, setDescription] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const router = useRouter()
+    const phoneRegex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+    const urlRegex = /^((http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
 
     const handleOptionClick = (setOption: React.Dispatch<React.SetStateAction<string>>, value: string) => {
         setOption((prev: string) => prev === value ? '' : value);
     }
 
-    const handleLinkClick = (e: React.MouseEvent) => {
+    const handleLinkClick = async (e: React.MouseEvent) => {
         if (!isFormValid) {
             e.preventDefault();
+        } else {
+            // If form is valid, generate and send confirmation code
+            e.preventDefault();
+            try {
+                const session = await getCurrentUser()
+                await addHousingData(description, housingType, moveIn, housemates, link, contactMethod, session?.userID, session?.twitterHandle, phone);
+                router.push('/directory')
+            } catch (error) {
+                alert('You are not logged in')
+                // Optionally show an error message to the user
+            }
         }
     }
 
-    function handleInputChange(callback: (value: string) => void) {
+    function handleInputChange(callback: (value: string) => void, field?: string) {
         return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-          callback(event.target.value);
+            let { value } = event.target;
+    
+            // Handle phone field
+            if (field === 'phone') {
+                // Allow only digits
+                value = value.replace(/[^\d]/g, "");
+    
+                // Adding formatting
+                if (value.length > 3 && value.length <= 6) 
+                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                else if (value.length > 6) 
+                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+    
+                event.target.value = value;
+            } 
+            // Handle URL field
+            else if (field === 'url' && !urlRegex.test(value)) {
+                console.error('Invalid URL');
+                setIsFormValid(false);
+            }
+    
+            callback(value);
         };
-      }
+    }
 
     useEffect(() => {
-        if (description && housingType && moveIn && housemates && contactMethod && link && email && (contactMethod !== 'phone' || phone)) {
+        if (description && housingType && moveIn && housemates && contactMethod && link && (contactMethod !== 'phone' || phone)) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
-    }, [description, housingType, moveIn, housemates, contactMethod, link, email, phone]);
+    }, [description, housingType, moveIn, housemates, contactMethod, link, phone]);
 
 
     return (
@@ -51,10 +88,10 @@ const MyForm: NextPage = () => {
                 <div>
                     <label>
                         <h2>Introduce yourself. This is what will help you stand out.</h2>
-                        <p className={styles.maxCharacters}>What are you working on? What is important to you? Who type of environment do you want to live in? What are you interested in?</p>
+                        <p className={styles.maxCharacters}>What are you working on? What is important to you? What type of environment do you want to live in? What are you interested in?</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <textarea 
-                                className={styles.inputStyle} 
+                                className={styles.textareaStyle} 
                                 placeholder="" 
                                 onChange={handleInputChange(setDescription)}
                             />
@@ -114,15 +151,7 @@ const MyForm: NextPage = () => {
                     <label>
                         <h2>What&#39;s a link that best describes you?</h2>
                         <p className={styles.maxCharacters}>Personal website, forum page, blog, Instagram, etc.</p>
-                        <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        <h2>What&#39;s your email address?</h2>
-                        <p className={styles.maxCharacters}>We&#39;ll use this to contact you about new people looking for housing + communities.</p>
-                        <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
+                        <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink, 'url')} />
                     </label>
                 </div>
                 
@@ -143,12 +172,12 @@ const MyForm: NextPage = () => {
 
                     {contactMethod === 'phone' && 
                         <label>
-                            <input className={styles.inputStyle} type="tel" placeholder="Phone number" onChange={handleInputChange(setPhone)} />
+                            <input className={styles.inputStyle} type="tel" placeholder="Phone number" onChange={handleInputChange(setPhone, 'phone')} />
                         </label>
                     }
                 </div>
 
-                <Link className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`} href={isFormValid ? "/next" : "#"} onClick={handleLinkClick}>
+                <Link className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`} href={isFormValid ? "/#" : "#"} onClick={handleLinkClick}>
                     Next
                 </Link>
             </form>
