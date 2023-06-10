@@ -1,4 +1,4 @@
-import { getCurrentUser, signout } from "./auth";
+import { getUserSession, signout } from "./auth";
 import {
   createUser,
   getUserData,
@@ -10,33 +10,33 @@ import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
   // Process handles the full sign-in process for: existing users, new users, unadmitted users
-  console.log("handle sign-in process");
-
-  const signInStart = Date.now();
+  const timeStart = Date.now();
 
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUserSession();
     if (!currentUser) {
-      throw "failed to find logged-in user";
+      // User doesn't have an active session, meaning they haven't tried to sign in
+      return;
     }
 
-    let userData = await getUserData();
+    let userData = await getUserData(currentUser.userID);
 
     if (!userData) {
-      // This block only executes for new users (if 'userData' is falsy, no public.users record exists)
+      // This block only executes for new users (if 'userData' is falsy - i.e. no public.users record exists)
       const referralID = localStorage.getItem("referral-code");
       if (!referralID) {
-        throw "failed to find referral code";
+        // New user attempting to sign in without a referral code
+        throw "Referral required";
       }
 
-      const referralDetails = await getReferralDetails(referralID);
-      if (referralDetails.status !== "unclaimed") {
-        throw `referral status is ${referralDetails.status}`;
+      const referral = await getReferralDetails(referralID);
+      if (referral.status !== "unclaimed") {
+        throw `This referral is ${referral.status}`;
       }
 
       const claimResult = await claimReferral(referralID, currentUser.userID);
       if (claimResult.status !== "success") {
-        throw "failed to claim referral";
+        throw "Failed to claim referral";
       }
 
       // At this point, we have successfully claimed a referral for a user. Add them to public.users
@@ -56,21 +56,13 @@ export async function handleSignIn() {
       currentUser.accessToken
     );
   } catch (err) {
-    console.error(err);
     return { status: "error", message: err };
   }
 
   const signInComplete = Date.now();
-  console.log("sign-in process took: ", signInComplete - signInStart, "ms");
+  console.log("sign-in process took: ", signInComplete - timeStart, "ms");
 
   return { status: "success" };
-  // display loading animation?
-  // check if record exists for user in public.users, if not:
-  // -- check referral code in localstorage (store this on initial page load), if exists, look up and "claim"
-  // -- create user using signed in session data
-  // -- pull follow/follower data from twitter, store in Redis
-  // redirect user to /directory
-  // on /directory load, for any visible users without intersection counts, compute and push to public.follow_intersections
 }
 
 async function refreshTwitterFollowsIfNeeded(
@@ -82,10 +74,12 @@ async function refreshTwitterFollowsIfNeeded(
     const lastRefresh = new Date(Date.parse(userData.follows_last_refresh));
     const now = new Date();
     const msSinceRefresh = now.getTime() - lastRefresh.getTime();
-    const hoursSinceRefresh = msSinceRefresh / (1000 * 60 * 60);
+    const hoursSinceRefresh = Math.floor(msSinceRefresh / (1000 * 60 * 60));
     if (hoursSinceRefresh < minCacheHours) {
       // If insufficient time has elapsed since last refresh, return (do nothing)
-      console.log("skipping refresh");
+      console.log(
+        `skipping refresh - only ${hoursSinceRefresh} hours elapsed since refresh. Minimum ${minCacheHours} hours required`
+      );
       return;
     }
   }
@@ -104,7 +98,7 @@ async function refreshTwitterFollowsIfNeeded(
       .eq("user_id", userData.user_id);
 
     if (error) {
-      throw "failed to update follow refresh timestamp";
+      console.error("failed to update follow refresh timestamp");
     }
   }
 }
@@ -114,7 +108,7 @@ export async function handleSignOut() {
 }
 
 export const getSessionData = async () => {
-  const session = await getCurrentUser();
+  const session = await getUserSession();
   console.log(session);
   if (session && session.twitterID) {
     const { data: userData, error: userError } = await supabase

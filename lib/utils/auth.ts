@@ -1,7 +1,7 @@
 import { supabase } from "../supabaseClient";
 import { handleSignIn } from "./process";
 
-export async function getCurrentUser() {
+export async function getUserSession() {
   // Returns most pertinent data from active session
   const { data, error } = await supabase.auth.getSession();
   if (error) {
@@ -9,7 +9,7 @@ export async function getCurrentUser() {
   } else if (data?.session?.user?.user_metadata) {
     const { user_metadata: meta } = data.session.user;
 
-    const signedInUserData = {
+    const sessionData = {
       accessToken: data.session.access_token,
       userID: data.session.user.id,
       twitterAvatarURL: meta.avatar_url,
@@ -18,10 +18,29 @@ export async function getCurrentUser() {
       twitterHandle: meta.preferred_username,
       twitterID: meta.provider_id,
     };
+    return sessionData;
+  }
+}
 
-    console.log(signedInUserData);
+export async function isValidUser() {
+  // Confirms using session-provided ID whether user is valid (exists in public.users)
+  const user = await getUserSession();
+  if (!user) {
+    return false;
+  }
 
-    return signedInUserData;
+  const { userID } = user;
+  const { data, error } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("user_id", userID)
+    .limit(1);
+
+  if (data?.length) {
+    return true;
+  } else {
+    console.error(error);
+    return false;
   }
 }
 
@@ -35,9 +54,6 @@ export async function signInWithTwitter() {
   });
   if (error) {
     return { status: "error", message: "failed to authenticate user" };
-  } else {
-    const signInResult = await handleSignIn();
-    return signInResult;
   }
 }
 

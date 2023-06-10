@@ -1,6 +1,6 @@
 import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
-import { getCurrentUser } from "./auth";
+import { getUserSession } from "./auth";
 
 // ----- Users & Profiles -----
 
@@ -8,7 +8,7 @@ export async function getUserData(userID?: string) {
   // Returns all data from public.users for current user, if it exists
 
   // If userID not passed, attempts to retrieve from session
-  userID = userID ?? (await getCurrentUser())?.userID;
+  userID = userID ?? (await getUserSession())?.userID;
   if (!userID) {
     throw "failed to find userID";
   }
@@ -16,12 +16,13 @@ export async function getUserData(userID?: string) {
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("user_id", userID);
+    .eq("user_id", userID)
+    .maybeSingle();
 
   if (error) {
     console.error(error);
   } else if (data) {
-    return data[0];
+    return data;
   }
 }
 
@@ -78,8 +79,6 @@ export async function genReferral(userID: string) {
 }
 
 export async function getReferralDetails(referralCode: string) {
-  let status = "unavailable";
-
   const { data, error } = await supabase
     .from("referrals")
     .select(
@@ -87,28 +86,26 @@ export async function getReferralDetails(referralCode: string) {
   *,
   originator:originator_id(name)`
     )
-    .eq("referral_id", referralCode);
+    .eq("referral_id", referralCode)
+    .maybeSingle();
 
-  if (error) {
-    console.error(error);
-  }
-  const details = data?.[0];
+  let status;
 
-  if (!details) {
+  if (!data) {
     status = "invalid";
-  } else if (details.recipient_id) {
+  } else if (data.recipient_id) {
     status = "claimed";
   } else {
     status = "unclaimed";
   }
 
   return {
-    referralCreatedAt: details?.created_at,
-    originatorID: details?.originator_id,
-    recipientID: details?.recipient_id,
-    referralID: details?.referral_id,
+    referralCreatedAt: data?.created_at,
+    originatorID: data?.originator_id,
+    recipientID: data?.recipient_id,
+    referralID: data?.referral_id,
     // @ts-ignore
-    originatorName: details?.originator.name,
+    originatorName: data?.originator.name,
     status,
   };
 }
@@ -155,13 +152,17 @@ export async function getAvailableReferrals(userID: string) {
 export async function storeFollowing(
   redisClient: RedisClientType<any, any, any>,
   userID: string,
-  follows: Array<string>
+  following: Array<string>
 ) {
   if (!redisClient) {
-    console.error("Failed to create Redis client");
-  } else {
+    return { status: "error", message: "Failed to create Redis client" };
+  }
+  try {
     const redisKey = `user-following:${userID}`;
-    return await redisClient.sAdd(redisKey, follows);
+    const result = await redisClient.sAdd(redisKey, following);
+    return { status: "success", message: result };
+  } catch (err) {
+    return { status: "error", message: "Failed to push to Redis" };
   }
 }
 
@@ -171,10 +172,14 @@ export async function storeFollowers(
   followers: Array<string>
 ) {
   if (!redisClient) {
-    console.error("Failed to create Redis client");
-  } else {
+    return { status: "error", message: "Failed to create Redis client" };
+  }
+  try {
     const redisKey = `user-followers:${userID}`;
-    return await redisClient.sAdd(redisKey, followers);
+    const result = await redisClient.sAdd(redisKey, followers);
+    return { status: "success", message: result };
+  } catch (err) {
+    return { status: "error", message: "Failed to push to Redis" };
   }
 }
 

@@ -6,8 +6,8 @@ import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
 import { useState } from "react";
 import { getReferralDetails } from "../../lib/utils/data";
-import { getCurrentUser } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
+import { handleSignIn } from "../../lib/utils/process";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -17,57 +17,27 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     async function handlePageLoad() {
-      if ((await getCurrentUser())?.userID) {
-        router.replace("/directory");
-      }
-      if (!referralCode) {
-        return;
-      }
-      const referralDetails = await getReferralDetails(referralCode);
-      console.log(referralDetails);
-      if (referralDetails.status === "unclaimed") {
-        localStorage.setItem("referral-code", referralCode);
-        setReferralDetails(referralDetails);
+      if (referralCode) {
+        const referral = await getReferralDetails(referralCode);
+        if (referral.status === "unclaimed") {
+          localStorage.setItem("referral-code", referralCode);
+          setReferralDetails(referral);
+        } else {
+          alert(`This referral is ${referral.status}`);
+        }
+      } else {
+        const signInResult = await handleSignIn();
+        if (signInResult?.status === "success") {
+          router.replace("/directory");
+        }
       }
     }
     handlePageLoad();
   }, []);
 
-  // const signInWithTwitter = async () => {
-  //   await signInWithTwitterAuth();
-  // };
-
-  // const signUpWithTwitter = async () => {
-  //   localStorage.setItem("isSignUp", "true");
-  //   await signUpWithTwitterAuth();
-  // };
-
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     const isSignUp = localStorage.getItem("isSignUp") === "true";
-  //     if (isSignUp) {
-  //       await handleSignIn();
-  //       // router.push("/directory");
-  //     } else {
-  //       const signInSuccessful = await getSessionData();
-  //       if (signInSuccessful) {
-  //         // router.push("/directory");
-  //       }
-  //     }
-  //     // Clear localStorage after authentication is complete
-  //     localStorage.removeItem("isSignUp");
-  //   };
-  //   checkUser();
-  // }, []);
-
   return (
     <div className={styles.home}>
-      <HomePageComponent
-        referralDetails={referralDetails}
-        // referralCode={normalizedReferralCode}
-        // signInWithTwitter={signInWithTwitter}
-        // signUpWithTwitter={signUpWithTwitter}
-      />
+      <HomePageComponent referralDetails={referralDetails} />
     </div>
   );
 };

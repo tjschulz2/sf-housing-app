@@ -2,66 +2,16 @@
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
 import Link from "next/link";
-import { supabase } from "../lib/supabaseClient";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails | null;
-  // signInWithTwitter?: any;
-  // signUpWithTwitter?: any;
 };
 
 const HomePageComponent: NextPage<HomePageComponentProps> = ({
   referralDetails,
 }) => {
-  // interface Referral {
-  //   referral_id: number | null;
-  //   originator_id: string;
-  // }
-
-  // useEffect(() => {
-  //   const fetchReferral = async () => {
-  //     const { data, error } = await supabase
-  //       .from("referrals")
-  //       .select("referral_id, originator_id")
-  //       .eq("referral_id", referralCode)
-  //       .filter('recipient_id', 'is.null', true);
-
-  //     if (error) throw error;
-
-  //     if (data && data.length > 0) {
-  //       setIsValidReferral(true);
-  //       // Now fetch the originator's name
-  //       const originatorId = (data[0] as Referral).originator_id;
-  //       if (originatorId) {
-  //         const { data: userData, error: userError } = await supabase
-  //         .from("users")
-  //         .select("name")
-  //         .eq("user_id", originatorId);
-
-  //         if (userError) throw userError;
-
-  //         if (userData && userData.length > 0) {
-  //           setOriginatorName(userData[0].name);
-  //         }
-  //       }
-  //     } else {
-  //       setIsValidReferral(false);
-  //     }
-  //   };
-
-  //   if (referralCode) {
-  //     fetchReferral();
-  //   }
-  // }, [referralCode]);
-
-  async function signIn() {
-    const signInResult = await signInWithTwitter();
-    // Do something with result, trigger alert, etc.
-    console.log(signInResult);
-  }
-
   const renderContent = () => {
     if (referralDetails?.status === "unclaimed") {
       return (
@@ -69,7 +19,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           <Link
             className={styles.signInWithTwitter}
             href={`/?referralCode=${referralDetails.referralID}`}
-            onClick={signIn}
+            onClick={signInWithTwitter}
           >
             <div className={styles.vectorParent}>
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
@@ -107,7 +57,11 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           >
             <div className={styles.apply}>Apply</div>
           </Link>
-          <Link href="" className={styles.signInSmall} onClick={signIn}>
+          <Link
+            href=""
+            className={styles.signInSmall}
+            onClick={signInWithTwitter}
+          >
             Already have an account? Sign in
           </Link>
         </div>
