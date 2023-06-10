@@ -43,23 +43,25 @@ export async function isValidUser() {
   }
 }
 
-export async function updateUserContactEmail(newContactEmail: string): Promise<void> {
-  const session = await getCurrentUser()
+export async function updateUserContactEmail(
+  newContactEmail: string
+): Promise<void> {
+  const session = await getUserSession();
   // If there's no session or user data, throw an error
   if (!session || !session.userID) {
-    throw new Error('User is not authenticated');
+    throw new Error("User is not authenticated");
   }
-  const userID = session.userID
+  const userID = session.userID;
 
   // Update the user's contact email
   const { error } = await supabase
-      .from('users') // Select the 'users' table
-      .update({ contact_email: newContactEmail }) // Update the 'contact_email' column
-      .eq('user_id', userID); // Where the 'id' equals the user's ID
+    .from("users") // Select the 'users' table
+    .update({ contact_email: newContactEmail }) // Update the 'contact_email' column
+    .eq("user_id", userID); // Where the 'id' equals the user's ID
 
   if (error) {
-      console.log('Error updating user contact email: ', error);
-      throw new Error(error.message);
+    console.log("Error updating user contact email: ", error);
+    throw new Error(error.message);
   }
 }
 

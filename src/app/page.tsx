@@ -26,7 +26,12 @@ const Home: NextPage = () => {
         setReferralDetails(referral);
       } else {
         const signInResult = await handleSignIn();
-        if (signInResult?.status === "success") {
+        if (signInResult?.status !== "success") {
+          return;
+        }
+        if (signInResult.message === "initial sign in") {
+          router.replace("/email-signup");
+        } else {
           router.replace("/directory");
         }
       }

@@ -10,20 +10,22 @@ import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
   // Process handles the full sign-in process for: existing users, new users, unadmitted users
-  const timeStart = Date.now();
+
+  let initialSignIn = false;
 
   try {
     const currentUser = await getUserSession();
     if (!currentUser) {
-      // User doesn't have an active session, meaning they haven't tried to sign in
+      // User doesn't have an active session, meaning they haven't authenticated with Twitter yet
       console.log("No session found");
       return;
     }
 
+    // Checking if user exists in 'public.users' + gathering data
     let userData = await getUserData(currentUser.userID);
 
     if (!userData) {
-      // This block only executes for new users (if 'userData' is falsy - i.e. no public.users record exists)
+      // This block only executes for new users (i.e. no public.users record exists)
       const referralID = localStorage.getItem("referral-code");
       if (!referralID) {
         // New user attempting to sign in without a referral code
@@ -40,7 +42,7 @@ export async function handleSignIn() {
         throw "Failed to claim referral";
       }
 
-      // At this point, we have successfully claimed a referral for a user. Add them to public.users
+      // At this point, we have successfully claimed a referral for a user. Add them to 'public.users'
       userData = await createUser({
         user_id: currentUser.userID,
         email: currentUser.twitterEmail,
@@ -49,6 +51,11 @@ export async function handleSignIn() {
         twitter_avatar_url: currentUser.twitterAvatarURL,
         twitter_handle: currentUser.twitterHandle,
       });
+      if (!userData) {
+        throw "Failed to create new user";
+      }
+
+      initialSignIn = true;
     }
 
     await refreshTwitterFollowsIfNeeded(
@@ -60,10 +67,10 @@ export async function handleSignIn() {
     return { status: "error", message: err };
   }
 
-  const signInComplete = Date.now();
-  console.log("sign-in process took: ", signInComplete - timeStart, "ms");
-
-  return { status: "success" };
+  return {
+    status: "success",
+    message: initialSignIn ? "initial sign in" : null,
+  };
 }
 
 async function refreshTwitterFollowsIfNeeded(
@@ -76,6 +83,7 @@ async function refreshTwitterFollowsIfNeeded(
     const now = new Date();
     const msSinceRefresh = now.getTime() - lastRefresh.getTime();
     const hoursSinceRefresh = Math.floor(msSinceRefresh / (1000 * 60 * 60));
+
     if (hoursSinceRefresh < minCacheHours) {
       // If insufficient time has elapsed since last refresh, return (do nothing)
       console.log(
@@ -141,53 +149,53 @@ export const getSessionData = async () => {
 };
 
 export const addHousingData = async (
-  description: string, 
-  housingType: string, 
-  moveIn: string, 
-  housemates: string, 
-  link: string, 
-  contactMethod: string, 
-  userID: string | undefined, 
-  twitterHandle: string | null, 
-  phone: string  
+  description: string,
+  housingType: string,
+  moveIn: string,
+  housemates: string,
+  link: string,
+  contactMethod: string,
+  userID: string | undefined,
+  twitterHandle: string | null,
+  phone: string
 ) => {
   // Translate options into numbers
-  const housingTypeOptions = ['lease', 'short']
-  const moveInOptions = ['ASAP', '3months', 'over3months']
-  const housematesOptions = ['1-2', '3-5', '6-12', '12+']
-  const contactMethodOptions = ['phone', 'email', 'twitter']
+  const housingTypeOptions = ["lease", "short"];
+  const moveInOptions = ["ASAP", "3months", "over3months"];
+  const housematesOptions = ["1-2", "3-5", "6-12", "12+"];
+  const contactMethodOptions = ["phone", "email", "twitter"];
 
-  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1
-  const moveInNum = moveInOptions.indexOf(moveIn) + 1
-  const housematesNum = housematesOptions.indexOf(housemates) + 1
-  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1
+  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1;
+  const moveInNum = moveInOptions.indexOf(moveIn) + 1;
+  const housematesNum = housematesOptions.indexOf(housemates) + 1;
+  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1;
 
   // Get the actual contact method
-  let actualContactMethod
-  if(contactMethodNum === 1) {
-    actualContactMethod = phone
-  } else if(contactMethodNum === 3) {
-    actualContactMethod = twitterHandle
+  let actualContactMethod;
+  if (contactMethodNum === 1) {
+    actualContactMethod = phone;
+  } else if (contactMethodNum === 3) {
+    actualContactMethod = twitterHandle;
   } else {
     // Fetch email from Supabase
     let { data, error } = await supabase
-      .from('users')
-      .select('contact_email')
-      .eq('user_id', userID)
-      
-    if(error) {
-      throw new Error(`Failed to fetch email: ${error.message}`)
+      .from("users")
+      .select("contact_email")
+      .eq("user_id", userID);
+
+    if (error) {
+      throw new Error(`Failed to fetch email: ${error.message}`);
     }
 
-    actualContactMethod = data?.[0]?.contact_email
+    actualContactMethod = data?.[0]?.contact_email;
   }
 
   // Generate a random 10-digit ID
-  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000
+  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000;
 
   // Insert data into the database
   const { error: insertError } = await supabase
-    .from('housing_search_profiles')
+    .from("housing_search_profiles")
     .insert([
       {
         profile_id: profileId,
@@ -199,63 +207,63 @@ export const addHousingData = async (
         pref_contact_method: actualContactMethod,
         user_id: userID,
       },
-    ])
+    ]);
 
-  if(insertError) {
-    throw new Error(`Failed to insert data: ${insertError.message}`)
+  if (insertError) {
+    throw new Error(`Failed to insert data: ${insertError.message}`);
   }
 
-  return true
-}
+  return true;
+};
 
 export const addOrganizerData = async (
-  description: string, 
-  housingType: string, 
-  moveIn: string, 
-  housemates: string, 
-  link: string, 
-  contactMethod: string, 
-  userID: string | undefined, 
-  twitterHandle: string | null, 
-  phone: string  
+  description: string,
+  housingType: string,
+  moveIn: string,
+  housemates: string,
+  link: string,
+  contactMethod: string,
+  userID: string | undefined,
+  twitterHandle: string | null,
+  phone: string
 ) => {
   // Translate options into numbers
-  const housingTypeOptions = ['lease', 'short']
-  const moveInOptions = ['ASAP', '3months', 'over3months']
-  const housematesOptions = ['1-2', '3-5', '6-12', '12+']
-  const contactMethodOptions = ['phone', 'email', 'twitter']
+  const housingTypeOptions = ["lease", "short"];
+  const moveInOptions = ["ASAP", "3months", "over3months"];
+  const housematesOptions = ["1-2", "3-5", "6-12", "12+"];
+  const contactMethodOptions = ["phone", "email", "twitter"];
 
-  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1
-  const moveInNum = moveInOptions.indexOf(moveIn) + 1
-  const housematesNum = housematesOptions.indexOf(housemates) + 1
-  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1
+  const housingTypeNum = housingTypeOptions.indexOf(housingType) + 1;
+  const moveInNum = moveInOptions.indexOf(moveIn) + 1;
+  const housematesNum = housematesOptions.indexOf(housemates) + 1;
+  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1;
 
   // Get the actual contact method
-  let actualContactMethod
-  if(contactMethodNum === 1) {
-    actualContactMethod = phone
-  } else if(contactMethodNum === 3) {
-    actualContactMethod = twitterHandle
+  let actualContactMethod;
+  if (contactMethodNum === 1) {
+    actualContactMethod = phone;
+  } else if (contactMethodNum === 3) {
+    actualContactMethod = twitterHandle;
   } else {
     // Fetch email from Supabase
     let { data, error } = await supabase
-      .from('users')
-      .select('contact_email')
-      .eq('user_id', userID)
-      
-    if(error) {
-      throw new Error(`Failed to fetch email: ${error.message}`)
+      .from("users")
+      .select("contact_email")
+      .eq("user_id", userID);
+
+    if (error) {
+      throw new Error(`Failed to fetch email: ${error.message}`);
     }
 
-    actualContactMethod = data?.[0]?.contact_email
+    actualContactMethod = data?.[0]?.contact_email;
   }
 
   // Generate a random 10-digit ID
-  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000
+  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000;
 
   // Insert data into the database
   const { error: insertError } = await supabase
-    .from('organizer_profiles')
+    .from("organizer_profiles")
     .insert([
       {
         profile_id: profileId,
@@ -267,11 +275,11 @@ export const addOrganizerData = async (
         pref_contact_method: actualContactMethod,
         user_id: userID,
       },
-    ])
+    ]);
 
-  if(insertError) {
-    throw new Error(`Failed to insert data: ${insertError.message}`)
+  if (insertError) {
+    throw new Error(`Failed to insert data: ${insertError.message}`);
   }
 
-  return true
-}
+  return true;
+};
