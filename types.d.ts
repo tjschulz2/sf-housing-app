@@ -21,42 +21,39 @@ interface Database {
     Tables: {
       communities: {
         Row: {
-          community_id: number
-          contact_email: string | null
           created_at: string | null
           description: string | null
           image_url: string | null
           name: string | null
-          owner_id: string | null
-          rent_max: number | null
-          rent_min: number | null
+          pref_contact_method: string | null
+          profile_id: number
           resident_count: number | null
+          room_price_range: number | null
+          user_id: string | null
           website_url: string | null
         }
         Insert: {
-          community_id?: number
-          contact_email?: string | null
           created_at?: string | null
           description?: string | null
           image_url?: string | null
           name?: string | null
-          owner_id?: string | null
-          rent_max?: number | null
-          rent_min?: number | null
+          pref_contact_method?: string | null
+          profile_id?: number
           resident_count?: number | null
+          room_price_range?: number | null
+          user_id?: string | null
           website_url?: string | null
         }
         Update: {
-          community_id?: number
-          contact_email?: string | null
           created_at?: string | null
           description?: string | null
           image_url?: string | null
           name?: string | null
-          owner_id?: string | null
-          rent_max?: number | null
-          rent_min?: number | null
+          pref_contact_method?: string | null
+          profile_id?: number
           resident_count?: number | null
+          room_price_range?: number | null
+          user_id?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -137,7 +134,14 @@ interface Database {
           profile_id?: number
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "housing_search_profiles_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
       }
       organizer_profiles: {
         Row: {
@@ -149,7 +153,7 @@ interface Database {
           pref_housing_type: number | null
           pref_lease_start: number | null
           profile_id: number
-          user_id: string | undefined
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -160,7 +164,7 @@ interface Database {
           pref_housing_type?: number | null
           pref_lease_start?: number | null
           profile_id: number
-          user_id: string | undefined
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -171,7 +175,7 @@ interface Database {
           pref_housing_type?: number | null
           pref_lease_start?: number | null
           profile_id?: number
-          user_id?: string | undefined
+          user_id?: string
         }
         Relationships: []
       }
@@ -275,5 +279,3 @@ interface Database {
     }
   }
 }
-
-
