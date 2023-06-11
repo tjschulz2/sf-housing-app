@@ -9,6 +9,15 @@
     font-weight: bold;
 }
 
+.textareaStyle {
+    width: 100%;
+    height: 100px;
+    padding: 16px;
+    box-sizing: border-box;
+    font-family: var(--font-inter);
+    /* Other styling as required (border, outline, etc.) */
+}
+
 .container {
     display: flex;
     flex-direction: column;

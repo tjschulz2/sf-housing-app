@@ -4,9 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"; // Assuming you have a CSS module at this path
 import { NextPage } from "next";
-import { addOrganizerData } from "../../../lib/utils/process";
+import {
+  addOrganizerData,
+  isInDirectoryAlready,
+  deleteDataFromDirectory,
+} from "../../../lib/utils/process";
 import { useRouter } from "next/navigation";
-import { getUserSession } from "../../../lib/utils/auth";
+import { getCurrentUser } from "../../../lib/utils/auth";
+import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");
@@ -17,6 +22,7 @@ const MyForm: NextPage = () => {
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
   const router = useRouter();
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
@@ -30,29 +36,49 @@ const MyForm: NextPage = () => {
   };
 
   const handleLinkClick = async (e: React.MouseEvent) => {
-    if (!isFormValid) {
-      e.preventDefault();
+    const session = await getCurrentUser();
+    // Create some logic that checks if an upload is already in the directory
+    const isDataPresentAlready = await isInDirectoryAlready(session!.userID);
+    if (isDataPresentAlready && isFormValid) {
+      setIsModalActive(true);
     } else {
-      // If form is valid, generate and send confirmation code
-      e.preventDefault();
-      try {
-        const session = await getUserSession();
-        await addOrganizerData(
-          description,
-          housingType,
-          moveIn,
-          housemates,
-          link,
-          contactMethod,
-          session?.userID,
-          session?.twitterHandle,
-          phone
-        );
-        router.push("/directory");
-      } catch (error) {
-        alert("You are not logged in");
-        // Optionally show an error message to the user
+      if (!isFormValid) {
+        e.preventDefault();
+      } else {
+        e.preventDefault();
+        await handleSubmit();
       }
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const session = await getCurrentUser();
+      await addOrganizerData(
+        description,
+        housingType,
+        moveIn,
+        housemates,
+        link,
+        contactMethod,
+        session!.userID,
+        session?.twitterHandle,
+        phone
+      );
+      router.push("/directory");
+    } catch (error) {
+      alert("You are not logged in");
+      // Optionally show an error message to the user
+    }
+  };
+
+  const handleDeletion = async () => {
+    try {
+      const session = await getCurrentUser();
+      await deleteDataFromDirectory(session!.userID);
+    } catch {
+      alert("You are not logged in");
+      throw new Error("Couldnt delete from directory");
     }
   };
 
@@ -114,10 +140,17 @@ const MyForm: NextPage = () => {
     contactMethod,
     link,
     phone,
+    isModalActive,
   ]);
 
   return (
     <div className={styles.container}>
+      <DirectoryOverrideModal
+        modalActivity={isModalActive}
+        handleSubmit={handleSubmit}
+        handleDeletion={handleDeletion}
+        setIsModalActive={setIsModalActive}
+      />
       <form className={styles.form}>
         <Link href="/directory/people-organizing">Back to directory</Link>
         <h1>Start a new house or apartment</h1>
@@ -131,14 +164,14 @@ const MyForm: NextPage = () => {
               Introduce yourself and share what you want the house to be about.
             </h2>
             <p className={styles.maxCharacters}>
-              What should people be interested in doing? What are you working
-              on? What type of environment do you want to live in?
+              Who are you? Who is the ideal person you want to live with?
             </p>
             <div style={{ display: "flex", alignItems: "center" }}>
               <textarea
                 className={styles.textareaStyle}
-                placeholder="Building startups...AGI...A focused environment..."
+                placeholder="I want to live with people exploring AI with the intent to build a company. Ideally, we build projects together and eventually find great companies to start."
                 onChange={handleInputChange(setDescription)}
+                autoFocus={true}
               />
             </div>
           </label>
@@ -321,11 +354,14 @@ const MyForm: NextPage = () => {
         </div>
 
         <Link
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleLinkClick(e);
+          }}
           className={`${styles.nextButton} ${
             isFormValid ? "" : styles.disabled
           }`}
-          href={isFormValid ? "/#" : "#"}
-          onClick={handleLinkClick}
         >
           Next
         </Link>

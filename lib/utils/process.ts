@@ -223,7 +223,7 @@ export const addOrganizerData = async (
   housemates: string,
   link: string,
   contactMethod: string,
-  userID: string | undefined,
+  userID: string,
   twitterHandle: string | null,
   phone: string
 ) => {
@@ -282,4 +282,197 @@ export const addOrganizerData = async (
   }
 
   return true;
+};
+
+export const addCommunityData = async (
+  communityName: string,
+  description: string,
+  roomPrice: string,
+  housemates: string,
+  link: string,
+  imageLink: string,
+  contactMethod: string,
+  userID: string | undefined,
+  twitterHandle: string | null,
+  phone: string
+) => {
+  // Translate options into numbers
+  const roomPriceOptions = [
+    "less1000",
+    "1000to1500",
+    "1500to2000",
+    "2000to2500",
+    "2500to3000",
+    "3000plus",
+  ];
+  const housematesOptions = ["1-2", "3-5", "6-12", "12+"];
+  const contactMethodOptions = ["phone", "email", "twitter", "website"];
+
+  const roomPriceNum = roomPriceOptions.indexOf(roomPrice) + 1;
+  const housematesNum = housematesOptions.indexOf(housemates) + 1;
+  const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1;
+
+  // Get the actual contact method
+  let actualContactMethod;
+  if (contactMethodNum === 1) {
+    actualContactMethod = phone;
+  } else if (contactMethodNum === 3) {
+    actualContactMethod = twitterHandle;
+  } else if (contactMethodNum === 4) {
+    actualContactMethod = link;
+  } else {
+    // Fetch email from Supabase
+    let { data, error } = await supabase
+      .from("users")
+      .select("contact_email")
+      .eq("user_id", userID);
+
+    if (error) {
+      throw new Error(`Failed to fetch email: ${error.message}`);
+    }
+
+    actualContactMethod = data?.[0]?.contact_email;
+  }
+
+  // Generate a random 10-digit ID
+  const profileId = Math.floor(Math.random() * 9000000000) + 1000000000;
+
+  // Insert data into the database
+  const { error: insertError } = await supabase.from("communities").insert([
+    {
+      profile_id: profileId,
+      name: communityName,
+      description: description,
+      room_price_range: roomPriceNum,
+      resident_count: housematesNum,
+      website_url: link,
+      image_url: imageLink,
+      pref_contact_method: actualContactMethod,
+      user_id: userID,
+    },
+  ]);
+
+  if (insertError) {
+    throw new Error(`Failed to insert data: ${insertError.message}`);
+  }
+
+  return true;
+};
+
+export const uploadImageLink = async (selectedImage: File, userID: string) => {
+  // Upload an image
+  const { error: uploadError } = await supabase.storage
+    .from("community_profile_pictures")
+    .upload(`community-pic-${userID}.png`, selectedImage, { upsert: true });
+
+  if (uploadError) {
+    console.error("Error uploading file:", uploadError);
+    return Error();
+  } else {
+    console.log("File uploaded successfully");
+  }
+};
+
+export const getImageLink = async (userID: string): Promise<string | Error> => {
+  try {
+    // Get the URL of the image
+    const { data } = supabase.storage
+      .from("community_profile_pictures")
+      .getPublicUrl(`community-pic-${userID}.png`);
+
+    return data.publicUrl;
+  } catch (error) {
+    console.error("Error getting URL:", error);
+    return Error();
+  }
+};
+
+export const isInDirectoryAlready = async (
+  userID: string
+): Promise<boolean> => {
+  const { data: communityData, error: communityError } = await supabase
+    .from("communities")
+    .select("user_id")
+    .eq("user_id", userID)
+    .limit(1);
+
+  if (communityError) {
+    console.error("Error querying communities:", communityError);
+  }
+  if (communityData && communityData.length > 0) {
+    return true;
+  }
+
+  const { data: organizerProfilesData, error: organizerProfilesError } =
+    await supabase
+      .from("organizer_profiles")
+      .select("user_id")
+      .eq("user_id", userID)
+      .limit(1);
+
+  if (organizerProfilesError) {
+    console.error("Error querying organizer_profiles:", organizerProfilesError);
+  }
+  if (organizerProfilesData && organizerProfilesData.length > 0) {
+    return true;
+  }
+
+  const { data: housingSearchProfilesData, error: housingSearchProfilesError } =
+    await supabase
+      .from("housing_search_profiles")
+      .select("user_id")
+      .eq("user_id", userID)
+      .limit(1);
+
+  if (housingSearchProfilesError) {
+    console.error(
+      "Error querying housing_search_profiles:",
+      housingSearchProfilesError
+    );
+  }
+  if (housingSearchProfilesData && housingSearchProfilesData.length > 0) {
+    return true;
+  }
+
+  return false;
+};
+
+export const deleteDataFromDirectory = async (userID: string) => {
+  try {
+    // Delete from communities table
+    const { error: deleteCommunityError } = await supabase
+      .from("communities")
+      .delete()
+      .eq("user_id", userID);
+
+    if (deleteCommunityError) throw deleteCommunityError;
+
+    // Delete from organizer_profiles table
+    const { error: deleteOrganizerProfileError } = await supabase
+      .from("organizer_profiles")
+      .delete()
+      .eq("user_id", userID);
+
+    if (deleteOrganizerProfileError) throw deleteOrganizerProfileError;
+
+    // Delete from housing_search_profiles table
+    const { error: deleteHousingSearchProfileError } = await supabase
+      .from("housing_search_profiles")
+      .delete()
+      .eq("user_id", userID);
+
+    if (deleteHousingSearchProfileError) throw deleteHousingSearchProfileError;
+
+    // Delete profile picture from community_profile_pictures bucket
+    const { error: deleteImageError } = await supabase.storage
+      .from("community_profile_pictures")
+      .remove([`community-pic-${userID}.png`]);
+
+    if (deleteImageError) throw deleteImageError;
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting data from directory:", error);
+    return false;
+  }
 };

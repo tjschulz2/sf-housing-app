@@ -55,7 +55,7 @@ const EmailSignup: NextPage = () => {
             </label>
         </div>
 
-        <Link className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`} href={isFormValid ? "/#" : "#"} onClick={handleLinkClick}>
+        <Link href="#" onClick={(e) => {e.preventDefault(); handleLinkClick(e);}} className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
             Next
         </Link>
     </form>

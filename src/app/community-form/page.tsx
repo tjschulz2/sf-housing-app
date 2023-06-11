@@ -4,33 +4,104 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css'; // Assuming you have a CSS module at this path
 import { NextPage } from 'next';
+import { addCommunityData, uploadImageLink, getImageLink, isInDirectoryAlready, deleteDataFromDirectory } from '../../../lib/utils/process';
+import { useRouter } from 'next/navigation';
+import { getCurrentUser } from '../../../lib/utils/auth';
+import DirectoryOverrideModal from '../../../components/directory-override-modal/directory-override-modal';
 
 const MyForm: NextPage = () => {
     const [roomPrice, setRoomPrice] = useState('');
+    const [communityName, setCommunityName] = useState('');
     const [housemates, setHousemates] = useState('');
     const [contactMethod, setContactMethod] = useState('');
     const [link, setLink] = useState('');
-    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [description, setDescription] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [isModalActive, setIsModalActive] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    
+    const phoneRegex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+    const urlRegex = /^((http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
+    const router = useRouter()
 
     const handleOptionClick = (setOption: React.Dispatch<React.SetStateAction<string>>, value: string) => {
         setOption((prev: string) => prev === value ? '' : value);
     }
 
-    const handleLinkClick = (e: React.MouseEvent) => {
-        if (!isFormValid) {
-            e.preventDefault();
+    const handleLinkClick = async (e: React.MouseEvent) => {
+        const session = await getCurrentUser()
+        // Create some logic that checks if an upload is already in the directory
+        const isDataPresentAlready = await isInDirectoryAlready(session!.userID)
+        if (isDataPresentAlready && isFormValid) {
+            setIsModalActive(true)
+        } else {
+            if (!isFormValid) {
+                e.preventDefault();
+            } else {
+                e.preventDefault();
+                await handleSubmit();
+            }
         }
     }
 
-    const handleInputChange = (setStateFunc: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setStateFunc(event.target.value);
+    const handleSubmit = async () => {
+        // This is the code that will be executed when the "Yes" button is clicked
+        try {
+          const session = await getCurrentUser();
+          if (!selectedImage) {
+            await addCommunityData(communityName, description, roomPrice, housemates, link, session?.twitterAvatarURL, contactMethod, session?.userID, session?.twitterHandle, phone);
+          } else {
+            await uploadImageLink(selectedImage, session!.userID)
+            const imageLink = await getImageLink(session!.userID)
+            if (typeof imageLink === 'string') {
+              await addCommunityData(communityName, description, roomPrice, housemates, link, imageLink, contactMethod, session?.userID, session?.twitterHandle, phone);
+            }
+          }
+          router.push('/directory')
+        } catch (error) {
+          alert('You are not logged in')
+          // Optionally show an error message to the user
+        }
+      }
+
+    const handleDeletion = async () => {
+        try {
+            const session = await getCurrentUser()
+            await deleteDataFromDirectory(session!.userID)
+        } catch {
+            alert('You are not logged in')
+            throw new Error("Couldnt delete from directory")
+        }
     }
+
+    function handleInputChange(callback: (value: string) => void, field?: string) {
+        return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            let { value } = event.target;
+    
+            // Handle phone field
+            if (field === 'phone') {
+                // Allow only digits
+                value = value.replace(/[^\d]/g, "");
+    
+                // Adding formatting
+                if (value.length > 3 && value.length <= 6) 
+                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                else if (value.length > 6) 
+                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+    
+                event.target.value = value;
+            } 
+            // Handle URL field
+            else if (field === 'url' && !urlRegex.test(value)) {
+                console.error('Invalid URL');
+                setIsFormValid(false);
+            }
+    
+            callback(value);
+        };
+    }
+
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files.length > 0 ? event.target.files[0] : null;
       
@@ -46,36 +117,44 @@ const MyForm: NextPage = () => {
       
         reader.readAsDataURL(file);
       };
-      
 
     useEffect(() => {
-        if (description && roomPrice && housemates && contactMethod && link && email && (contactMethod !== 'phone' || phone)) {
+        if (description && roomPrice && link && housemates && communityName && contactMethod && 
+            ((contactMethod === 'phone' && phoneRegex.test(phone)) || (contactMethod !== 'phone')) && 
+            urlRegex.test(link)) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
-    }, [description, roomPrice, housemates, contactMethod, link, email, phone, selectedImage, imagePreview]);
+    }, [description, roomPrice, housemates, contactMethod, link, phone, selectedImage, imagePreview, communityName, isModalActive]);
 
 
     return (
         <div className={styles.container}>
+            <DirectoryOverrideModal modalActivity={isModalActive} handleSubmit={handleSubmit} handleDeletion={handleDeletion} setIsModalActive={setIsModalActive} />
             <form className={styles.form}>
                 <Link href="/directory/existing-communities">Back to directory</Link>
                 <h1>Add community to the directory</h1>
                 <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
+
+                <div>
+                    <label>
+                        <h2>What&#39;s the name of your community?</h2>
+                        <p className={styles.maxCharacters}>Optional. If left blank, then we will use your Twitter name</p>
+                        <input className={styles.inputStyle} type="text" placeholder="Solaris" onChange={handleInputChange(setCommunityName)} />
+                    </label>
+                </div>
                 
                 <div>
                     <label>
-                        <h2>What should your ideal housemate(s) be interested in doing?</h2>
-                        <p className={styles.maxCharacters}>62 characters max</p>
+                        <h2>Introduce yourself and what your community is about.</h2>
+                        <p className={styles.maxCharacters}>Who is it for? How do residents create value for one another?</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 'bold', marginRight: '5px', width: '35%' }}>Looking for people</span>
-                            <input 
-                                className={styles.inputStyle} 
-                                type="text" 
-                                placeholder="building early stage startups" 
-                                maxLength={62}
+                            <textarea 
+                                className={styles.textareaStyle} 
+                                placeholder="We are a group of founders building early-stage startups and looking for people that have found something meaningful to work on. We help one another by informally making connections and giving feedback to one another on what we're working on." 
                                 onChange={handleInputChange(setDescription)}
+                                autoFocus={true}
                             />
                         </div>
                     </label>
@@ -133,7 +212,7 @@ const MyForm: NextPage = () => {
                     <label>
                         <h2>What&#39;s a link that best describes the community?</h2>
                         <p className={styles.maxCharacters}>Community website or Twitter page preferred. If none, then share a link that represents you</p>
-                        <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink)} />
+                        <input className={styles.inputStyle} type="url" placeholder="mywebsite.io" onChange={handleInputChange(setLink, 'url')} />
                     </label>
                 </div>
 
@@ -146,14 +225,6 @@ const MyForm: NextPage = () => {
                             <img style={{ width: '100px', height: '100px', marginTop: '24px' }} src={imagePreview} alt="Image preview" />
                         )}
                     </div>
-                </div>
-
-                <div>
-                    <label>
-                        <h2>What&#39;s your email address?</h2>
-                        <p className={styles.maxCharacters}>Well use this to contact you about new people looking for housing + communities.</p>
-                        <input className={styles.inputStyle} type="email" placeholder="email@address.com" onChange={handleInputChange(setEmail)} />
-                    </label>
                 </div>
                 
                 <div>
@@ -177,12 +248,12 @@ const MyForm: NextPage = () => {
 
                     {contactMethod === 'phone' && 
                         <label>
-                            <input className={styles.inputStyle} type="tel" placeholder="Phone number" onChange={handleInputChange(setPhone)} />
+                            <input className={styles.inputStyle} type="tel" placeholder="Phone number" onChange={handleInputChange(setPhone, 'phone')} />
                         </label>
                     }
                 </div>
 
-                <Link className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`} href={isFormValid ? "/next" : "#"} onClick={handleLinkClick}>
+                <Link href="#" onClick={(e) => {e.preventDefault(); handleLinkClick(e);}} className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
                     Next
                 </Link>
             </form>

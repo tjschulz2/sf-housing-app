@@ -4,9 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"; // Assuming you have a CSS module at this path
 import { NextPage } from "next";
-import { addHousingData } from "../../../lib/utils/process";
-import { getUserSession } from "../../../lib/utils/auth";
+import {
+  addHousingData,
+  isInDirectoryAlready,
+  deleteDataFromDirectory,
+} from "../../../lib/utils/process";
+import { getCurrentUser } from "../../../lib/utils/auth";
 import { useRouter } from "next/navigation";
+import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");
@@ -17,6 +22,7 @@ const MyForm: NextPage = () => {
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
   const router = useRouter();
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
@@ -36,7 +42,7 @@ const MyForm: NextPage = () => {
       // If form is valid, generate and send confirmation code
       e.preventDefault();
       try {
-        const session = await getUserSession();
+        const session = await getCurrentUser();
         await addHousingData(
           description,
           housingType,

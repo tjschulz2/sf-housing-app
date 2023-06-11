@@ -1,0 +1,83 @@
+.yesBtn {
+    color: white;
+    background-color: black;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    margin-right: 24px;
+    font-family: var(--font-inter);
+    border-radius: 8px;
+}
+
+.yesBtn:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.noBtn {
+    color: black;
+    font-family: var(--font-inter);
+}
+
+.noBtn:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1625px;
+    margin: auto;
+    gap: 40px;
+}
+
+
+.enabled {
+    color: white;
+    background-color: rgb(185, 36, 36);
+    padding-right: 40px;
+    padding-left: 40px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    font-size: 16px;
+    font-family: var(--font-inter);
+    border-radius: 8px;
+}
+
+.enabled:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.disabled {
+    color: white;
+    background-color: rgb(147, 147, 147);
+    padding-right: 40px;
+    padding-left: 40px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    font-size: 16px;
+    font-family: var(--font-inter);
+    border-radius: 8px;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
