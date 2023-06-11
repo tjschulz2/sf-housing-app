@@ -47,15 +47,19 @@ export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25
 ) {
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from("housing_search_profiles")
-    .select("*")
+    .select(
+      `
+      *, user:users(name, twitter_handle, twitter_avatar_url)
+    `
+    )
     .range(startIdx, startIdx + count);
 
   if (error) {
     console.error(error);
   } else {
-    console.log(data);
+    console.log({ data });
     return data;
   }
 }
