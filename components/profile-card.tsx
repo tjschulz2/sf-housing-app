@@ -42,7 +42,7 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
       </div>
       <div className={styles.frameContainer}>
         <a
-          href="https://twitter.com/maxkriegers"
+          href={`https://twitter.com/${user?.twitter_handle}`}
           target="_blank"
           className={styles.frameALink}
         >
@@ -51,7 +51,7 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
               <h4 className={styles.maxKrieger} id="twitter-name">
                 {user?.name}
               </h4>
-              <div className={styles.maxkriegers}>@maxkriegers</div>
+              <div className={styles.maxkriegers}>@{user?.twitter_handle}</div>
               <img
                 className={styles.vectorIcon1}
                 alt=""
@@ -66,9 +66,7 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
         <div className={styles.lookingToLive} id="looking-for-text">
           <div className={styles.content}>
             <span className={styles.wants}>About me: </span>
-            Looking to live with people researching and building AI companies
-            and love people and kiss people and make out with people and i love
-            god
+            {profile.pref_housemate_details}
             <SeeMoreButton seeMoreText="Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god" />
           </div>
         </div>

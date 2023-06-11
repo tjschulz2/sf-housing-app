@@ -26,6 +26,7 @@ const Home: NextPage = () => {
         setReferralDetails(referral);
       } else {
         const signInResult = await handleSignIn();
+        console.log(signInResult);
         if (signInResult?.status !== "success") {
           return;
         }

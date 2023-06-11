@@ -59,7 +59,6 @@ export async function getHousingSearchProfiles(
   if (error) {
     console.error(error);
   } else {
-    console.log({ data });
     return data;
   }
 }

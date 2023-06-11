@@ -87,7 +87,7 @@ async function refreshTwitterFollowsIfNeeded(
     if (hoursSinceRefresh < minCacheHours) {
       // If insufficient time has elapsed since last refresh, return (do nothing)
       console.log(
-        `skipping refresh -  ${hoursSinceRefresh}/${minCacheHours} hours elapsed since refresh`
+        `skipping refresh -  ${hoursSinceRefresh}/${minCacheHours} hours elapsed`
       );
       return;
     }
