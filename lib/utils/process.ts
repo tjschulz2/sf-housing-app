@@ -173,9 +173,9 @@ export const addHousingData = async (
   // Get the actual contact method
   let actualContactMethod;
   if (contactMethodNum === 1) {
-    actualContactMethod = phone;
+    actualContactMethod = `tel:${phone}`;
   } else if (contactMethodNum === 3) {
-    actualContactMethod = twitterHandle;
+    actualContactMethod = `https://twitter.com/${twitterHandle}`;
   } else {
     // Fetch email from Supabase
     let { data, error } = await supabase
@@ -187,9 +187,10 @@ export const addHousingData = async (
       throw new Error(`Failed to fetch email: ${error.message}`);
     }
 
-    actualContactMethod = data?.[0]?.contact_email;
+    actualContactMethod = `mailto:${data?.[0]?.contact_email}`;
   }
 
+  console.log({ actualContactMethod });
   // Generate a random 10-digit ID
   const profileId = Math.floor(Math.random() * 9000000000) + 1000000000;
 

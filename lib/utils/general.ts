@@ -28,3 +28,14 @@ export function getCurrentTimestamp() {
 
   return timestamp;
 }
+
+export function cleanURL(url: string) {
+  return url.replace(/^(https?:\/\/)?(www\.)?/, "").replace(/\/$/, "");
+}
+
+export function addProtocolToURL(url: string) {
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    return "http://" + url;
+  }
+  return url;
+}

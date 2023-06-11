@@ -1,7 +1,8 @@
 "use client";
 import styles from "./profile-card.module.css";
 import SeeMoreButton from "./see-more-button/see-more-button";
-
+import { housingMap } from "../lib/prefMap";
+import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
   console.log({ profile });
   const { user } = profile;
@@ -19,19 +20,21 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
         <div className={styles.frameGroup}>
           <a
             className={styles.contactMeWrapper}
-            href="https://twitter.com"
+            href={profile.pref_contact_method || "https://google.com"}
             target="_blank"
           >
             <p className={styles.contactMe}>Contact me</p>
           </a>
-          <a
-            className={styles.vectorParent}
-            href="https://a9.io"
-            target="_blank"
-          >
-            <img className={styles.vectorIcon} alt="" src="/link.svg" />
-            <div className={styles.a9io}>a9.io</div>
-          </a>
+          {profile.link ? (
+            <a
+              className={styles.vectorParent}
+              href={addProtocolToURL(profile.link)}
+              target="_blank"
+            >
+              <img className={styles.vectorIcon} alt="" src="/link.svg" />
+              <div className={styles.a9io}>{cleanURL(profile.link)}</div>
+            </a>
+          ) : null}
           <div className={styles.locationParent}>
             <img className={styles.locationIcon} alt="" src="/location.svg" />
             <p className={styles.sanFrancisco} id="location">
@@ -67,16 +70,32 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
           <div className={styles.content}>
             <span className={styles.wants}>About me: </span>
             {profile.pref_housemate_details}
-            <SeeMoreButton seeMoreText="Looking to live with people researching and building AI companies and love people and kiss people and make out with people and i love god" />
+            {profile.pref_housemate_details ? (
+              <SeeMoreButton seeMoreText={profile.pref_housemate_details} />
+            ) : null}
           </div>
         </div>
         <p className={styles.wants1YearLeaseContainer} id="wants-text">
           <span className={styles.wants}>Wants:</span>
-          <span> 1-year lease, 2-4 roommates</span>
+          <span>
+            {" "}
+            {profile.pref_housing_type
+              ? housingMap.housingType[profile.pref_housing_type] + ", "
+              : null}{" "}
+            {profile.pref_housemate_count
+              ? housingMap.housemates[profile.pref_housemate_count]
+              : null}
+          </span>
         </p>
         <p className={styles.wants1YearLeaseContainer} id="moving-text">
           <span className={styles.wants}>Moving:</span>
-          <span>{` Now -> August 2023`}</span>
+          {/* <span>{` Now -> August 2023`}</span> */}
+          <span>
+            {" "}
+            {profile.pref_move_in
+              ? housingMap.moveIn[profile.pref_move_in]
+              : null}
+          </span>
         </p>
       </div>
     </li>
