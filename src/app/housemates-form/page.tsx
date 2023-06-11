@@ -36,29 +36,48 @@ const MyForm: NextPage = () => {
   };
 
   const handleLinkClick = async (e: React.MouseEvent) => {
-    if (!isFormValid) {
-      e.preventDefault();
+    const session = await getUserSession();
+    // Create some logic that checks if an upload is already in the directory
+    const isDataPresentAlready = await isInDirectoryAlready(session!.userID);
+    if (isDataPresentAlready && isFormValid) {
+      setIsModalActive(true);
     } else {
-      // If form is valid, generate and send confirmation code
-      e.preventDefault();
-      try {
-        const session = await getUserSession();
-        await addHousingData(
-          description,
-          housingType,
-          moveIn,
-          housemates,
-          link,
-          contactMethod,
-          session?.userID,
-          session?.twitterHandle,
-          phone
-        );
-        router.push("/directory");
-      } catch (error) {
-        alert("You are not logged in");
-        // Optionally show an error message to the user
+      if (!isFormValid) {
+        e.preventDefault();
+      } else {
+        e.preventDefault();
+        await handleSubmit();
       }
+    }
+  };
+  const handleSubmit = async () => {
+    try {
+      const session = await getUserSession();
+      await addHousingData(
+        description,
+        housingType,
+        moveIn,
+        housemates,
+        link,
+        contactMethod,
+        session?.userID,
+        session?.twitterHandle,
+        phone
+      );
+      router.push("/directory");
+    } catch (error) {
+      alert("You are not logged in");
+      // Optionally show an error message to the user
+    }
+  };
+
+  const handleDeletion = async () => {
+    try {
+      const session = await getUserSession();
+      await deleteDataFromDirectory(session!.userID);
+    } catch {
+      alert("You are not logged in");
+      throw new Error("Couldnt delete from directory");
     }
   };
 
@@ -119,10 +138,17 @@ const MyForm: NextPage = () => {
     contactMethod,
     link,
     phone,
+    isModalActive,
   ]);
 
   return (
     <div className={styles.container}>
+      <DirectoryOverrideModal
+        modalActivity={isModalActive}
+        handleSubmit={handleSubmit}
+        handleDeletion={handleDeletion}
+        setIsModalActive={setIsModalActive}
+      />
       <form className={styles.form}>
         <Link href="/directory">Back to directory</Link>
         <h1>Let&#39;s add some information</h1>
@@ -322,11 +348,14 @@ const MyForm: NextPage = () => {
         </div>
 
         <Link
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleLinkClick(e);
+          }}
           className={`${styles.nextButton} ${
             isFormValid ? "" : styles.disabled
           }`}
-          href={isFormValid ? "/#" : "#"}
-          onClick={handleLinkClick}
         >
           Next
         </Link>
