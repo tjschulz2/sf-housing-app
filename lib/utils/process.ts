@@ -359,3 +359,87 @@ export const getImageLink = async (userID: string): Promise<string | Error> => {
     return Error();
   }
 }
+
+export const isInDirectoryAlready = async (userID: string): Promise<boolean> => {
+  const { data: communityData, error: communityError } = await supabase
+      .from('communities')
+      .select('user_id')
+      .eq('user_id', userID)
+      .limit(1);
+  
+  if (communityError) {
+      console.error('Error querying communities:', communityError);
+  }
+  if (communityData && communityData.length > 0) {
+      return true;
+  }
+  
+  const { data: organizerProfilesData, error: organizerProfilesError } = await supabase
+      .from('organizer_profiles')
+      .select('user_id')
+      .eq('user_id', userID)
+      .limit(1);
+
+  if (organizerProfilesError) {
+      console.error('Error querying organizer_profiles:', organizerProfilesError);
+  }
+  if (organizerProfilesData && organizerProfilesData.length > 0) {
+      return true;
+  }
+
+  const { data: housingSearchProfilesData, error: housingSearchProfilesError } = await supabase
+      .from('housing_search_profiles')
+      .select('user_id')
+      .eq('user_id', userID)
+      .limit(1);
+
+  if (housingSearchProfilesError) {
+      console.error('Error querying housing_search_profiles:', housingSearchProfilesError);
+  }
+  if (housingSearchProfilesData && housingSearchProfilesData.length > 0) {
+      return true;
+  }
+
+  return false;
+}
+
+export const deleteDataFromDirectory = async (userID: string) => {
+  try {
+    // Delete from communities table
+    const { error: deleteCommunityError } = await supabase
+      .from('communities')
+      .delete()
+      .eq('user_id', userID);
+    
+    if (deleteCommunityError) throw deleteCommunityError;
+    
+    // Delete from organizer_profiles table
+    const { error: deleteOrganizerProfileError } = await supabase
+      .from('organizer_profiles')
+      .delete()
+      .eq('user_id', userID);
+    
+    if (deleteOrganizerProfileError) throw deleteOrganizerProfileError;
+    
+    // Delete from housing_search_profiles table
+    const { error: deleteHousingSearchProfileError } = await supabase
+      .from('housing_search_profiles')
+      .delete()
+      .eq('user_id', userID);
+    
+    if (deleteHousingSearchProfileError) throw deleteHousingSearchProfileError;
+
+    // Delete profile picture from community_profile_pictures bucket
+    const { error: deleteImageError } = await supabase
+      .storage
+      .from('community_profile_pictures')
+      .remove([`community-pic-${userID}.png`]);
+
+    if (deleteImageError) throw deleteImageError;
+    
+    return true;
+  } catch (error) {
+    console.error('Error deleting data from directory:', error);
+    return false;
+  }
+}

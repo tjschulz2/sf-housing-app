@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css'; // Assuming you have a CSS module at this path
 import { NextPage } from 'next';
-import { addCommunityData, uploadImageLink, getImageLink } from '../../../lib/utils/process';
+import { addCommunityData, uploadImageLink, getImageLink, isInDirectoryAlready, deleteDataFromDirectory } from '../../../lib/utils/process';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '../../../lib/utils/auth';
+import DirectoryOverrideModal from '../../../components/directory-override-modal/directory-override-modal';
 
 const MyForm: NextPage = () => {
     const [roomPrice, setRoomPrice] = useState('');
@@ -17,6 +18,7 @@ const MyForm: NextPage = () => {
     const [phone, setPhone] = useState('');
     const [description, setDescription] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const [isModalActive, setIsModalActive] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const phoneRegex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
@@ -28,28 +30,48 @@ const MyForm: NextPage = () => {
     }
 
     const handleLinkClick = async (e: React.MouseEvent) => {
-        if (!isFormValid) {
-            e.preventDefault();
+        const session = await getCurrentUser()
+        // Create some logic that checks if an upload is already in the directory
+        const isDataPresentAlready = await isInDirectoryAlready(session!.userID)
+        if (isDataPresentAlready && isFormValid) {
+            setIsModalActive(true)
         } else {
-            // If form is valid, generate and send confirmation code
-            e.preventDefault();
-            try {
-                const session = await getCurrentUser()
-                if (!selectedImage) {
-                    await addCommunityData(communityName, description, roomPrice, housemates, link, session?.twitterAvatarURL, contactMethod, session?.userID, session?.twitterHandle, phone);
-                } else {
-                    await uploadImageLink(selectedImage, session!.userID)
-                    const imageLink = await getImageLink(session!.userID)
-                    console.log(imageLink)
-                    if (typeof imageLink === 'string') {
-                        await addCommunityData(communityName, description, roomPrice, housemates, link, imageLink, contactMethod, session?.userID, session?.twitterHandle, phone);
-                    }
-                }
-                router.push('/directory')
-            } catch (error) {
-                alert('You are not logged in')
-                // Optionally show an error message to the user
+            if (!isFormValid) {
+                e.preventDefault();
+            } else {
+                e.preventDefault();
+                await handleSubmit();
             }
+        }
+    }
+
+    const handleSubmit = async () => {
+        // This is the code that will be executed when the "Yes" button is clicked
+        try {
+          const session = await getCurrentUser();
+          if (!selectedImage) {
+            await addCommunityData(communityName, description, roomPrice, housemates, link, session?.twitterAvatarURL, contactMethod, session?.userID, session?.twitterHandle, phone);
+          } else {
+            await uploadImageLink(selectedImage, session!.userID)
+            const imageLink = await getImageLink(session!.userID)
+            if (typeof imageLink === 'string') {
+              await addCommunityData(communityName, description, roomPrice, housemates, link, imageLink, contactMethod, session?.userID, session?.twitterHandle, phone);
+            }
+          }
+          router.push('/directory')
+        } catch (error) {
+          alert('You are not logged in')
+          // Optionally show an error message to the user
+        }
+      }
+
+    const handleDeletion = async () => {
+        try {
+            const session = await getCurrentUser()
+            await deleteDataFromDirectory(session!.userID)
+        } catch {
+            alert('You are not logged in')
+            throw new Error("Couldnt delete from directory")
         }
     }
 
@@ -104,11 +126,12 @@ const MyForm: NextPage = () => {
         } else {
             setIsFormValid(false);
         }
-    }, [description, roomPrice, housemates, contactMethod, link, phone, selectedImage, imagePreview, communityName]);
+    }, [description, roomPrice, housemates, contactMethod, link, phone, selectedImage, imagePreview, communityName, isModalActive]);
 
 
     return (
         <div className={styles.container}>
+            <DirectoryOverrideModal modalActivity={isModalActive} handleSubmit={handleSubmit} handleDeletion={handleDeletion} setIsModalActive={setIsModalActive} />
             <form className={styles.form}>
                 <Link href="/directory/existing-communities">Back to directory</Link>
                 <h1>Add community to the directory</h1>
@@ -230,7 +253,7 @@ const MyForm: NextPage = () => {
                     }
                 </div>
 
-                <Link className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`} href={isFormValid ? "/#" : "#"} onClick={handleLinkClick}>
+                <Link href="#" onClick={(e) => {e.preventDefault(); handleLinkClick(e);}} className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
                     Next
                 </Link>
             </form>
