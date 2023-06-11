@@ -9,7 +9,7 @@ import {
   isInDirectoryAlready,
   deleteDataFromDirectory,
 } from "../../../lib/utils/process";
-import { getCurrentUser } from "../../../lib/utils/auth";
+import { getUserSession } from "../../../lib/utils/auth";
 import { useRouter } from "next/navigation";
 import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
 
@@ -42,7 +42,7 @@ const MyForm: NextPage = () => {
       // If form is valid, generate and send confirmation code
       e.preventDefault();
       try {
-        const session = await getCurrentUser();
+        const session = await getUserSession();
         await addHousingData(
           description,
           housingType,

@@ -10,7 +10,7 @@ import {
   deleteDataFromDirectory,
 } from "../../../lib/utils/process";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "../../../lib/utils/auth";
+import { getUserSession } from "../../../lib/utils/auth";
 import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
 
 const MyForm: NextPage = () => {
@@ -36,7 +36,7 @@ const MyForm: NextPage = () => {
   };
 
   const handleLinkClick = async (e: React.MouseEvent) => {
-    const session = await getCurrentUser();
+    const session = await getUserSession();
     // Create some logic that checks if an upload is already in the directory
     const isDataPresentAlready = await isInDirectoryAlready(session!.userID);
     if (isDataPresentAlready && isFormValid) {
@@ -53,7 +53,7 @@ const MyForm: NextPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const session = await getCurrentUser();
+      const session = await getUserSession();
       await addOrganizerData(
         description,
         housingType,
@@ -74,7 +74,7 @@ const MyForm: NextPage = () => {
 
   const handleDeletion = async () => {
     try {
-      const session = await getCurrentUser();
+      const session = await getUserSession();
       await deleteDataFromDirectory(session!.userID);
     } catch {
       alert("You are not logged in");
