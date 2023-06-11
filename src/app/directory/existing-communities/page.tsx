@@ -20,9 +20,9 @@ const Directory: NextPage = () => {
       </div>
       <h2>Today</h2>
       <div className={styles.containerGrid}>
-        {data.map((index) => (
-          // <ProfileCard key={index} />
-        ))}
+        {/* {data.map((index) => (
+          <ProfileCard key={index} />
+        ))} */}
       </div>
     </>
   );
