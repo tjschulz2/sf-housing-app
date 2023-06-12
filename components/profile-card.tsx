@@ -3,8 +3,10 @@ import styles from "./profile-card.module.css";
 import SeeMoreButton from "./see-more-button/see-more-button";
 import { housingMap } from "../lib/prefMap";
 import { cleanURL, addProtocolToURL } from "../lib/utils/general";
+import { useEffect, useState } from "react";
+import { getFollowIntersection } from "../lib/utils/data";
+import { FollowedBy } from "./followed-by/followed-by";
 const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
-  console.log({ profile });
   const { user } = profile;
 
   return (
@@ -61,9 +63,10 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
                 src="/twitter-logo.svg"
               />
             </div>
-            <sub className={styles.followedBy980} id="followed-by">
+            {/* <sub className={styles.followedBy980} id="followed-by">
               Followed by 980+ people you follow
-            </sub>
+            </sub> */}
+            <FollowedBy profile={profile} />
           </div>
         </a>
         <div className={styles.lookingToLive} id="looking-for-text">

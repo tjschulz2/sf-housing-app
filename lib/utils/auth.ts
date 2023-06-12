@@ -5,6 +5,7 @@ export async function getUserSession() {
   const { data, error } = await supabase.auth.getSession();
   if (error) {
     console.error(error);
+    throw error;
   } else if (data?.session?.user?.user_metadata) {
     const { user_metadata: meta } = data.session.user;
 

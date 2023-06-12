@@ -1,0 +1,8 @@
+.followedBy980 {
+  flex: 1;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--color-gray-100);
+  display: inline-block;
+  width: 100%;
+}

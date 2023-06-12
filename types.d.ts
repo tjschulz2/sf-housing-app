@@ -98,25 +98,38 @@ interface Database {
         Row: {
           id: number;
           intersection_count: number | null;
-          last_updated: string | null;
-          user_1_id: string | null;
-          user_2_id: string | null;
+          last_updated: string;
+          user_1_id: string;
+          user_2_id: string;
         };
         Insert: {
           id?: number;
           intersection_count?: number | null;
-          last_updated?: string | null;
-          user_1_id?: string | null;
-          user_2_id?: string | null;
+          last_updated?: string;
+          user_1_id: string;
+          user_2_id: string;
         };
         Update: {
           id?: number;
           intersection_count?: number | null;
-          last_updated?: string | null;
-          user_1_id?: string | null;
-          user_2_id?: string | null;
+          last_updated?: string;
+          user_1_id?: string;
+          user_2_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "follow_intersections_user_1_id_fkey";
+            columns: ["user_1_id"];
+            referencedRelation: "users";
+            referencedColumns: ["user_id"];
+          },
+          {
+            foreignKeyName: "follow_intersections_user_2_id_fkey";
+            columns: ["user_2_id"];
+            referencedRelation: "users";
+            referencedColumns: ["user_id"];
+          }
+        ];
       };
       housing_search_profiles: {
         Row: {
@@ -220,12 +233,6 @@ interface Database {
           {
             foreignKeyName: "referrals_originator_id_fkey";
             columns: ["originator_id"];
-            referencedRelation: "users";
-            referencedColumns: ["user_id"];
-          },
-          {
-            foreignKeyName: "referrals_recipient_id_fkey";
-            columns: ["recipient_id"];
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }

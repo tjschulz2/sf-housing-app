@@ -1,6 +1,7 @@
 import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
 import { getUserSession } from "./auth";
+import { getCurrentTimestamp } from "./general";
 
 // ----- Users & Profiles -----
 
@@ -51,10 +52,11 @@ export async function getHousingSearchProfiles(
     .from("housing_search_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url)
+      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
     `
     )
     .range(startIdx, startIdx + count);
+  // .eq("housing_search_profiles.user_id", "follow_intersections.user_id_1");
 
   if (error) {
     console.error(error);
@@ -186,39 +188,105 @@ export async function storeFollowers(
   }
 }
 
-export async function getFollowIntersection(
-  redisClient: RedisClientType<any, any, any>,
+async function computeFollowIntersection(userID1: string, userID2: string) {
+  // Computes intersection (on server) between user1 (derived from accessToken), and user2 (passed in request)
+  const accessToken = (await getUserSession())?.accessToken;
+  if (!accessToken) {
+    throw "failed to find access token";
+  }
+  const response = await fetch("/api/compute-follow-intersection", {
+    method: "POST",
+    headers: {
+      accessToken,
+    },
+    body: JSON.stringify({ userID1, userID2 }),
+  });
+  if (response.status !== 200) {
+    throw "failed to compute intersection";
+  } else {
+    const { intersectionCount } = await response.json();
+    return intersectionCount;
+  }
+}
+
+export async function storeFollowIntersection(
+  userID1: string,
+  userID2: string,
+  intersectionCount: number
+) {
+  const { data, error } = await supabase
+    .from("follow_intersections_duplicate")
+    .upsert(
+      {
+        user_1_id: userID1,
+        user_2_id: userID2,
+        intersection_count: intersectionCount,
+        last_updated: getCurrentTimestamp(),
+      }
+      // { onConflict: "user_1_id, user_2_id" }
+    )
+    .select("intersection_count")
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
+export async function getFollowIntersection(userID1: string, userID2: string) {
+  // Retrieves intersection from cache (Postgres)
+  let { data, error } = await supabase
+    .from("follow_intersections_duplicate")
+    .select("intersection_count")
+    .eq("user_1_id", userID1)
+    .eq("user_2_id", userID2)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  } else {
+    return data;
+  }
+}
+
+export async function getFollowIntersectionWithCaching(
   userID1: string,
   userID2: string
 ) {
-  // Computes and retrieves intersection between {user1 follows} and {user2 followers}
-  const user1FollowsKey = `user-follows:${userID1}`;
-  const user2FollowersKey = `user-followers:${userID2}`;
-  return await redisClient.sInterCard(
-    [user1FollowsKey, user2FollowersKey],
-    1000
-  );
-}
+  try {
+    let intersectionCount;
+    const cachedIntersection = await getFollowIntersection(userID1, userID2);
+    console.log("cachedIntersection: ", cachedIntersection);
 
-export async function getFollowIntersections(
-  redisClient: RedisClientType,
-  primaryUserID: string,
-  comparisonUserIDs: string[]
-) {
-  const primaryUserFollowsKey = `user-follows:${primaryUserID}`;
+    if (typeof cachedIntersection?.intersection_count === "number") {
+      intersectionCount = cachedIntersection.intersection_count;
+    } else if (!cachedIntersection) {
+      const computedIntersection = await computeFollowIntersection(
+        userID1,
+        userID2
+      );
 
-  const promises: Promise<number>[] = [];
-  comparisonUserIDs.forEach((compUserID) => {
-    const compUserFollowersKey = `user-followers:${compUserID}`;
-    promises.push(
-      redisClient.sInterCard(
-        [primaryUserFollowsKey, compUserFollowersKey],
-        1000
-      )
-    );
-  });
-  const results = Promise.all(promises);
-  return results;
+      // Set newly-computed intersection to cache
+      const cacheResult = await storeFollowIntersection(
+        userID1,
+        userID2,
+        computedIntersection
+      );
+      if (!cacheResult) {
+        throw `failed to cache intersection count: ${computedIntersection}`;
+      } else {
+        intersectionCount = cacheResult.intersection_count;
+      }
+    }
+
+    return {
+      status: "success",
+      intersectionCount,
+    };
+  } catch (err) {
+    return { status: "error", message: err };
+  }
 }
 
 export async function fetchFromTwitter(
