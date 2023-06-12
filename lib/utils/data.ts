@@ -215,7 +215,7 @@ export async function storeFollowIntersection(
   intersectionCount: number
 ) {
   const { data, error } = await supabase
-    .from("follow_intersections_duplicate")
+    .from("follow_intersections")
     .upsert(
       {
         user_1_id: userID1,
@@ -237,7 +237,7 @@ export async function storeFollowIntersection(
 export async function getFollowIntersection(userID1: string, userID2: string) {
   // Retrieves intersection from cache (Postgres)
   let { data, error } = await supabase
-    .from("follow_intersections_duplicate")
+    .from("follow_intersections")
     .select("intersection_count")
     .eq("user_1_id", userID1)
     .eq("user_2_id", userID2)
@@ -257,7 +257,7 @@ export async function getFollowIntersectionWithCaching(
   try {
     let intersectionCount;
     const cachedIntersection = await getFollowIntersection(userID1, userID2);
-    console.log("cachedIntersection: ", cachedIntersection);
+    console.log("cache HIT");
 
     if (typeof cachedIntersection?.intersection_count === "number") {
       intersectionCount = cachedIntersection.intersection_count;
@@ -277,6 +277,7 @@ export async function getFollowIntersectionWithCaching(
         throw `failed to cache intersection count: ${computedIntersection}`;
       } else {
         intersectionCount = cacheResult.intersection_count;
+        console.log("cache MISS");
       }
     }
 
