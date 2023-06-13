@@ -65,6 +65,27 @@ export async function getHousingSearchProfiles(
   }
 }
 
+export async function getOrganizerProfiles(
+  startIdx: number = 0,
+  count: number = 25
+) {
+  const { data, error } = await supabase
+    .from("organizer_profiles")
+    .select(
+      `
+      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+    `
+    )
+    .range(startIdx, startIdx + count);
+  // .eq("housing_search_profiles.user_id", "follow_intersections.user_id_1");
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
 // ----- Referrals -----
 
 export async function genReferral(userID: string) {

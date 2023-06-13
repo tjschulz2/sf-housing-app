@@ -9,6 +9,23 @@
   font-size: var(--font-size-base);
 }
 
+.colorBlue {
+  color: var(--color-cornflowerblue-100);
+}
+
+.colorBlue:hover {
+  color: var(--color-steelblue);
+}
+
+.colorPurple {
+  color: var(--color-lightpurple);
+}
+
+.colorPurple:hover {
+  color: #8e64e7;
+}
+
+
 @media (max-width: 578px) {
   .inviteButton {
     margin-right: 0px;

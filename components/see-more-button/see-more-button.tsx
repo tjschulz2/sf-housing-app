@@ -5,11 +5,13 @@ import styles from "./see-more-button.module.css";
 
 type ChildComponentProps = {
   seeMoreText: string;
+  color: string;
 };
 
-export default function SeeMoreButton({ seeMoreText }: ChildComponentProps) {
+export default function SeeMoreButton({ seeMoreText, color }: ChildComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const colorClass = color === 'purple' ? styles.colorPurple : styles.colorBlue;
 
   const handleClick = () => {
     setIsExpanded(!isExpanded);
@@ -26,7 +28,7 @@ export default function SeeMoreButton({ seeMoreText }: ChildComponentProps) {
 
   return (
     <>
-      <a className={styles.seeMore} onClick={handleClick}>
+      <a className={`${styles.seeMore} ${colorClass}`} onClick={handleClick}>
         {"See more"}
       </a>
       <Modal closeModal={closeModal} isOpen={isOpen}>
