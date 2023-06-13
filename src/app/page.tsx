@@ -4,56 +4,45 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../../components/home-page-component";
-import {
-  signInWithTwitter as signInWithTwitterAuth,
-  signUpWithTwitter as signUpWithTwitterAuth,
-} from "../../lib/utils/auth";
-import { getSessionData, handleSignIn } from "../../lib/utils/process";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { getReferralDetails } from "../../lib/utils/data";
+import { useRouter } from "next/navigation";
+import { handleSignIn } from "../../lib/utils/process";
 
 const Home: NextPage = () => {
   const router = useRouter();
-
-  const signInWithTwitter = async () => {
-    await signInWithTwitterAuth();
-  };
-
-  const signUpWithTwitter = async () => {
-    localStorage.setItem("isSignUp", "true");
-    await signUpWithTwitterAuth();
-  };
+  const referralCode = useSearchParams().get("referralCode");
+  const [referralDetails, setReferralDetails] = useState<ReferralDetails>(null);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const isSignUp = localStorage.getItem("isSignUp") === "true";
-      if (isSignUp) {
-        await handleSignIn();
-        router.push("/email-signup");
+    async function handlePageLoad() {
+      if (referralCode) {
+        const referral = await getReferralDetails(referralCode);
+        if (referral.status === "unclaimed") {
+          localStorage.setItem("referral-code", referralCode);
+        } else {
+          alert(`This referral is ${referral.status}`);
+        }
+        setReferralDetails(referral);
       } else {
-        const signInSuccessful = await getSessionData();
-        if (signInSuccessful) {
-          router.push("/directory");
+        const signInResult = await handleSignIn();
+        console.log(signInResult);
+        if (signInResult?.status !== "success") {
+          return;
+        }
+        if (signInResult.message === "initial sign in") {
+          router.replace("/email-signup");
+        } else {
+          router.replace("/directory");
         }
       }
-      // Clear localStorage after authentication is complete
-      localStorage.removeItem("isSignUp");
-    };
-    checkUser();
+    }
+    handlePageLoad();
   }, []);
-
-  const referralCode = useSearchParams().get("referralCode");
-  const normalizedReferralCode = Array.isArray(referralCode)
-    ? referralCode[0]
-    : referralCode;
 
   return (
     <div className={styles.home}>
-      <HomePageComponent
-        referralCode={normalizedReferralCode}
-        signInWithTwitter={signInWithTwitter}
-        signUpWithTwitter={signUpWithTwitter}
-      />
+      <HomePageComponent referralDetails={referralDetails} />
     </div>
   );
 };

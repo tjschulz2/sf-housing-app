@@ -13,7 +13,7 @@ export default function SeeMoreButton({ seeMoreText }: ChildComponentProps) {
 
   const handleClick = () => {
     setIsExpanded(!isExpanded);
-    openModal()
+    openModal();
   };
 
   function openModal() {
@@ -26,11 +26,13 @@ export default function SeeMoreButton({ seeMoreText }: ChildComponentProps) {
 
   return (
     <>
-      <a className={styles.seeMore} onClick={handleClick}>{'See more'}</a>
+      <a className={styles.seeMore} onClick={handleClick}>
+        {"See more"}
+      </a>
       <Modal closeModal={closeModal} isOpen={isOpen}>
         <div
           style={{
-            position: "relative",
+            // position: "relative",
             marginBottom: "16px",
             marginLeft: "16px",
             marginRight: "16px",
@@ -43,9 +45,7 @@ export default function SeeMoreButton({ seeMoreText }: ChildComponentProps) {
             x
           </button>
           <h2>About me</h2>
-          <p style={{ color: "grey" }}>
-            {seeMoreText}
-          </p>
+          <p style={{ color: "grey" }}>{seeMoreText}</p>
         </div>
       </Modal>
     </>

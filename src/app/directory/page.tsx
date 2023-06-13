@@ -1,10 +1,23 @@
+"use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
 import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getHousingSearchProfiles } from "../../../lib/utils/data";
 
-async function Directory() {
-  const data = Array.from({ length: 20 }, (_, i) => i + 1);
+function Directory() {
+  const [profiles, setProfiles] = useState<HousingSearchProfile[]>();
+
+  useEffect(() => {
+    async function pullProfiles() {
+      const profiles = await getHousingSearchProfiles();
+      if (profiles) {
+        setProfiles(profiles);
+      }
+    }
+    pullProfiles();
+  }, []);
 
   return (
     <>
@@ -20,8 +33,8 @@ async function Directory() {
       </div>
       <h2>Today</h2>
       <div className={styles.containerGrid}>
-        {data.map((index) => (
-          <ProfileCard key={index} />
+        {profiles?.map((profile) => (
+          <ProfileCard key={profile.profile_id} profile={profile} />
         ))}
       </div>
     </>

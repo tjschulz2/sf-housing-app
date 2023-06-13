@@ -1,13 +1,12 @@
-'use client';
+"use client";
 import styles from "./page.module.css";
 import Navbar from "../../../components/navbar/navbar";
 import Link from "next/link";
 import InviteButton from "../../../components/invite-button/invite-button";
 import { signout } from "../../../lib/utils/auth";
 import { useEffect } from "react";
-import { useRouter } from 'next/navigation'
-import { getCurrentUser } from "../../../lib/utils/auth";
-
+import { useRouter } from "next/navigation";
+import { getUserSession } from "../../../lib/utils/auth";
 
 export default function DirectoryLayout({
   children,
@@ -17,10 +16,10 @@ export default function DirectoryLayout({
   const router = useRouter();
   useEffect(() => {
     async function checkSession() {
-      const user = await getCurrentUser();
+      const user = await getUserSession();
       if (!user) {
         await signout();
-        router.push('/#');
+        router.push("/#");
       }
     }
 
@@ -36,7 +35,9 @@ export default function DirectoryLayout({
             <Link className={styles.settingsButton} href="/settings">
               <img className={styles.gearIcon} alt="" src="/gearIcon.svg" />
             </Link>
-            <Link href="/logout" className={styles.signOutButton}>Sign out</Link>
+            <Link href="/logout" className={styles.signOutButton}>
+              Sign out
+            </Link>
           </div>
         </div>
         <Navbar />

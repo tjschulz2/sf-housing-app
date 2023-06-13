@@ -1,6 +1,7 @@
 import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
-import { getCurrentUser } from "./auth";
+import { getUserSession } from "./auth";
+import { getCurrentTimestamp } from "./general";
 
 // ----- Users & Profiles -----
 
@@ -8,7 +9,7 @@ export async function getUserData(userID?: string) {
   // Returns all data from public.users for current user, if it exists
 
   // If userID not passed, attempts to retrieve from session
-  userID = userID ?? (await getCurrentUser())?.userID;
+  userID = userID ?? (await getUserSession())?.userID;
   if (!userID) {
     throw "failed to find userID";
   }
@@ -16,12 +17,13 @@ export async function getUserData(userID?: string) {
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("user_id", userID);
+    .eq("user_id", userID)
+    .maybeSingle();
 
   if (error) {
     console.error(error);
   } else if (data) {
-    return data[0];
+    return data;
   }
 }
 
@@ -46,15 +48,19 @@ export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25
 ) {
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from("housing_search_profiles")
-    .select("*")
+    .select(
+      `
+      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+    `
+    )
     .range(startIdx, startIdx + count);
+  // .eq("housing_search_profiles.user_id", "follow_intersections.user_id_1");
 
   if (error) {
     console.error(error);
   } else {
-    console.log(data);
     return data;
   }
 }
@@ -83,17 +89,43 @@ export async function getReferralDetails(referralCode: string) {
     .select(
       `
   *,
-  users (
-    name
-  )
-`
+  originator:originator_id(name)`
     )
-    .eq("referral_code", referralCode);
-  if (error) {
-    console.error(error);
+    .eq("referral_id", referralCode)
+    .maybeSingle();
+
+  let status;
+
+  if (!data) {
+    status = "invalid";
+  } else if (data.recipient_id) {
+    status = "claimed";
   } else {
-    return data;
+    status = "unclaimed";
   }
+
+  return {
+    referralCreatedAt: data?.created_at,
+    originatorID: data?.originator_id,
+    recipientID: data?.recipient_id,
+    referralID: data?.referral_id,
+    // @ts-ignore
+    originatorName: data?.originator.name,
+    status,
+  };
+}
+
+export async function claimReferral(referralID: string, userID: string) {
+  const { data, error } = await supabase
+    .from("referrals")
+    .update({ recipient_id: userID })
+    .eq("referral_id", referralID)
+    .is("recipient_id", null)
+    .select();
+  if (error || data[0]?.recipient_id !== userID) {
+    return { status: "error", message: "failed to claim referral" };
+  }
+  return { status: "success" };
 }
 
 async function decAvailableReferrals(userID: string) {
@@ -125,13 +157,17 @@ export async function getAvailableReferrals(userID: string) {
 export async function storeFollowing(
   redisClient: RedisClientType<any, any, any>,
   userID: string,
-  follows: Array<string>
+  following: Array<string>
 ) {
   if (!redisClient) {
-    console.error("Failed to create Redis client");
-  } else {
+    return { status: "error", message: "Failed to create Redis client" };
+  }
+  try {
     const redisKey = `user-following:${userID}`;
-    return await redisClient.sAdd(redisKey, follows);
+    const result = await redisClient.sAdd(redisKey, following);
+    return { status: "success", message: result };
+  } catch (err) {
+    return { status: "error", message: "Failed to push to Redis" };
   }
 }
 
@@ -141,46 +177,117 @@ export async function storeFollowers(
   followers: Array<string>
 ) {
   if (!redisClient) {
-    console.error("Failed to create Redis client");
-  } else {
+    return { status: "error", message: "Failed to create Redis client" };
+  }
+  try {
     const redisKey = `user-followers:${userID}`;
-    return await redisClient.sAdd(redisKey, followers);
+    const result = await redisClient.sAdd(redisKey, followers);
+    return { status: "success", message: result };
+  } catch (err) {
+    return { status: "error", message: "Failed to push to Redis" };
   }
 }
 
-export async function getFollowIntersection(
-  redisClient: RedisClientType<any, any, any>,
+async function computeFollowIntersection(userID1: string, userID2: string) {
+  // Computes intersection (on server) between user1 (derived from accessToken), and user2 (passed in request)
+  const accessToken = (await getUserSession())?.accessToken;
+  if (!accessToken) {
+    throw "failed to find access token";
+  }
+  const response = await fetch("/api/compute-follow-intersection", {
+    method: "POST",
+    headers: {
+      accessToken,
+    },
+    body: JSON.stringify({ userID1, userID2 }),
+  });
+  if (response.status !== 200) {
+    throw "failed to compute intersection";
+  } else {
+    const { intersectionCount } = await response.json();
+    return intersectionCount;
+  }
+}
+
+export async function storeFollowIntersection(
+  userID1: string,
+  userID2: string,
+  intersectionCount: number
+) {
+  const { data, error } = await supabase
+    .from("follow_intersections")
+    .upsert(
+      {
+        user_1_id: userID1,
+        user_2_id: userID2,
+        intersection_count: intersectionCount,
+        last_updated: getCurrentTimestamp(),
+      }
+      // { onConflict: "user_1_id, user_2_id" }
+    )
+    .select("intersection_count")
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
+export async function getFollowIntersection(userID1: string, userID2: string) {
+  // Retrieves intersection from cache (Postgres)
+  let { data, error } = await supabase
+    .from("follow_intersections")
+    .select("intersection_count")
+    .eq("user_1_id", userID1)
+    .eq("user_2_id", userID2)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  } else {
+    return data;
+  }
+}
+
+export async function getFollowIntersectionWithCaching(
   userID1: string,
   userID2: string
 ) {
-  // Computes and retrieves intersection between {user1 follows} and {user2 followers}
-  const user1FollowsKey = `user-follows:${userID1}`;
-  const user2FollowersKey = `user-followers:${userID2}`;
-  return await redisClient.sInterCard(
-    [user1FollowsKey, user2FollowersKey],
-    1000
-  );
-}
+  try {
+    let intersectionCount;
+    const cachedIntersection = await getFollowIntersection(userID1, userID2);
+    console.log("cache HIT");
 
-export async function getFollowIntersections(
-  redisClient: RedisClientType,
-  primaryUserID: string,
-  comparisonUserIDs: string[]
-) {
-  const primaryUserFollowsKey = `user-follows:${primaryUserID}`;
+    if (typeof cachedIntersection?.intersection_count === "number") {
+      intersectionCount = cachedIntersection.intersection_count;
+    } else if (!cachedIntersection) {
+      const computedIntersection = await computeFollowIntersection(
+        userID1,
+        userID2
+      );
 
-  const promises: Promise<number>[] = [];
-  comparisonUserIDs.forEach((compUserID) => {
-    const compUserFollowersKey = `user-followers:${compUserID}`;
-    promises.push(
-      redisClient.sInterCard(
-        [primaryUserFollowsKey, compUserFollowersKey],
-        1000
-      )
-    );
-  });
-  const results = Promise.all(promises);
-  return results;
+      // Set newly-computed intersection to cache
+      const cacheResult = await storeFollowIntersection(
+        userID1,
+        userID2,
+        computedIntersection
+      );
+      if (!cacheResult) {
+        throw `failed to cache intersection count: ${computedIntersection}`;
+      } else {
+        intersectionCount = cacheResult.intersection_count;
+        console.log("cache MISS");
+      }
+    }
+
+    return {
+      status: "success",
+      intersectionCount,
+    };
+  } catch (err) {
+    return { status: "error", message: err };
+  }
 }
 
 export async function fetchFromTwitter(

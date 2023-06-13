@@ -9,7 +9,6 @@ import { JwtPayload } from "jsonwebtoken";
 
 export async function GET() {
   const headersList = headers();
-  // verify jwt from req header OR use supabase next auth middleware
   try {
     const jwt = headersList.get("accessToken");
     if (!jwt) {
@@ -19,18 +18,16 @@ export async function GET() {
     const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
       JwtPayload;
     const { sub: userID } = user;
-
     const { sub: twitterID } = user.user_metadata;
-    console.log(twitterID);
-    if (userID && typeof userID === "string") {
-      // Retrieve twitter follow data
-      const userFollowing = (
-        await twitter.following.getFromTwitter(twitterID)
-      ).map((twUser) => twUser.id.toString());
 
-      const userFollowers = (
+    if (userID && typeof userID === "string") {
+      const followingList = (
+        await twitter.following.getFromTwitter(twitterID)
+      ).map((user) => user.id.toString());
+
+      const followersList = (
         await twitter.followers.getFromTwitter(twitterID)
-      ).map((twUser) => twUser.id.toString());
+      ).map((user) => user.id.toString());
 
       const redisClient = await createRedisClient();
       if (!redisClient) {
@@ -40,15 +37,21 @@ export async function GET() {
       const followingStorageResult = await twitter.following.setToStore(
         redisClient,
         userID,
-        userFollowing
+        followingList
       );
       const followerStorageResult = await twitter.followers.setToStore(
         redisClient,
         userID,
-        userFollowers
+        followersList
       );
 
-      console.log(followingStorageResult, followerStorageResult);
+      if (
+        followingStorageResult.status === "error" ||
+        followerStorageResult.status === "error"
+      ) {
+        throw "Failed to store follow data";
+      }
+
       redisClient.quit();
     }
   } catch (err) {

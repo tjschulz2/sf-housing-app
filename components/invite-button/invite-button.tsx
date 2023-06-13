@@ -3,14 +3,13 @@ import { useState } from "react";
 import Modal from "../modal/modal";
 import styles from "./invite-button.module.css";
 import { supabase } from "../../lib/supabaseClient";
-import { getCurrentUser } from "../../lib/utils/auth";
+import { getUserSession } from "../../lib/utils/auth";
 
-
-let referralBaseLink = 'http://directorysf.com/?referralCode='
+let referralBaseLink = "http://directorysf.com/?referralCode=";
 
 export default function InviteButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [referralLink, setReferralLink] = useState('');
+  const [referralLink, setReferralLink] = useState("");
 
   const openModal = async () => {
     const userId = await getSessionData();
@@ -21,15 +20,15 @@ export default function InviteButton() {
   };
 
   const getSessionData = async () => {
-    const session = await getCurrentUser();
+    const session = await getUserSession();
     if (session && session.twitterID) {
       const { data, error } = await supabase
-        .from('users')
-        .select('user_id')
-        .eq('twitter_id', session.twitterID);
+        .from("users")
+        .select("user_id")
+        .eq("twitter_id", session.twitterID);
 
       if (error) {
-        console.error('Error fetching user:', error);
+        console.error("Error fetching user:", error);
         return null;
       }
 
@@ -47,20 +46,18 @@ export default function InviteButton() {
       setReferralLink(newReferralLink);
 
       // Insert a new record into your `referrals` table
-      const { data, error } = await supabase
-        .from('referrals')
-        .insert([
-          { 
-            referral_id: referralCode,
-            originator_id: userId,
-          },
-        ]);
+      const { data, error } = await supabase.from("referrals").insert([
+        {
+          referral_id: referralCode,
+          originator_id: userId,
+        },
+      ]);
 
       if (error) throw error;
 
-      console.log('Referral code generated:', referralCode);
+      console.log("Referral code generated:", referralCode);
     } catch (error) {
-      console.error('Failed to generate referral code:', error);
+      console.error("Failed to generate referral code:", error);
     }
   };
 
@@ -71,9 +68,9 @@ export default function InviteButton() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(referralLink);
-      alert('Referral link copied to clipboard!');
+      alert("Referral link copied to clipboard!");
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 
