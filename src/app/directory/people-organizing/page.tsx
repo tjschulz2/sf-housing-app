@@ -1,9 +1,24 @@
+"use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
 import ProfileCard from "../../../../components/profile-card";
 import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { getOrganizerProfiles } from "../../../../lib/utils/data";
 
 const Directory: NextPage = () => {
+  const [profiles, setProfiles] = useState<OrganizerProfile[]>();
+
+  useEffect(() => {
+    async function pullProfiles() {
+      const profiles = await getOrganizerProfiles();
+      if (profiles) {
+        setProfiles(profiles);
+      }
+    }
+    pullProfiles();
+  }, []);
+
   const data = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (
@@ -20,9 +35,9 @@ const Directory: NextPage = () => {
       </div>
       <h2>Today</h2>
       <div className={styles.containerGrid}>
-        {/* {data.map((index) => (
-          <ProfileCard key={index} />
-        ))} */}
+      {profiles?.map((profile) => (
+          <ProfileCard key={profile.profile_id} profile={profile} color="purple" />
+        ))}
       </div>
     </>
   );

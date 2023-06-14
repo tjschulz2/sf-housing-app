@@ -6,8 +6,26 @@ import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 import { useEffect, useState } from "react";
 import { getFollowIntersection } from "../lib/utils/data";
 import { FollowedBy } from "./followed-by/followed-by";
-const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
+import TwitterLogo from '../src/images/twitter-logo.svg'
+
+type ProfileCardProps = {
+  profile: HousingSearchProfile | OrganizerProfile;
+  color: string; // Define color as a string type (or whatever type your color variable is)
+};
+
+const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const { user } = profile;
+  const colorClass = color === 'purple' ? styles.colorPurple : styles.colorBlue;
+  const svgImage = color === 'purple' ? "#6B31E7" : "#3191e7";
+  const colorClassWrapper = color === 'purple' ? styles.backgroundPurple : styles.backgroundBlue;
+
+  function isHousingSearchProfile(profile: HousingSearchProfile | OrganizerProfile): profile is HousingSearchProfile {
+    return (profile as HousingSearchProfile).pref_housemate_details !== undefined;
+  }
+  
+  function isOrganizerProfile(profile: HousingSearchProfile | OrganizerProfile): profile is OrganizerProfile {
+    return (profile as OrganizerProfile).pref_house_details !== undefined;
+  }
 
   return (
     <li className={styles.frameParent} id="profile-card-element">
@@ -21,7 +39,7 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
         ) : null}
         <div className={styles.frameGroup}>
           <a
-            className={styles.contactMeWrapper}
+            className={`${styles.contactMeWrapper} ${colorClassWrapper}`}
             href={profile.pref_contact_method || "https://google.com"}
             target="_blank"
           >
@@ -29,12 +47,12 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
           </a>
           {profile.link ? (
             <a
-              className={styles.vectorParent}
+              className={`${styles.vectorParent} ${colorClass}`}
               href={addProtocolToURL(profile.link)}
               target="_blank"
             >
               <img className={styles.vectorIcon} alt="" src="/link.svg" />
-              <div className={styles.a9io}>{cleanURL(profile.link)}</div>
+              <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(profile.link)}</div>
             </a>
           ) : null}
           <div className={styles.locationParent}>
@@ -56,25 +74,20 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
               <h4 className={styles.maxKrieger} id="twitter-name">
                 {user?.name}
               </h4>
-              <div className={styles.maxkriegers}>@{user?.twitter_handle}</div>
-              <img
-                className={styles.vectorIcon1}
-                alt=""
-                src="/twitter-logo.svg"
-              />
+              <div className={`${styles.maxkriegers} ${colorClass}`}>@{user?.twitter_handle}</div>
+              <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
             </div>
-            {/* <sub className={styles.followedBy980} id="followed-by">
-              Followed by 980+ people you follow
-            </sub> */}
             <FollowedBy profile={profile} />
           </div>
         </a>
         <div className={styles.lookingToLive} id="looking-for-text">
           <div className={styles.content}>
             <span className={styles.wants}>About me: </span>
-            {profile.pref_housemate_details}
-            {profile.pref_housemate_details ? (
-              <SeeMoreButton seeMoreText={profile.pref_housemate_details} />
+            {isHousingSearchProfile(profile) ? profile.pref_housemate_details : profile.pref_house_details}
+            {isHousingSearchProfile(profile) ? (
+              <SeeMoreButton color={color} seeMoreText={profile.pref_housemate_details ?? ""} />
+            ) : isOrganizerProfile(profile) ? (
+              <SeeMoreButton color={color} seeMoreText={profile.pref_house_details ?? ""} />
             ) : null}
           </div>
         </div>
@@ -92,12 +105,11 @@ const ProfileCard = ({ profile }: { profile: HousingSearchProfile }) => {
         </p>
         <p className={styles.wants1YearLeaseContainer} id="moving-text">
           <span className={styles.wants}>Moving:</span>
-          {/* <span>{` Now -> August 2023`}</span> */}
           <span>
             {" "}
-            {profile.pref_move_in
-              ? housingMap.moveIn[profile.pref_move_in]
-              : null}
+            {isHousingSearchProfile(profile)
+              ? housingMap.moveIn[profile.pref_move_in ?? 1]
+              : isOrganizerProfile(profile) ? housingMap.moveIn[profile.pref_lease_start ?? 1] : null}
           </span>
         </p>
       </div>
