@@ -18,7 +18,6 @@ const Directory: NextPage = () => {
     }
     pullProfiles();
   }, []);
-
   const data = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (

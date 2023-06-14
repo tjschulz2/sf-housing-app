@@ -146,6 +146,8 @@
   font-size: inherit;
   font-weight: 600;
   font-family: inherit;
+  text-decoration: none;
+  color: black;
 }
 
 .maxkriegers {
@@ -280,4 +282,38 @@
   border: 1px solid #898989;
   padding: 1.5rem;
   gap: var(--gap-base);
+}
+
+.bottomFrame {
+  gap: var(--gap-base);
+  color: var(--color-darkslategray);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.houseName {
+  font-size: var(--font-size-lg);
+  color: var(--color-black);
+  font-weight: 600;
+}
+
+.twitterProfileContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameAndHandleContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+
+.smallExtension {
+  margin-right: 4px;
+}
+
+.biggerExtension {
+  margin-right: 8px;
 }

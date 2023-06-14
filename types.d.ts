@@ -38,8 +38,17 @@ type HousingSearchProfile =
     } | null;
   };
 
-  type OrganizerProfile =
+type OrganizerProfile =
   Database["public"]["Tables"]["organizer_profiles"]["Row"] & {
+    user: {
+      name: string | null;
+      twitter_avatar_url: string | null;
+      twitter_handle: string | null;
+    } | null;
+  };
+
+type CommunityProfile =
+  Database["public"]["Tables"]["communities"]["Row"] & {
     user: {
       name: string | null;
       twitter_avatar_url: string | null;
@@ -89,7 +98,14 @@ interface Database {
           user_id?: string | null
           website_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "communities_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
       }
       confirmation_codes: {
         Row: {

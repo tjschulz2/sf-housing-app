@@ -209,7 +209,7 @@ const MyForm: NextPage = () => {
           <label>
             <h2>What&#39;s the name of your community?</h2>
             <p className={styles.maxCharacters}>
-              Optional. If left blank, then we will use your Twitter name
+              If no formal name, just put "Apartment" or "House"
             </p>
             <input
               className={styles.inputStyle}
