@@ -42,13 +42,15 @@ export async function handleSignIn() {
         throw "Failed to claim referral";
       }
 
+      const twitterImageUrl = currentUser.twitterAvatarURL
+      let higherResImageUrl = twitterImageUrl.replace('_normal', '_400x400');
       // At this point, we have successfully claimed a referral for a user. Add them to 'public.users'
       userData = await createUser({
         user_id: currentUser.userID,
         email: currentUser.twitterEmail,
         twitter_id: currentUser.twitterID,
         name: currentUser.twitterName,
-        twitter_avatar_url: currentUser.twitterAvatarURL,
+        twitter_avatar_url: higherResImageUrl,
         twitter_handle: currentUser.twitterHandle,
       });
       if (!userData) {
