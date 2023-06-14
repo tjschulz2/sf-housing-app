@@ -52,6 +52,14 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
+      let userName = user?.name || ""
+      if (userName.length > 16) {
+        userName = userName?.substring(0,15) + "...";
+      }
+      let link = profile.link || ""
+      if (link.length > 14) {
+        link = link.substring(0,14) + "...";
+      }
       return (
         <li className={styles.frameParent} id="profile-card-element">
         <div className={styles.image3Parent}>
@@ -71,7 +79,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 target="_blank"
               >
                 <img className={styles.vectorIcon} alt="" src="/link.svg" />
-                <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(profile.link)}</div>
+                <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(link)}</div>
               </a>
             ) : null}
             <div className={styles.locationParent}>
@@ -91,7 +99,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             <div className={styles.frameA}>
               <div className={styles.maxKriegerParent}>
                 <h4 className={styles.maxKrieger} id="twitter-name">
-                  {user?.name}
+                  {userName}
                 </h4>
                 <div className={`${styles.maxkriegers} ${colorClass}`}>@{user?.twitter_handle}</div>
                 <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
@@ -139,6 +147,14 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
+      let userName = user?.name || ""
+      if (userName.length > 16) {
+        userName = userName?.substring(0,15) + "...";
+      }
+      let link = profile.website_url || ""
+      if (link.length > 14) {
+        link = link.substring(0,14) + "...";
+      }
 
       return (
         <li className={styles.frameParent} id="profile-card-element">
@@ -165,7 +181,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   target="_blank"
                 >
                   <img className={styles.vectorIcon} alt="" src="/link.svg" />
-                  <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(profile.website_url)}</div>
+                  <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(link)}</div>
                 </a>
               ) : null}
               <div className={styles.locationParent}>
@@ -193,7 +209,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             >
               <div className={styles.twitterProfileContainer}>
                 <div className={styles.nameAndHandleContainer}>
-                  <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{user?.name}</div>
+                  <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{userName}</div>
                   <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>{user?.twitter_handle}</div>
                   <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
                 </div>
