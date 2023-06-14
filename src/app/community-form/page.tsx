@@ -209,7 +209,7 @@ const MyForm: NextPage = () => {
           <label>
             <h2>What&#39;s the name of your community?</h2>
             <p className={styles.maxCharacters}>
-              If no formal name, just put "Apartment" or "House"
+              If no formal name, just put Apartment or House
             </p>
             <input
               className={styles.inputStyle}
