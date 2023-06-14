@@ -21,33 +21,42 @@ export async function GET() {
     const { sub: twitterID } = user.user_metadata;
 
     if (userID && typeof userID === "string") {
-      const followingList = (
-        await twitter.following.getFromTwitter(twitterID)
-      ).map((user) => user.id.toString());
+      const followingPromise = twitter.following.getFromTwitter(twitterID);
+      const followersPromise = twitter.followers.getFromTwitter(twitterID);
 
-      const followersList = (
-        await twitter.followers.getFromTwitter(twitterID)
-      ).map((user) => user.id.toString());
+      const [followingResponse, followersResponse] = await Promise.all([
+        followingPromise,
+        followersPromise,
+      ]);
+
+      const followingList = followingResponse.map((user) => user.id.toString());
+      const followersList = followersResponse.map((user) => user.id.toString());
 
       const redisClient = await createRedisClient();
       if (!redisClient) {
         throw "server error - no redis client";
       }
 
-      const followingStorageResult = await twitter.following.setToStore(
+      const followingStoragePromise = await twitter.following.setToStore(
         redisClient,
         userID,
         followingList
       );
-      const followerStorageResult = await twitter.followers.setToStore(
+      const followersStoragePromise = await twitter.followers.setToStore(
         redisClient,
         userID,
         followersList
       );
 
+      const [followingStorageResult, followersStorageResult] =
+        await Promise.all([followingStoragePromise, followersStoragePromise]);
+
+      redisClient.quit();
+
+
       if (
         followingStorageResult.status === "error" ||
-        followerStorageResult.status === "error"
+        followersStorageResult.status === "error"
       ) {
         throw "Failed to store follow data";
       }

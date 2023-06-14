@@ -52,7 +52,7 @@ export async function getHousingSearchProfiles(
     .from("housing_search_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+      *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
     .range(startIdx, startIdx + count);
@@ -73,7 +73,7 @@ export async function getOrganizerProfiles(
     .from("organizer_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+      *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
     .range(startIdx, startIdx + count);
@@ -94,7 +94,7 @@ export async function getCommunities(
     .from("communities")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+      *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
     .range(startIdx, startIdx + count);
@@ -201,6 +201,7 @@ export async function storeFollowing(
   userID: string,
   following: Array<string>
 ) {
+  // Server only
   if (!redisClient) {
     return { status: "error", message: "Failed to create Redis client" };
   }
@@ -218,6 +219,7 @@ export async function storeFollowers(
   userID: string,
   followers: Array<string>
 ) {
+  // Server only
   if (!redisClient) {
     return { status: "error", message: "Failed to create Redis client" };
   }
@@ -299,10 +301,10 @@ export async function getFollowIntersectionWithCaching(
   try {
     let intersectionCount;
     const cachedIntersection = await getFollowIntersection(userID1, userID2);
-    console.log("cache HIT");
 
     if (typeof cachedIntersection?.intersection_count === "number") {
       intersectionCount = cachedIntersection.intersection_count;
+      console.log("cache HIT");
     } else if (!cachedIntersection) {
       const computedIntersection = await computeFollowIntersection(
         userID1,

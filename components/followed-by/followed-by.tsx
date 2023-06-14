@@ -29,7 +29,7 @@ export function FollowedBy({ profile }: { profile: HousingSearchProfile | Organi
 
   return (
     <sub className={styles.followedBy980} id="followed-by">
-      {followIntersection
+      {typeof followIntersection === "number"
         ? `Followed by ${followIntersection} people you follow`
         : "Loading followers..."}
     </sub>
