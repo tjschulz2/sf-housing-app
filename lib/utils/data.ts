@@ -243,7 +243,8 @@ async function computeFollowIntersection(userID1: string, userID2: string) {
     body: JSON.stringify({ userID1, userID2 }),
   });
   if (response.status !== 200) {
-    console.log("Intersection compute response: ", response);
+    const body = await response.json()
+    console.log("Intersection compute response: ", body);
     throw "failed to compute intersection";
   } else {
     const { intersectionCount } = await response.json();
