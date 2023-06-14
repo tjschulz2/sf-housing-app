@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getFollowIntersection } from "../lib/utils/data";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from '../src/images/twitter-logo.svg'
+import ContactMeButton  from '../components/contactme-button/contactme-button'
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -44,15 +45,13 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
     return (profile as CommunityProfile).resident_count !== undefined;
   }
 
-  const renderCommunity = () => {
-    return (
-      <div></div>
-    )
-  }
-
   const renderHousingAndOrganizerOrCommunity = () => {
 
     if (!isCommunityProfile(profile) && (isOrganizerProfile(profile) || isHousingSearchProfile(profile))) {
+      let contactMethod = ""
+      if (profile.pref_contact_method) {
+        contactMethod = profile.pref_contact_method;
+      }
       return (
         <li className={styles.frameParent} id="profile-card-element">
         <div className={styles.image3Parent}>
@@ -64,13 +63,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             />
           ) : null}
           <div className={styles.frameGroup}>
-            <a
-              className={`${styles.contactMeWrapper} ${colorClassWrapper}`}
-              href={profile.pref_contact_method || "https://google.com"}
-              target="_blank"
-            >
-              <p className={styles.contactMe}>Contact me</p>
-            </a>
+            <ContactMeButton contactMethod={contactMethod} color={color} />
             {profile.link ? (
               <a
                 className={`${styles.vectorParent} ${colorClass}`}
@@ -142,6 +135,11 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       </li>
       ) 
     } else if (isCommunityProfile(profile)) {
+      let contactMethod = ""
+      if (profile.pref_contact_method) {
+        contactMethod = profile.pref_contact_method;
+      }
+
       return (
         <li className={styles.frameParent} id="profile-card-element">
           <div className={styles.image3Parent}>
@@ -159,13 +157,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               />
             ) : null}
             <div className={styles.frameGroup}>
-              <a
-                className={`${styles.contactMeWrapper} ${colorClassWrapper}`}
-                href={profile.pref_contact_method || "https://google.com"}
-                target="_blank"
-              >
-                <p className={styles.contactMe}>Contact me</p>
-              </a>
+              <ContactMeButton contactMethod={contactMethod} color={color} />
               {profile.website_url ? (
                 <a
                   className={`${styles.vectorParent} ${colorClass}`}
