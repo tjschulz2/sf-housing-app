@@ -84,6 +84,22 @@
   color: var(--color-lightpurple);
 }
 
+.colorGreen {
+  color: var(--color-lightgreen);
+}
+
+.backgroundGreen {
+  background-color: var(--color-lightgreen);
+}
+
+.backgroundGreen:hover {
+  background-color: #76dcb6
+}
+
+.colorGreen:hover {
+  color: #76dcb6
+}
+
 .colorPurple:hover {
   color: #8e64e7;
 }

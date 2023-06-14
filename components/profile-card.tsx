@@ -15,9 +15,22 @@ type ProfileCardProps = {
 
 const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const { user } = profile;
-  const colorClass = color === 'purple' ? styles.colorPurple : styles.colorBlue;
-  const svgImage = color === 'purple' ? "#6B31E7" : "#3191e7";
-  const colorClassWrapper = color === 'purple' ? styles.backgroundPurple : styles.backgroundBlue;
+  let colorClass: any;
+  let svgImage: string;
+  let colorClassWrapper: any;
+  if (color === 'purple') {
+    colorClass = styles.colorPurple;
+    svgImage = "#6B31E7"
+    colorClassWrapper = styles.backgroundPurple
+  } else if (color === 'green') {
+    colorClass = styles.colorGreen;  // Make sure to define colorGreen in your styles
+    svgImage = "#25CB8F"
+    colorClassWrapper = styles.backgroundGreen
+  } else {
+    colorClass = styles.colorBlue;
+    svgImage = "#3191e7"
+    colorClassWrapper = styles.backgroundBlue
+  }
 
   function isHousingSearchProfile(profile: HousingSearchProfile | OrganizerProfile | CommunityProfile): profile is HousingSearchProfile {
     return (profile as HousingSearchProfile).pref_housemate_details !== undefined;

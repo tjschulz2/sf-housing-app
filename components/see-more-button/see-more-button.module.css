@@ -25,6 +25,14 @@
   color: #8e64e7;
 }
 
+.colorGreen {
+  color: var(--color-lightgreen);
+}
+
+.colorGreen:hover {
+  color: #76dcb6
+}
+
 
 @media (max-width: 578px) {
   .inviteButton {

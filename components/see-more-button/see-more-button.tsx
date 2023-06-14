@@ -11,7 +11,14 @@ type ChildComponentProps = {
 export default function SeeMoreButton({ seeMoreText, color }: ChildComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const colorClass = color === 'purple' ? styles.colorPurple : styles.colorBlue;
+  let colorClass: any;
+  if (color === 'purple') {
+    colorClass = styles.colorPurple;
+  } else if (color === 'green') {
+    colorClass = styles.colorGreen;  // Make sure to define colorGreen in your styles
+  } else {
+    colorClass = styles.colorBlue;
+  }
 
   const handleClick = () => {
     setIsExpanded(!isExpanded);
