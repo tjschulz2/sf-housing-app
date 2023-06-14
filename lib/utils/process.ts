@@ -99,6 +99,8 @@ async function refreshTwitterFollowsIfNeeded(
     },
   });
 
+  console.log("Refresh API response: ", refreshResponse);
+
   if (refreshResponse.status === 200) {
     console.log("refreshed twitter follows");
     const { error } = await supabase
@@ -108,9 +110,9 @@ async function refreshTwitterFollowsIfNeeded(
 
     if (error) {
       console.error("Failed to update follow refresh timestamp");
-    } else {
-      console.error("Failed to refresh Twitter follows");
     }
+  } else {
+    console.error("Failed to refresh Twitter follows");
   }
 }
 

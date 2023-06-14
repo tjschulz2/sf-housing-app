@@ -66,6 +66,9 @@ export async function POST(request: Request) {
     );
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ message: "server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "server error", details: err },
+      { status: 500 }
+    );
   }
 }
