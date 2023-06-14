@@ -107,8 +107,10 @@ async function refreshTwitterFollowsIfNeeded(
       .eq("user_id", userData.user_id);
 
     if (error) {
-      console.error("failed to update follow refresh timestamp");
+      console.error("Failed to update follow refresh timestamp");
     }
+  } else {
+    console.error("Failed to refresh Twitter follows");
   }
 }
 
