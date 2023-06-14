@@ -53,7 +53,7 @@ export default function SeeMoreButton({ seeMoreText, color }: ChildComponentProp
           >
             x
           </button>
-          <h2>About me</h2>
+          <h2>About</h2>
           <p style={{ color: "grey" }}>{seeMoreText}</p>
         </div>
       </Modal>
