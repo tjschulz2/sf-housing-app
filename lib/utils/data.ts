@@ -52,7 +52,7 @@ export async function getHousingSearchProfiles(
     .from("housing_search_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+      *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
     .range(startIdx, startIdx + count);
@@ -73,7 +73,7 @@ export async function getOrganizerProfiles(
     .from("organizer_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url), follow_intersections:user_id(*)
+      *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
     .range(startIdx, startIdx + count);

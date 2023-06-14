@@ -34,7 +34,11 @@ function Directory() {
       <h2>Today</h2>
       <div className={styles.containerGrid}>
         {profiles?.map((profile) => (
-          <ProfileCard key={profile.profile_id} profile={profile} color="blue" />
+          <ProfileCard
+            key={profile.profile_id}
+            profile={profile}
+            color="blue"
+          />
         ))}
       </div>
     </>
