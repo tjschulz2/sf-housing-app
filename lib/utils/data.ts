@@ -86,10 +86,7 @@ export async function getOrganizerProfiles(
   }
 }
 
-export async function getCommunities(
-  startIdx: number = 0,
-  count: number = 25
-) {
+export async function getCommunities(startIdx: number = 0, count: number = 25) {
   const { data, error } = await supabase
     .from("communities")
     .select(
@@ -246,6 +243,7 @@ async function computeFollowIntersection(userID1: string, userID2: string) {
     body: JSON.stringify({ userID1, userID2 }),
   });
   if (response.status !== 200) {
+    console.log("Intersection compute response: ", response);
     throw "failed to compute intersection";
   } else {
     const { intersectionCount } = await response.json();
