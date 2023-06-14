@@ -21,20 +21,16 @@ export async function GET() {
     const { sub: twitterID } = user.user_metadata;
 
     if (userID && typeof userID === "string") {
-      const followingListPromise = twitter.following.getFromTwitter(twitterID);
-      const followersListPromise = twitter.followers.getFromTwitter(twitterID);
+      const followingPromise = twitter.following.getFromTwitter(twitterID);
+      const followersPromise = twitter.followers.getFromTwitter(twitterID);
 
-      const [followingListResponse, followersListResponse] = await Promise.all([
-        followingListPromise,
-        followersListPromise,
+      const [followingResponse, followersResponse] = await Promise.all([
+        followingPromise,
+        followersPromise,
       ]);
 
-      const followingList = followingListResponse.map((user) =>
-        user.id.toString()
-      );
-      const followersList = followersListResponse.map((user) =>
-        user.id.toString()
-      );
+      const followingList = followingResponse.map((user) => user.id.toString());
+      const followersList = followersResponse.map((user) => user.id.toString());
 
       const redisClient = await createRedisClient();
       if (!redisClient) {

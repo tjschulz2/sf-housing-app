@@ -4,7 +4,11 @@ import { getFollowIntersectionWithCaching } from "../../lib/utils/data";
 import styles from "./followed-by.module.css";
 import { getUserSession } from "../../lib/utils/auth";
 
-export function FollowedBy({ profile }: { profile: HousingSearchProfile | OrganizerProfile }) {
+export function FollowedBy({
+  profile,
+}: {
+  profile: HousingSearchProfile | OrganizerProfile;
+}) {
   const [followIntersection, setFollowIntersection] = useState<number | null>();
 
   useEffect(() => {
@@ -29,7 +33,7 @@ export function FollowedBy({ profile }: { profile: HousingSearchProfile | Organi
 
   return (
     <sub className={styles.followedBy980} id="followed-by">
-      {followIntersection
+      {typeof followIntersection === "number"
         ? `Followed by ${followIntersection} people you follow`
         : "Loading followers..."}
     </sub>
