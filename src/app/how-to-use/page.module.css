@@ -1,0 +1,99 @@
+.inputStyle {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1625px;
+    margin: auto;
+    gap: 40px;
+}
+
+.maxCharacters {
+    font-style: italic;
+}
+
+.nextButton {
+    display: flex;
+    align-self: flex-start;
+    padding: 18px 50px;
+    border-radius: 100px;
+    background-color: black;
+    color: white;
+    text-decoration: none;
+}
+
+.disabled {
+    background-color: #e0e0e0;
+    color: #9e9e9e;
+    pointer-events: none;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+.containerGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    grid-gap: 24px;
+    width: 100%;
+  }
+  
+  @media (max-width: 1625px) {
+
+    .containerGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .container {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+  }
+  
+  @media (max-width: 1275px) {
+    .containerGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .container {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+  }
+  
+  @media (max-width: 885px) {
+    .containerGrid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+  }
+  
+  @media (max-width: 490px) {
+    .containerGrid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+  }

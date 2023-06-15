@@ -40,7 +40,7 @@ const ConfirmationPage: NextPage = () => {
             try {
                 await checkConfirmationCode(email, Number(code));
                 await updateUserContactEmail(email)
-                router.push('/directory')
+                router.push('/how-to-use')
                 // If successful, then navigate to the next page
                 //window.location.href = "/next";
             } catch (error) {
@@ -67,7 +67,7 @@ const ConfirmationPage: NextPage = () => {
         </div>
 
         <Link href="#" onClick={(e) => {e.preventDefault(); handleLinkClick(e);}} className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
-            Finish
+            Next
         </Link>
     </form>
 </div>
