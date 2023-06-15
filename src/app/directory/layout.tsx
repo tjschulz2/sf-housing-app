@@ -7,6 +7,7 @@ import { signout } from "../../../lib/utils/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
+import { getUserData } from "../../../lib/utils/data";
 
 export default function DirectoryLayout({
   children,
@@ -22,8 +23,15 @@ export default function DirectoryLayout({
         router.push("/#");
       }
     }
+    async function checkUserData() {
+      const userData = await getUserData();
+      if (userData && !userData.contact_email) {
+        router.push("/email-signup")
+      }
+    }
 
     checkSession();
+    checkUserData();
   }, [router]);
   return (
     <div className={styles.container}>
