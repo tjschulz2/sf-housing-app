@@ -83,7 +83,10 @@
 
 .container {
   margin: 0 auto;
-  padding: 20px 80px;
+  padding-top: 20px;
+  padding-bottom: 80px;
+  padding-left: 80px;
+  padding-right: 80px;
   box-sizing: border-box;
   max-width: 1625px;
 }
