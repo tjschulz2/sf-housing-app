@@ -22,6 +22,7 @@ export default function RootLayout({
         />
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
