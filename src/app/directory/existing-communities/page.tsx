@@ -24,7 +24,7 @@ const Directory: NextPage = () => {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>Do you already have a community/coliving house?</h2>
+        <h2>Do you already have an apartment or coliving house?</h2>
         <span className={styles.addInfoText}>
           Add your information and we will add you to the Existing communities
           directory so you can be discovered by people looking for housing

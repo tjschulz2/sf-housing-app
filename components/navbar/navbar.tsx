@@ -7,15 +7,15 @@ import styles from "./navbar.module.css";
 const navConfig = [
   {
     path: "/directory",
-    title: "People looking",
+    title: "Looking for housing",
   },
   {
     path: "/directory/people-organizing",
-    title: "People organizing",
+    title: "Starting a new house",
   },
   {
     path: "/directory/existing-communities",
-    title: "Existing communities",
+    title: "Existing coliving spaces",
   },
 ];
 

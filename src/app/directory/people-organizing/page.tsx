@@ -23,10 +23,10 @@ const Directory: NextPage = () => {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>Do you want to start a community house?</h2>
+        <h2>Do you want to start a new house?</h2>
         <span className={styles.addInfoText}>
-          Add your information and we will add you to the People organizing
-          directory so you can be discovered by people looking for housemates
+          Add your information and we will add you to the Starting a new house
+          directory so you can be discovered by people looking for housemates.
         </span>
         <Link className={styles.addMeButton} href="/organizer-form">
           Start house

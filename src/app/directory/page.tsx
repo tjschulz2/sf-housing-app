@@ -22,9 +22,9 @@ function Directory() {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>👋 Are you looking for housemates?</h2>
+        <h2>👋 Are you looking for housing?</h2>
         <span className={styles.addInfoText}>
-          Add your information and we will add you to the People looking
+          Add your information and we will add you to the Looking for housing
           directory so you can be discovered by communities and organizers
         </span>
         <Link className={styles.addMeButton} href="/housemates-form">
