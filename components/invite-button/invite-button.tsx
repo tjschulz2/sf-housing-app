@@ -5,7 +5,7 @@ import styles from "./invite-button.module.css";
 import { supabase } from "../../lib/supabaseClient";
 import { getUserSession } from "../../lib/utils/auth";
 
-let referralBaseLink = "http://directorysf.com/?referralCode=";
+let referralBaseLink = "https://directorysf.com/?referralCode=";
 
 export default function InviteButton() {
   const [isOpen, setIsOpen] = useState(false);
