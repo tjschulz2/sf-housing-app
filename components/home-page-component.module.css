@@ -159,6 +159,7 @@
     width: 10rem;
     height: 3.75rem;
     margin-bottom: 24px;
+    text-decoration: none;
   }
   .applyWrapper:hover {
     background-color: var(--color-dimgray);

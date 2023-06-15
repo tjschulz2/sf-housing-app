@@ -3,8 +3,6 @@ import styles from "./profile-card.module.css";
 import SeeMoreButton from "./see-more-button/see-more-button";
 import { housingMap } from "../lib/prefMap";
 import { cleanURL, addProtocolToURL } from "../lib/utils/general";
-import { useEffect, useState } from "react";
-import { getFollowIntersection } from "../lib/utils/data";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from '../src/images/twitter-logo.svg'
 import ContactMeButton  from '../components/contactme-button/contactme-button'
@@ -60,6 +58,22 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       if (link.length > 14) {
         link = link.substring(0,14) + "...";
       }
+      let housingDescription = "";
+      if (isHousingSearchProfile(profile)) {
+        housingDescription = profile.pref_housemate_details ?? "";
+        if (housingDescription.length > 45) {
+          housingDescription = housingDescription.substring(0,43) + "..."
+          console.log(housingDescription)
+        }
+      }
+      let organizerDescription = "";
+      if (isOrganizerProfile(profile)) {
+        organizerDescription = profile.pref_house_details ?? "";
+        if (organizerDescription.length > 45) {
+          organizerDescription = organizerDescription.substring(0,43) + "..."
+        }
+      }
+
       return (
         <li className={styles.frameParent} id="profile-card-element">
         <div className={styles.image3Parent}>
@@ -110,7 +124,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
           <div className={styles.lookingToLive} id="looking-for-text">
             <div className={styles.content}>
               <span className={styles.wants}>About me: </span>
-              {isHousingSearchProfile(profile) ? profile.pref_housemate_details : profile.pref_house_details}
+              {isHousingSearchProfile(profile) ? housingDescription : organizerDescription}
               {isHousingSearchProfile(profile) ? (
                 <SeeMoreButton color={color} seeMoreText={profile.pref_housemate_details ?? ""} />
               ) : isOrganizerProfile(profile) ? (
@@ -154,6 +168,13 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       let link = profile.website_url || ""
       if (link.length > 14) {
         link = link.substring(0,14) + "...";
+      }
+      let communityDescription = "";
+      if (isCommunityProfile(profile)) {
+        communityDescription = profile.description ?? "";
+        if (communityDescription.length > 45) {
+          communityDescription = communityDescription.substring(0,43) + "..."
+        }
       }
 
       return (
@@ -219,7 +240,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             <div className={styles.lookingToLive} id="looking-for-text">
               <div className={styles.content}>
                 <span className={styles.wants}>About us: </span>
-                {profile.description}
+                {communityDescription}
                 <SeeMoreButton color={color} seeMoreText={profile.description ?? ""} />
               </div>
             </div>

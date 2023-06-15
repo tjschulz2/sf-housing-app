@@ -1,7 +1,6 @@
 .seeMore {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: relative;
+  margin-left: 4px;
   color: var(--color-cornflowerblue-100);
   background: none;
   border: none;

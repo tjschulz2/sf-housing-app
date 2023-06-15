@@ -50,7 +50,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             <p>Invalid referral code</p>
           )}
           <Link
-            href="/directory"
+            href="https://airtable.com/shrBmKG0e4fxr8hAp"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.applyWrapper}
