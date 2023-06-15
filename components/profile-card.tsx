@@ -55,6 +55,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         userName = userName?.substring(0,15) + "...";
       }
       let link = profile.link || ""
+      link = cleanURL(link);
       if (link.length > 14) {
         link = link.substring(0,14) + "...";
       }
@@ -93,7 +94,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 target="_blank"
               >
                 <img className={styles.vectorIcon} alt="" src="/link.svg" />
-                <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(link)}</div>
+                <div className={`${styles.a9io} ${colorClass}`}>{link}</div>
               </a>
             ) : null}
             <div className={styles.locationParent}>
@@ -166,6 +167,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         userName = userName?.substring(0,15) + "...";
       }
       let link = profile.website_url || ""
+      link = cleanURL(link);
       if (link.length > 14) {
         link = link.substring(0,14) + "...";
       }
@@ -202,7 +204,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   target="_blank"
                 >
                   <img className={styles.vectorIcon} alt="" src="/link.svg" />
-                  <div className={`${styles.a9io} ${colorClass}`}>{cleanURL(link)}</div>
+                  <div className={`${styles.a9io} ${colorClass}`}>{link}</div>
                 </a>
               ) : null}
               <div className={styles.locationParent}>
