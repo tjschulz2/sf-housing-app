@@ -6,6 +6,15 @@
     /* Other styling as required (border, outline, etc.) */
 }
 
+.inputError {
+    border: 2px solid red;
+  }
+  
+  .errorMessage {
+    color: red;
+    font-size: 14px;
+  }
+
 .textareaStyle {
     width: 100%;
     height: 100px;

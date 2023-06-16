@@ -13,6 +13,15 @@
     /* Other styling as required (border, outline, etc.) */
 }
 
+.inputError {
+    border: 2px solid red;
+  }
+  
+  .errorMessage {
+    color: red;
+    font-size: 14px;
+  }
+
 .boldText {
     font-weight: bold;
 }

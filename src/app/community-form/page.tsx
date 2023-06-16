@@ -29,8 +29,12 @@ const MyForm: NextPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-  const urlRegex = /^((http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
+  const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
   const router = useRouter();
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
+
+
 
   const handleOptionClick = (
     setOption: React.Dispatch<React.SetStateAction<string>>,
@@ -116,6 +120,12 @@ const MyForm: NextPage = () => {
     ) => {
       let { value } = event.target;
 
+      if (typeof field === 'undefined') {
+        setFocusedField(null);  // or however you want to handle this case
+      } else {
+        setFocusedField(field);
+      }
+
       // Handle phone field
       if (field === "phone") {
         // Allow only digits
@@ -160,6 +170,10 @@ const MyForm: NextPage = () => {
 
     reader.readAsDataURL(file);
   };
+
+  function handleBlur(field: string) {
+    setVisitedFields((prev) => new Set([...prev, field]));
+  }
 
   useEffect(() => {
     if (
@@ -212,11 +226,17 @@ const MyForm: NextPage = () => {
               If no formal name, just put Apartment or House
             </p>
             <input
-              className={styles.inputStyle}
+              className={`${styles.inputStyle} ${visitedFields.has("communityName") && !communityName ? styles.inputError : ""}`}
               type="text"
               placeholder="Solaris"
-              onChange={handleInputChange(setCommunityName)}
+              onChange={handleInputChange(setCommunityName, "communityName")}
+              onFocus={() => setVisitedFields((prev) => new Set([...prev, "communityName"]))}
+              onBlur={() => handleBlur("communityName")}
+              autoFocus={true}
             />
+            {visitedFields.has("communityName") && !communityName && (
+              <div className={styles.errorMessage}>This field is required.</div>
+            )}
           </label>
         </div>
 
@@ -228,12 +248,16 @@ const MyForm: NextPage = () => {
             </p>
             <div style={{ display: "flex", alignItems: "center" }}>
               <textarea
-                className={styles.textareaStyle}
+                className={`${styles.textareaStyle} ${visitedFields.has("description") && !description ? styles.inputError : ""}`}
                 placeholder="We are a group of founders building early-stage startups and looking for people that have found something meaningful to work on. We help one another by informally making connections and giving feedback to one another on what we're working on."
-                onChange={handleInputChange(setDescription)}
-                autoFocus={true}
+                onChange={handleInputChange(setDescription, "description")}
+                onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
+                onBlur={() => handleBlur("description")}
               />
             </div>
+            {visitedFields.has("description") && !description && (
+              <div className={styles.errorMessage}>This field is required.</div>
+            )}
           </label>
         </div>
 
@@ -363,11 +387,18 @@ const MyForm: NextPage = () => {
               link that represents you
             </p>
             <input
-              className={styles.inputStyle}
+              className={`${styles.inputStyle} ${visitedFields.has("url") && (!link || !urlRegex.test(link)) ? styles.inputError : ""}`}
               type="url"
               placeholder="mywebsite.io"
               onChange={handleInputChange(setLink, "url")}
+              onFocus={() => setFocusedField("url")}
+              onBlur={() => handleBlur("url")}
             />
+            {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
+              <div className={styles.errorMessage}>
+                {!link ? "This field is required." : "Please enter a valid URL."}
+              </div>
+            )}
           </label>
         </div>
 
@@ -378,7 +409,7 @@ const MyForm: NextPage = () => {
             picture. JPG, JPEG, and PNG only.
           </p>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <input type="file" onChange={handleImageChange} />
+            <input type="file" accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
             {imagePreview && (
               <img
                 style={{ width: "100px", height: "100px", marginTop: "24px" }}
@@ -439,11 +470,18 @@ const MyForm: NextPage = () => {
           {contactMethod === "phone" && (
             <label>
               <input
-                className={styles.inputStyle}
+                className={`${styles.inputStyle} ${visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) ? styles.inputError : ""}`}
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleInputChange(setPhone, "phone")}
+                onFocus={() => setFocusedField("phone")}
+                onBlur={() => handleBlur("phone")}
               />
+              {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
+                <div className={styles.errorMessage}>
+                  {!phone ? "This field is required." : "Please enter a valid phone number."}
+                </div>
+              )}
             </label>
           )}
         </div>

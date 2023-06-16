@@ -26,7 +26,10 @@ const MyForm: NextPage = () => {
   const router = useRouter();
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-  const urlRegex = /^((http|https):\/\/)?([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
+  const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
+
 
   const handleOptionClick = (
     setOption: React.Dispatch<React.SetStateAction<string>>,
@@ -90,6 +93,12 @@ const MyForm: NextPage = () => {
     ) => {
       let { value } = event.target;
 
+      if (typeof field === 'undefined') {
+        setFocusedField(null);  // or however you want to handle this case
+      } else {
+        setFocusedField(field);
+      }
+
       // Handle phone field
       if (field === "phone") {
         // Allow only digits
@@ -116,6 +125,10 @@ const MyForm: NextPage = () => {
     };
   }
 
+  function handleBlur(field: string) {
+    setVisitedFields((prev) => new Set([...prev, field]));
+  }
+
   useEffect(() => {
     if (
       description &&
@@ -124,7 +137,9 @@ const MyForm: NextPage = () => {
       housemates &&
       contactMethod &&
       link &&
-      (contactMethod !== "phone" || phone)
+      ((contactMethod === "phone" && phoneRegex.test(phone)) ||
+        contactMethod !== "phone") &&
+      urlRegex.test(link)
     ) {
       setIsFormValid(true);
     } else {
@@ -163,12 +178,18 @@ const MyForm: NextPage = () => {
               What are you working on? What is important to you? What type of
               environment do you want to live in? What are you interested in?
             </p>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "left", flexDirection: 'column' }}>
               <textarea
-                className={styles.textareaStyle}
-                placeholder=""
-                onChange={handleInputChange(setDescription)}
+              className={`${styles.textareaStyle} ${visitedFields.has("description") && !description ? styles.inputError : ""}`}
+              placeholder=""
+              onChange={handleInputChange(setDescription, "description")}
+              onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
+              onBlur={() => handleBlur("description")}
+              autoFocus={true}
               />
+              {visitedFields.has("description") && !description && (
+                <div className={styles.errorMessage}>This field is required.</div>
+              )}
             </div>
           </label>
         </div>
@@ -291,11 +312,18 @@ const MyForm: NextPage = () => {
               Personal website, forum page, blog, Instagram, etc.
             </p>
             <input
-              className={styles.inputStyle}
+              className={`${styles.inputStyle} ${visitedFields.has("url") && (!link || !urlRegex.test(link)) ? styles.inputError : ""}`}
               type="url"
               placeholder="mywebsite.io"
               onChange={handleInputChange(setLink, "url")}
+              onFocus={() => setFocusedField("url")}
+              onBlur={() => handleBlur("url")}
             />
+            {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
+              <div className={styles.errorMessage}>
+                {!link ? "This field is required." : "Please enter a valid URL."}
+              </div>
+            )}
           </label>
         </div>
 
@@ -338,11 +366,18 @@ const MyForm: NextPage = () => {
           {contactMethod === "phone" && (
             <label>
               <input
-                className={styles.inputStyle}
+                className={`${styles.inputStyle} ${visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) ? styles.inputError : ""}`}
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleInputChange(setPhone, "phone")}
+                onFocus={() => setFocusedField("phone")}
+                onBlur={() => handleBlur("phone")}
               />
+              {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
+                <div className={styles.errorMessage}>
+                  {!phone ? "This field is required." : "Please enter a valid phone number."}
+                </div>
+              )}
             </label>
           )}
         </div>
