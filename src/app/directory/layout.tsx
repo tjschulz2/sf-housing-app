@@ -4,24 +4,36 @@ import Navbar from "../../../components/navbar/navbar";
 import Link from "next/link";
 import InviteButton from "../../../components/invite-button/invite-button";
 import { signout } from "../../../lib/utils/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
 import { getUserData } from "../../../lib/utils/data";
+import Dropdown from "../../../components/dropdown/dropdown";
+
+type User = {
+  twitterAvatarUrl: string;
+};
 
 export default function DirectoryLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+
   useEffect(() => {
     async function checkSession() {
-      const user = await getUserSession();
-      if (!user) {
+      const fetchedUser = await getUserSession();
+      if (!fetchedUser) {
         await signout();
         router.push("/#");
+        return;
       }
+      const user: User = {
+        twitterAvatarUrl: fetchedUser.twitterAvatarURL,
+      }
+      setUser(user);
     }
     async function checkUserData() {
       const userData = await getUserData();
@@ -40,12 +52,7 @@ export default function DirectoryLayout({
           <h1>Directory</h1>
           <div className={styles.inviteSettingsContainer}>
             <InviteButton />
-            <Link className={styles.settingsButton} href="/settings">
-              <img className={styles.gearIcon} alt="" src="/gearIcon.svg" />
-            </Link>
-            <Link href="/logout" className={styles.signOutButton}>
-              Sign out
-            </Link>
+            {user && <Dropdown user={user} />}
           </div>
         </div>
         <Navbar />
