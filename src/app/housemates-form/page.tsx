@@ -12,6 +12,7 @@ import {
 import { getUserSession } from "../../../lib/utils/auth";
 import { useRouter } from "next/navigation";
 import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
+import loadingStyles from '../loadingOverlay.module.css'
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");
@@ -29,6 +30,7 @@ const MyForm: NextPage = () => {
   const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const handleOptionClick = (
@@ -41,7 +43,9 @@ const MyForm: NextPage = () => {
   const handleLinkClick = async (e: React.MouseEvent) => {
     const session = await getUserSession();
     // Create some logic that checks if an upload is already in the directory
+    setIsLoading(true);
     const isDataPresentAlready = await isInDirectoryAlready(session!.userID);
+    setIsLoading(false);
     if (isDataPresentAlready && isFormValid) {
       setIsModalActive(true);
     } else {
@@ -49,7 +53,9 @@ const MyForm: NextPage = () => {
         e.preventDefault();
       } else {
         e.preventDefault();
+        setIsLoading(true);
         await handleSubmit();
+        setIsLoading(false);
       }
     }
   };
@@ -158,6 +164,11 @@ const MyForm: NextPage = () => {
 
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div className={loadingStyles.overlay}>
+          <div className={loadingStyles.spinner}></div>
+        </div>
+      )}
       <DirectoryOverrideModal
         modalActivity={isModalActive}
         handleSubmit={handleSubmit}

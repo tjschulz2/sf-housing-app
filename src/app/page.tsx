@@ -1,5 +1,6 @@
 "use client";
 import styles from "./page.module.css";
+import loadingStyles from "./loadingOverlay.module.css";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const referralCode = useSearchParams().get("referralCode");
   const [referralDetails, setReferralDetails] = useState<ReferralDetails>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function handlePageLoad() {
@@ -26,7 +28,9 @@ const Home: NextPage = () => {
         setReferralDetails(referral);
       } else {
         //localStorage.setItem("referral-code", "")
+        setIsLoading(true);
         const signInResult = await handleSignIn();
+        setIsLoading(false);
         console.log(signInResult);
         if (signInResult?.status !== "success") {
           return;
@@ -43,6 +47,11 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.home}>
+      {isLoading && (
+        <div className={loadingStyles.overlay}>
+          <div className={loadingStyles.spinner}></div>
+        </div>
+      )}
       <HomePageComponent referralDetails={referralDetails} />
     </div>
   );

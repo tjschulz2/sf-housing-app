@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { checkConfirmationCode } from '../../../lib/utils/confirmation';
 import { updateUserContactEmail } from "../../../lib/utils/auth";
+import loadingStyles from '../loadingOverlay.module.css'
 
 
 const ConfirmationPage: NextPage = () => {
@@ -13,6 +14,7 @@ const ConfirmationPage: NextPage = () => {
     const [isFormValid, setIsFormValid] = useState(false);
     const router = useRouter();
     const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     function handleInputChange(callback: (value: string) => void) {
         return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,12 +40,15 @@ const ConfirmationPage: NextPage = () => {
             // If form is valid, generate and send confirmation code
             e.preventDefault();
             try {
+                setIsLoading(true);
                 await checkConfirmationCode(email, Number(code));
-                await updateUserContactEmail(email)
+                await updateUserContactEmail(email);
+                setIsLoading(false);
                 router.push('/how-to-use')
                 // If successful, then navigate to the next page
                 //window.location.href = "/next";
             } catch (error) {
+                setIsLoading(false);
                 alert('Wrong code. Try again.')
                 console.error('Bad confirmation code', error);
                 // Optionally show an error message to the user
@@ -53,6 +58,11 @@ const ConfirmationPage: NextPage = () => {
 
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div className={loadingStyles.overlay}>
+          <div className={loadingStyles.spinner}></div>
+        </div>
+      )}
     <form className={styles.form}>
         <Link href="/email-signup">Back to email page</Link>
         <h1>Confirmation code verification</h1>

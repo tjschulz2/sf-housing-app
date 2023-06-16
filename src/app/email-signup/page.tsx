@@ -5,12 +5,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { generateAndSendConfirmation } from '../../../lib/utils/confirmation';
+import loadingStyles from '../loadingOverlay.module.css'
 
 
 const EmailSignup: NextPage = () => {
     const [email, setEmail] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
     function handleInputChange(callback: (value: string) => void) {
         return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           callback(event.target.value);
@@ -29,12 +32,15 @@ const EmailSignup: NextPage = () => {
             // If form is valid, generate and send confirmation code
             e.preventDefault();
             try {
+                setIsLoading(true);
                 await generateAndSendConfirmation(email);
+                setIsLoading(false);
                 localStorage.setItem('email', email)
                 router.push('/confirmation-page')
                 // If successful, then navigate to the next page
                 //window.location.href = "/next";
             } catch (error) {
+                setIsLoading(false);
                 console.error('Failed to send confirmation code:', error);
                 // Optionally show an error message to the user
             }
@@ -43,6 +49,11 @@ const EmailSignup: NextPage = () => {
 
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div className={loadingStyles.overlay}>
+          <div className={loadingStyles.spinner}></div>
+        </div>
+      )}
     <form className={styles.form}>
         <h1>Email confirmation</h1>
         <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
