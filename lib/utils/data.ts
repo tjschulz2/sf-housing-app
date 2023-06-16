@@ -356,18 +356,23 @@ export async function fetchFromTwitter(
 export const twitter = {
   following: {
     getFromTwitter: async (twitterID: string) => {
-      // server-only
       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
       let cursor = null;
       let following: User[] = [];
 
       do {
-        const res = await fetchFromTwitter(
-          `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
-        );
-        const data = await res.json();
-        following = [...following, ...data.data];
-        cursor = data.meta.next_token;
+        try {
+          const res = await fetchFromTwitter(
+            `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+          );
+          const data = await res.json();
+          if (data.data) {
+            following = [...following, ...data.data];
+            cursor = data.meta.next_token;
+          }
+        } catch (err) {
+          console.error(`Failed to fetch following for user ${twitterID}: ${err}`);
+        }
       } while (cursor);
 
       return following;
@@ -376,18 +381,23 @@ export const twitter = {
   },
   followers: {
     getFromTwitter: async (twitterID: string) => {
-      // server-only
       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/followers`;
       let cursor = null;
       let followers: User[] = [];
 
       do {
-        const res = await fetchFromTwitter(
-          `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
-        );
-        const data = await res.json();
-        followers = [...followers, ...data.data];
-        cursor = data.meta.next_token;
+        try {
+          const res = await fetchFromTwitter(
+            `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+          );
+          const data = await res.json();
+          if (data.data) {
+            followers = [...followers, ...data.data];
+            cursor = data.meta.next_token;
+          }
+        } catch (err) {
+          console.error(`Failed to fetch followers for user ${twitterID}: ${err}`);
+        }
       } while (cursor);
 
       return followers;
