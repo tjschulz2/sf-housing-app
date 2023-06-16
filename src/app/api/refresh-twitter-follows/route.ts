@@ -61,7 +61,7 @@ export async function GET() {
         throw "Failed to store follow data";
       }
 
-      redisClient.quit();
+      //redisClient.quit();
     }
   } catch (err) {
     console.error(err);
