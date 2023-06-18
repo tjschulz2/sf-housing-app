@@ -92,12 +92,13 @@ const MyForm: NextPage = () => {
         }
 
         if (directoryData.imageUrl) {
-          setImagePreview(directoryData.imageUrl);
           urlToFile(directoryData.imageUrl, 'image.jpg', 'image/jpeg')
             .then(file => {
               if (!selectedImage) setSelectedImage(file);
-              console.log(selectedImage)
             });
+          if (!selectedImage) {
+            setImagePreview(directoryData.imageUrl);
+          }
         }
 
       }

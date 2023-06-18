@@ -5,7 +5,7 @@ import styles from "./contactme-button.module.css";
 
 export default function ContactMeButton({ contactMethod, color }: { contactMethod: string, color: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const emailRegex = /^[\w-.]+(\+[\.\w-]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
   const phoneRegex = /^(\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$/;
   const websiteRegex = /^(?!(?:www\.)?twitter\.com$)((http(s?):\/\/)?([wW]{3}\.)?[a-zA-Z0-9\-.]{2,}\.[a-zA-Z]{2,}(?:(?:\/[^\s/]*))*)$/;
   const twitterLinkRegex = /^(http(s)?:\/\/)?((w){3}.)?twitter.com\/(#!\/)?[a-z0-9_]+$/;
