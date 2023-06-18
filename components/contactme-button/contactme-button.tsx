@@ -25,6 +25,7 @@ export default function ContactMeButton({ contactMethod, color }: { contactMetho
     } else if (websiteRegex.test(contactMethod) || twitterLinkRegex.test(contactMethod)) {
         goToLink()
     } else {
+        console.log(contactMethod)
         alert('We probably made a mistake in our code. Send a screenshot to me @thomasschulzz on twitter.')
     }
   };

@@ -17,6 +17,7 @@ import DirectoryOverrideModal from "../../../components/directory-override-modal
 import loadingStyles from '../loadingOverlay.module.css'
 
 const MyForm: NextPage = () => {
+  const router = useRouter();
   const [roomPrice, setRoomPrice] = useState("");
   const [communityName, setCommunityName] = useState("");
   const [housemates, setHousemates] = useState("");
@@ -31,11 +32,84 @@ const MyForm: NextPage = () => {
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
   const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
-  const router = useRouter();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    let directoryData = null;
+    if (typeof window !== "undefined") { // check if window is defined (it won't be during server-side rendering)
+      const urlParams = new URLSearchParams(window.location.search);
+      const data = urlParams.get('data');
+      if (data) {
+        directoryData = JSON.parse(decodeURIComponent(data));
+        console.log(directoryData.contactMethod)
+        setCommunityName(directoryData.houseName);
+        setDescription(directoryData.description);
+        if (directoryData.roomPriceRange === 1) {
+          setRoomPrice("less1000");
+        } else if (directoryData.roomPriceRange === 2) {
+          setRoomPrice("1000to1500");
+        } else if (directoryData.roomPriceRange === 3) {
+          setRoomPrice("1500to2000");
+        } else if (directoryData.roomPriceRange === 4) {
+          setRoomPrice("2000to2500");
+        } else if (directoryData.roomPriceRange === 5) {
+          setRoomPrice("2500to3000");
+        } else if (directoryData.roomPriceRange === 6) {
+          setRoomPrice("3000plus");
+        } else {
+          return;
+        }
+ 
+        if (directoryData.residentCount) {
+          if (directoryData.residentCount === 1) {
+            setHousemates("1-2");
+          } else if (directoryData.residentCount === 2) {
+            setHousemates("3-5");
+          } else if (directoryData.residentCount === 3) {
+            setHousemates("6-12");
+          } else if (directoryData.residentCount === 4) {
+            setHousemates("12+");
+          }
+        }
+    
+        if (directoryData.websiteUrl) {
+          setLink(directoryData.websiteUrl);
+        }
+    
+        if (directoryData.contactMethod) {
+          if (directoryData.contactMethod.includes('@')) {
+            setContactMethod('email');
+          } else if (phoneRegex.test(directoryData.contactMethod)) {
+            setContactMethod('phone');
+            setPhone(directoryData.contactMethod);
+          } else if (directoryData.contactMethod.includes('twitter')) {
+            setContactMethod('twitter');
+          } else {
+            setContactMethod('website');
+          }
+        }
+
+        if (directoryData.imageUrl) {
+          setImagePreview(directoryData.imageUrl);
+          urlToFile(directoryData.imageUrl, 'image.jpg', 'image/jpeg')
+            .then(file => {
+              if (!selectedImage) setSelectedImage(file);
+              console.log(selectedImage)
+            });
+        }
+
+      }
+    }
+  }, []);
+
+  const urlToFile = async (url: string, filename: string, mimeType: string) => {
+    const res = await fetch(url);
+    const buf = await res.arrayBuffer();
+    const file = new File([buf], filename, {type: mimeType});
+    return file;
+  }
 
 
   const handleOptionClick = (
@@ -246,6 +320,7 @@ const MyForm: NextPage = () => {
               onFocus={() => setVisitedFields((prev) => new Set([...prev, "communityName"]))}
               onBlur={() => handleBlur("communityName")}
               autoFocus={true}
+              value={communityName}
             />
             {visitedFields.has("communityName") && !communityName && (
               <div className={styles.errorMessage}>This field is required.</div>
@@ -266,6 +341,7 @@ const MyForm: NextPage = () => {
                 onChange={handleInputChange(setDescription, "description")}
                 onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
                 onBlur={() => handleBlur("description")}
+                value={description}
               />
             </div>
             {visitedFields.has("description") && !description && (
@@ -406,6 +482,7 @@ const MyForm: NextPage = () => {
               onChange={handleInputChange(setLink, "url")}
               onFocus={() => setFocusedField("url")}
               onBlur={() => handleBlur("url")}
+              value={link}
             />
             {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
               <div className={styles.errorMessage}>
@@ -489,6 +566,7 @@ const MyForm: NextPage = () => {
                 onChange={handleInputChange(setPhone, "phone")}
                 onFocus={() => setFocusedField("phone")}
                 onBlur={() => handleBlur("phone")}
+                value={phone}
               />
               {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
                 <div className={styles.errorMessage}>

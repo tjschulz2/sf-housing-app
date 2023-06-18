@@ -6,6 +6,8 @@ import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from '../src/images/twitter-logo.svg'
 import ContactMeButton  from '../components/contactme-button/contactme-button'
+import React, { useState, useEffect } from 'react'
+import { getImageLink } from "../lib/utils/process";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -13,6 +15,8 @@ type ProfileCardProps = {
 };
 
 const ProfileCard = ({ profile, color }: ProfileCardProps) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   const { user } = profile;
   let colorClass: any;
   let svgImage: string;
@@ -42,6 +46,19 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   function isCommunityProfile(profile: HousingSearchProfile | OrganizerProfile | CommunityProfile): profile is CommunityProfile {
     return (profile as CommunityProfile).resident_count !== undefined;
   }
+
+
+  useEffect(() => {
+    if (isCommunityProfile(profile) && profile.user_id) {
+      getImageLink(profile.user_id)
+        .then((url: string | Error) => {
+          if (typeof url === 'string') {
+            setImageUrl(url);
+          }
+        })
+        .catch((error) => console.error('Error fetching image:', error));
+    }
+  }, [profile.user_id]);
 
   const renderHousingAndOrganizerOrCommunity = () => {
 
@@ -159,6 +176,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       ) 
     } else if (isCommunityProfile(profile)) {
       let contactMethod = ""
+      console.log(profile.image_url)
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
@@ -186,7 +204,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <img
                 className={styles.image3Icon}
                 alt=""
-                src={profile.image_url}
+                src={imageUrl || undefined}
               />
             ) : user?.twitter_avatar_url ? (
               <img

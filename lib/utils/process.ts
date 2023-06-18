@@ -179,7 +179,7 @@ export const addHousingData = async (
   // Get the actual contact method
   let actualContactMethod;
   if (contactMethodNum === 1) {
-    actualContactMethod = `tel:${phone}`;
+    actualContactMethod = phone;
   } else if (contactMethodNum === 3) {
     actualContactMethod = `https://twitter.com/${twitterHandle}`;
   } else {
@@ -223,6 +223,90 @@ export const addHousingData = async (
   return true;
 };
 
+export const getDataFromDirectory = async (userID: string) => {
+  const getOrganizerData = async () => {
+    let { data, error } = await supabase
+      .from("organizer_profiles")
+      .select("*")
+      .eq("user_id", userID);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    } else if (data && data.length > 0) {
+      return {
+        link: data[0].link,
+        prefContactMethod: data[0].pref_contact_method,
+        prefHouseDetails: data[0].pref_house_details,
+        prefHousemateCount: data[0].pref_housemate_count,
+        prefHousingType: data[0].pref_housing_type,
+        prefLeaseStart: data[0].pref_lease_start,
+        directoryType: 'organizer_profiles'
+      };
+    }
+    return null;
+  }
+
+  const getHousingSearchData = async () => {
+    let { data, error } = await supabase
+      .from("housing_search_profiles")
+      .select("*")
+      .eq("user_id", userID);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    } else if (data && data.length > 0) {
+      return {
+        link: data[0].link,
+        prefContactMethod: data[0].pref_contact_method,
+        prefHousemateDetails: data[0].pref_housemate_details,
+        prefHousemateCount: data[0].pref_housemate_count,
+        prefHousingType: data[0].pref_housing_type,
+        prefMoveIn: data[0].pref_move_in,
+        directoryType: 'housing_search_profiles'
+      };
+    }
+    return null;
+  }
+
+  const getCommunitiesData = async () => {
+    let { data, error } = await supabase
+      .from("communities")
+      .select("*")
+      .eq("user_id", userID);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    } else if (data && data.length > 0) {
+      return {
+        websiteUrl: data[0].website_url,
+        description: data[0].description,
+        houseName: data[0].name,
+        contactMethod: data[0].pref_contact_method,
+        residentCount: data[0].resident_count,
+        roomPriceRange: data[0].room_price_range,
+        imageUrl: data[0].image_url,
+        directoryType: 'communities'
+      };
+    }
+    return null;
+  }
+
+  const directoryTypeFunctions = [getOrganizerData, getHousingSearchData, getCommunitiesData];
+
+  for(let func of directoryTypeFunctions) {
+    let result = await func();
+    if(result !== null) {
+      return result;
+    }
+  }
+
+  // If none of the functions returned data, return null or some default value
+  return null;
+}
+
 export const addOrganizerData = async (
   description: string,
   housingType: string,
@@ -250,7 +334,7 @@ export const addOrganizerData = async (
   if (contactMethodNum === 1) {
     actualContactMethod = phone;
   } else if (contactMethodNum === 3) {
-    actualContactMethod = twitterHandle;
+    actualContactMethod = `https://twitter.com/${twitterHandle}`;
   } else {
     // Fetch email from Supabase
     let { data, error } = await supabase
@@ -324,7 +408,7 @@ export const addCommunityData = async (
   if (contactMethodNum === 1) {
     actualContactMethod = phone;
   } else if (contactMethodNum === 3) {
-    actualContactMethod = twitterHandle;
+    actualContactMethod = `https://twitter.com/${twitterHandle}`;
   } else if (contactMethodNum === 4) {
     actualContactMethod = link;
   } else {
@@ -386,8 +470,11 @@ export const getImageLink = async (userID: string): Promise<string | Error> => {
     const { data } = supabase.storage
       .from("community_profile_pictures")
       .getPublicUrl(`community-pic-${userID}.png`);
+    
+      const imageUrl = `${data.publicUrl}?timestamp=${Date.now()}`;
 
-    return data.publicUrl;
+    //return data.publicUrl;
+    return imageUrl;
   } catch (error) {
     console.error("Error getting URL:", error);
     return Error();

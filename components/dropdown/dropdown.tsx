@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./dropdown.module.css";
 import { FiChevronDown } from "react-icons/fi";
 import Link from "next/link";
+import { getDataFromDirectory } from "../../lib/utils/process";
+import { getUserSession } from "../../lib/utils/auth";
+import { useRouter } from 'next/navigation'
 
 type User = {
   twitterAvatarUrl: string;
@@ -14,6 +17,7 @@ type DropdownProps = {
 const Dropdown: React.FC<DropdownProps> = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const twitterImageUrl = user.twitterAvatarUrl
   let higherResImageUrl = twitterImageUrl.replace('_normal', '_400x400');
 
@@ -32,6 +36,22 @@ const Dropdown: React.FC<DropdownProps> = ({ user }) => {
     };
   }, []);
 
+  const handleSubmit = async () => {
+    const session = await getUserSession()
+    const directoryData = await getDataFromDirectory(session!.userID)
+    
+    if (directoryData?.directoryType === 'communities') {
+      router.push(`/community-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
+    } else if (directoryData?.directoryType === 'housing_search_profiles') {
+      router.push(`/housing-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
+    } else if (directoryData?.directoryType === 'organizer_profiles') {
+      router.push(`/organizer-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
+    } else {
+      alert('You do not have a live listing.')
+    }
+    
+  }
+ 
   return (
     <div className={styles.container} ref={dropdownRef} onClick={toggleDropdown}>
         <div className={styles.itemsContainer}>
@@ -41,6 +61,7 @@ const Dropdown: React.FC<DropdownProps> = ({ user }) => {
       {isOpen && (
         <div className={styles.dropdownMenu}>
             <Link href="/settings" className={styles.button}>Settings</Link>
+            <a onClick={handleSubmit} className={styles.button}>Edit my listing</a>
             <Link href="/logout" className={styles.button}>Sign out</Link>
         </div>
       )}

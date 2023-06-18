@@ -21,7 +21,7 @@ const EmailSignup: NextPage = () => {
       }
 
     useEffect(() => {
-        const emailRegex = /^[\w-]+(\+[.\w-]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+      const emailRegex = /^[\w-.]+(\+[\.\w-]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
         setIsFormValid(emailRegex.test(email));
     }, [email]);
     
