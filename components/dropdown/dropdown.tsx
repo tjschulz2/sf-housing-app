@@ -43,7 +43,7 @@ const Dropdown: React.FC<DropdownProps> = ({ user }) => {
     if (directoryData?.directoryType === 'communities') {
       router.push(`/community-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
     } else if (directoryData?.directoryType === 'housing_search_profiles') {
-      router.push(`/housing-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
+      router.push(`/housemates-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
     } else if (directoryData?.directoryType === 'organizer_profiles') {
       router.push(`/organizer-form?data=${encodeURIComponent(JSON.stringify(directoryData))}`);
     } else {

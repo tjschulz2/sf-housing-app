@@ -101,7 +101,7 @@ export default function InviteButton() {
             reversed.
           </p>
           <div className={styles.referralClipboard} onClick={copyToClipboard}>
-            <img style={{ marginRight: "8px" }} src="./link.svg" />
+            <img style={{ marginRight: "8px" }} src="/link.svg" />
             {referralLink}
           </div>
         </div>

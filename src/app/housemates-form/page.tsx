@@ -32,6 +32,63 @@ const MyForm: NextPage = () => {
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    let directoryData = null;
+    if (typeof window !== "undefined") { // check if window is defined (it won't be during server-side rendering)
+      const urlParams = new URLSearchParams(window.location.search);
+      const data = urlParams.get('data');
+      if (data) {
+        directoryData = JSON.parse(decodeURIComponent(data));
+        setDescription(directoryData.prefHousemateDetails);
+        if (directoryData.prefHousingType === 1) {
+          setHousingType("lease");
+        } else if (directoryData.prefHousingType === 2) {
+          setHousingType("short");
+        } else {
+          return;
+        }
+ 
+        if (directoryData.prefMoveIn) {
+          if (directoryData.prefMoveIn === 1) {
+            setMoveIn("ASAP");
+          } else if (directoryData.prefMoveIn === 2) {
+            setMoveIn("3months");
+          } else if (directoryData.prefMoveIn === 3) {
+            setMoveIn("over3months");
+          }
+        }
+
+        if (directoryData.prefHousemateCount) {
+          if (directoryData.prefHousemateCount === 1) {
+            setHousemates("1-2");
+          } else if (directoryData.prefHousemateCount === 2) {
+            setHousemates("3-5");
+          } else if (directoryData.prefHousemateCount === 3) {
+            setHousemates("6-12");
+          } else if (directoryData.prefHousemateCount === 4) {
+            setHousemates("12+");
+          }
+        }
+    
+        if (directoryData.link) {
+          setLink(directoryData.link);
+        }
+    
+        if (directoryData.prefContactMethod) {
+          if (directoryData.prefContactMethod.includes('@')) {
+            setContactMethod('email');
+          } else if (phoneRegex.test(directoryData.prefContactMethod)) {
+            setContactMethod('phone');
+            setPhone(directoryData.prefContactMethod);
+          } else if (directoryData.prefContactMethod.includes('twitter')) {
+            setContactMethod('twitter');
+          }
+        }
+
+      }
+    }
+  }, []);
+
 
   const handleOptionClick = (
     setOption: React.Dispatch<React.SetStateAction<string>>,
@@ -197,6 +254,7 @@ const MyForm: NextPage = () => {
               onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
               onBlur={() => handleBlur("description")}
               autoFocus={true}
+              value={description}
               />
               {visitedFields.has("description") && !description && (
                 <div className={styles.errorMessage}>This field is required.</div>
@@ -329,6 +387,7 @@ const MyForm: NextPage = () => {
               onChange={handleInputChange(setLink, "url")}
               onFocus={() => setFocusedField("url")}
               onBlur={() => handleBlur("url")}
+              value={link}
             />
             {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
               <div className={styles.errorMessage}>
@@ -383,6 +442,7 @@ const MyForm: NextPage = () => {
                 onChange={handleInputChange(setPhone, "phone")}
                 onFocus={() => setFocusedField("phone")}
                 onBlur={() => handleBlur("phone")}
+                value={phone}
               />
               {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
                 <div className={styles.errorMessage}>

@@ -36,7 +36,7 @@ const InvitePopup = () => {
                     <h2>Invite a friend</h2>
                     <p style={{ color: 'grey' }}>Only refer people you know, trust, or think would be a good fit for this directory. Referring randoms will get your referral link reversed.</p>
                     <div className={styles.referralClipboard} onClick={copyToClipboard}>
-                        <img style={{ marginRight: '8px' }} src='./link.svg' />
+                        <img style={{ marginRight: '8px' }} src='/link.svg' />
                         {referralLink}
                     </div>
                 </div>
