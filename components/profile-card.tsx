@@ -68,8 +68,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         contactMethod = profile.pref_contact_method;
       }
       let userName = user?.name || ""
-      if (userName.length > 16) {
-        userName = userName?.substring(0,15) + "...";
+      if (userName.length > 14) {
+        userName = userName?.substring(0,13) + "...";
       }
       let link = profile.link || ""
       link = cleanURL(link);
