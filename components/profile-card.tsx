@@ -8,6 +8,7 @@ import TwitterLogo from '../src/images/twitter-logo.svg'
 import ContactMeButton  from '../components/contactme-button/contactme-button'
 import React, { useState, useEffect } from 'react'
 import { getImageLink } from "../lib/utils/process";
+import { twitter } from "../lib/utils/data";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -68,8 +69,12 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         contactMethod = profile.pref_contact_method;
       }
       let userName = user?.name || ""
-      if (userName.length > 14) {
-        userName = userName?.substring(0,13) + "...";
+      if (userName.length > 15) {
+        userName = userName?.substring(0,14) + "...";
+      }
+      let twitterHandle = user?.twitter_handle || ""
+      if (twitterHandle.length > 10) {
+        twitterHandle = twitterHandle.substring(0,9) + "..."
       }
       let link = profile.link || ""
       link = cleanURL(link);
@@ -133,7 +138,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 <h4 className={styles.maxKrieger} id="twitter-name">
                   {userName}
                 </h4>
-                <div className={`${styles.maxkriegers} ${colorClass}`}>@{user?.twitter_handle}</div>
+                <div className={`${styles.maxkriegers} ${colorClass}`}>@{twitterHandle}</div>
                 <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
               </div>
               <FollowedBy profile={profile} />
