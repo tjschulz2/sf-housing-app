@@ -469,29 +469,29 @@ export const getImageLink = async (userID: string): Promise<string | Error> => {
   .from("community_profile_pictures")
   .list();
 
-  if (error) {
-    console.error('Error listing images:', error);
-    return "Error";
-  }
+if (error) {
+  console.error('Error listing images:', error);
+  return "Error";
+}
 
-  const userImage = data.find(file => file.name.startsWith(`community-pic-${userID}`));
+const userImage = data.find(file => file.name.startsWith(`community-pic-${userID}`));
 
-  try {
-    if (userImage) {
-      const imageUrl = supabase.storage
-        .from("community_profile_pictures")
-        .getPublicUrl(userImage.name);
-    
-      console.log(imageUrl);
-      const cacheImage = `${imageUrl}?timestamp=${Date.now()}`;
-      return cacheImage;
-    }
-    return Error();
-    //return data.publicUrl;
-  } catch (error) {
-    console.error("Error getting URL:", error);
+if (userImage) {
+  const response = supabase.storage
+    .from("community_profile_pictures")
+    .getPublicUrl(userImage.name);
+
+  if (response.data && response.data.publicUrl) {
+    const cacheImage = `${response.data.publicUrl}?timestamp=${Date.now()}`;
+    return cacheImage;
+  } else {
+    console.error("Public URL is not available");
     return Error();
   }
+}
+
+console.error("User image not found");
+return Error();
 };
 
 export const isInDirectoryAlready = async (
