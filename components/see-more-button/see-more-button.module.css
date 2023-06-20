@@ -8,6 +8,13 @@
   font-size: var(--font-size-base);
 }
 
+.modalContents {
+  margin-bottom: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+  white-space: pre-wrap;
+}
+
 .colorBlue {
   color: var(--color-cornflowerblue-100);
 }
@@ -29,9 +36,8 @@
 }
 
 .colorGreen:hover {
-  color: #76dcb6
+  color: #76dcb6;
 }
-
 
 @media (max-width: 578px) {
   .inviteButton {

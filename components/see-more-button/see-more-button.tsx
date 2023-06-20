@@ -8,14 +8,17 @@ type ChildComponentProps = {
   color: string;
 };
 
-export default function SeeMoreButton({ seeMoreText, color }: ChildComponentProps) {
+export default function SeeMoreButton({
+  seeMoreText,
+  color,
+}: ChildComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   let colorClass: any;
-  if (color === 'purple') {
+  if (color === "purple") {
     colorClass = styles.colorPurple;
-  } else if (color === 'green') {
-    colorClass = styles.colorGreen;  // Make sure to define colorGreen in your styles
+  } else if (color === "green") {
+    colorClass = styles.colorGreen; // Make sure to define colorGreen in your styles
   } else {
     colorClass = styles.colorBlue;
   }
@@ -39,14 +42,7 @@ export default function SeeMoreButton({ seeMoreText, color }: ChildComponentProp
         {"See more"}
       </a>
       <Modal closeModal={closeModal} isOpen={isOpen}>
-        <div
-          style={{
-            // position: "relative",
-            marginBottom: "16px",
-            marginLeft: "16px",
-            marginRight: "16px",
-          }}
-        >
+        <div className={styles.modalContents}>
           <button
             onClick={closeModal}
             style={{ position: "absolute", top: 0, right: 0 }}
