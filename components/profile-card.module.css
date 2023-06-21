@@ -93,11 +93,11 @@
 }
 
 .backgroundGreen:hover {
-  background-color: #76dcb6
+  background-color: #76dcb6;
 }
 
 .colorGreen:hover {
-  color: #76dcb6
+  color: #76dcb6;
 }
 
 .colorPurple:hover {
@@ -275,7 +275,7 @@
   flex: 1;
   position: relative;
   display: inline-block;
-  width: 20.06rem;
+  /* width: 20.06rem; */
 }
 
 .frameContainer,
