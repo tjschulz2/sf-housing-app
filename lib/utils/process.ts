@@ -215,7 +215,7 @@ export const addHousingData = async (
       throw new Error(`Failed to fetch email: ${error.message}`);
     }
 
-    actualContactMethod = `mailto:${data?.[0]?.contact_email}`;
+    actualContactMethod = `${data?.[0]?.contact_email}`;
   }
 
   console.log({ actualContactMethod });
