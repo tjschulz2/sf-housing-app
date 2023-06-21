@@ -42,8 +42,8 @@ export async function handleSignIn() {
         throw "Failed to claim referral";
       }
 
-      const twitterImageUrl = currentUser.twitterAvatarURL
-      let higherResImageUrl = twitterImageUrl.replace('_normal', '_400x400');
+      const twitterImageUrl = currentUser.twitterAvatarURL;
+      let higherResImageUrl = twitterImageUrl.replace("_normal", "_400x400");
       // At this point, we have successfully claimed a referral for a user. Add them to 'public.users'
       userData = await createUser({
         user_id: currentUser.userID,
@@ -105,13 +105,35 @@ async function refreshTwitterFollowsIfNeeded(
 
   if (refreshResponse.status === 200) {
     console.log("refreshed twitter follows");
-    const { error } = await supabase
+
+    // Update timestamp of last follow data refresh
+    const { error: timestampRefreshError } = await supabase
       .from("users")
       .update({ follows_last_refresh: getCurrentTimestamp() })
       .eq("user_id", userData.user_id);
 
-    if (error) {
+    if (timestampRefreshError) {
       console.error("Failed to update follow refresh timestamp");
+    }
+
+    // Delete any cached intersection data where user is user1
+    const { error: user1DeletionError } = await supabase
+      .from("follow_intersections")
+      .delete()
+      .eq("user_1_id", userData.user_id);
+
+    if (user1DeletionError) {
+      console.error("Failed to delete cached intersection where user is user1");
+    }
+
+    // Delete any cached intersection data where user is user2
+    const { error: user2DeletionError } = await supabase
+      .from("follow_intersections")
+      .delete()
+      .eq("user_2_id", userData.user_id);
+
+    if (user2DeletionError) {
+      console.error("Failed to delete cached intersection where user is user2");
     }
   } else {
     console.error("Failed to refresh Twitter follows");
@@ -241,11 +263,11 @@ export const getDataFromDirectory = async (userID: string) => {
         prefHousemateCount: data[0].pref_housemate_count,
         prefHousingType: data[0].pref_housing_type,
         prefLeaseStart: data[0].pref_lease_start,
-        directoryType: 'organizer_profiles'
+        directoryType: "organizer_profiles",
       };
     }
     return null;
-  }
+  };
 
   const getHousingSearchData = async () => {
     let { data, error } = await supabase
@@ -264,11 +286,11 @@ export const getDataFromDirectory = async (userID: string) => {
         prefHousemateCount: data[0].pref_housemate_count,
         prefHousingType: data[0].pref_housing_type,
         prefMoveIn: data[0].pref_move_in,
-        directoryType: 'housing_search_profiles'
+        directoryType: "housing_search_profiles",
       };
     }
     return null;
-  }
+  };
 
   const getCommunitiesData = async () => {
     let { data, error } = await supabase
@@ -288,24 +310,28 @@ export const getDataFromDirectory = async (userID: string) => {
         residentCount: data[0].resident_count,
         roomPriceRange: data[0].room_price_range,
         imageUrl: data[0].image_url,
-        directoryType: 'communities'
+        directoryType: "communities",
       };
     }
     return null;
-  }
+  };
 
-  const directoryTypeFunctions = [getOrganizerData, getHousingSearchData, getCommunitiesData];
+  const directoryTypeFunctions = [
+    getOrganizerData,
+    getHousingSearchData,
+    getCommunitiesData,
+  ];
 
-  for(let func of directoryTypeFunctions) {
+  for (let func of directoryTypeFunctions) {
     let result = await func();
-    if(result !== null) {
+    if (result !== null) {
       return result;
     }
   }
 
   // If none of the functions returned data, return null or some default value
   return null;
-}
+};
 
 export const addOrganizerData = async (
   description: string,
@@ -466,32 +492,34 @@ export const uploadImageLink = async (selectedImage: File, userID: string) => {
 
 export const getImageLink = async (userID: string): Promise<string | Error> => {
   const { data, error } = await supabase.storage
-  .from("community_profile_pictures")
-  .list();
-
-if (error) {
-  console.error('Error listing images:', error);
-  return "Error";
-}
-
-const userImage = data.find(file => file.name.startsWith(`community-pic-${userID}`));
-
-if (userImage) {
-  const response = supabase.storage
     .from("community_profile_pictures")
-    .getPublicUrl(userImage.name);
+    .list();
 
-  if (response.data && response.data.publicUrl) {
-    const cacheImage = `${response.data.publicUrl}?timestamp=${Date.now()}`;
-    return cacheImage;
-  } else {
-    console.error("Public URL is not available");
-    return Error();
+  if (error) {
+    console.error("Error listing images:", error);
+    return "Error";
   }
-}
 
-console.error("User image not found");
-return Error();
+  const userImage = data.find((file) =>
+    file.name.startsWith(`community-pic-${userID}`)
+  );
+
+  if (userImage) {
+    const response = supabase.storage
+      .from("community_profile_pictures")
+      .getPublicUrl(userImage.name);
+
+    if (response.data && response.data.publicUrl) {
+      const cacheImage = `${response.data.publicUrl}?timestamp=${Date.now()}`;
+      return cacheImage;
+    } else {
+      console.error("Public URL is not available");
+      return Error();
+    }
+  }
+
+  console.error("User image not found");
+  return Error();
 };
 
 export const isInDirectoryAlready = async (

@@ -243,7 +243,7 @@ async function computeFollowIntersection(userID1: string, userID2: string) {
     body: JSON.stringify({ userID1, userID2 }),
   });
   if (response.status !== 200) {
-    const body = await response.json()
+    const body = await response.json();
     console.log("Intersection compute response: ", body);
     throw "failed to compute intersection";
   } else {
@@ -304,7 +304,10 @@ export async function getFollowIntersectionWithCaching(
     if (typeof cachedIntersection?.intersection_count === "number") {
       intersectionCount = cachedIntersection.intersection_count;
       console.log("cache HIT");
-    } else if (!cachedIntersection) {
+    } else if (
+      !cachedIntersection ||
+      cachedIntersection.intersection_count === null
+    ) {
       const computedIntersection = await computeFollowIntersection(
         userID1,
         userID2
@@ -371,7 +374,9 @@ export const twitter = {
             cursor = data.meta.next_token;
           }
         } catch (err) {
-          console.error(`Failed to fetch following for user ${twitterID}: ${err}`);
+          console.error(
+            `Failed to fetch following for user ${twitterID}: ${err}`
+          );
         }
       } while (cursor);
 
@@ -396,7 +401,9 @@ export const twitter = {
             cursor = data.meta.next_token;
           }
         } catch (err) {
-          console.error(`Failed to fetch followers for user ${twitterID}: ${err}`);
+          console.error(
+            `Failed to fetch followers for user ${twitterID}: ${err}`
+          );
         }
       } while (cursor);
 
