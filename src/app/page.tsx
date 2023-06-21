@@ -9,15 +9,21 @@ import { useState } from "react";
 import { getReferralDetails } from "../../lib/utils/data";
 import { useRouter } from "next/navigation";
 import { handleSignIn } from "../../lib/utils/process";
+import { error } from "console";
 
 const Home: NextPage = () => {
   const router = useRouter();
   const referralCode = useSearchParams().get("referralCode");
+  const errorCode = useSearchParams().get("error");
   const [referralDetails, setReferralDetails] = useState<ReferralDetails>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function handlePageLoad() {
+      // Check for error query parameter in URL
+      if (errorCode) {
+        alert('You need to add your email address to your Twitter account. \n\nGo to Twitter -> More -> Settings and Support -> Your account -> Email. \n\nAfter you do this, try again.');
+      }
       if (referralCode) {
         const referral = await getReferralDetails(referralCode);
         if (referral.status === "unclaimed") {
