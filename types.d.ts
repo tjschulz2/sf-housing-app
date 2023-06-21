@@ -66,6 +66,7 @@ interface Database {
           created_at: string | null
           description: string | null
           image_url: string | null
+          location: number | null
           name: string | null
           pref_contact_method: string | null
           profile_id: number
@@ -78,6 +79,7 @@ interface Database {
           created_at?: string | null
           description?: string | null
           image_url?: string | null
+          location?: number | null
           name?: string | null
           pref_contact_method?: string | null
           profile_id?: number
@@ -90,6 +92,7 @@ interface Database {
           created_at?: string | null
           description?: string | null
           image_url?: string | null
+          location?: number | null
           name?: string | null
           pref_contact_method?: string | null
           profile_id?: number

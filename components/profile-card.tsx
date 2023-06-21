@@ -181,7 +181,6 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       ) 
     } else if (isCommunityProfile(profile)) {
       let contactMethod = ""
-      console.log(profile.image_url)
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
@@ -200,12 +199,13 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         if (communityDescription.length > 45) {
           communityDescription = communityDescription.substring(0,43) + "..."
         }
+
       }
 
       return (
         <li className={styles.frameParent} id="profile-card-element">
           <div className={styles.image3Parent}>
-            {profile.image_url ? (
+            {imageUrl ? (
               <img
                 className={styles.image3Icon}
                 alt=""
@@ -232,9 +232,15 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               ) : null}
               <div className={styles.locationParent}>
                 <img className={styles.locationIcon} alt="" src="/location.svg" />
-                <p className={styles.sanFrancisco} id="location">
-                  San Francisco
-                </p>
+                {isCommunityProfile(profile) && profile.location ? (
+                  <p className={styles.sanFrancisco} id="location">
+                    {housingMap.location[profile.location]}
+                  </p>
+                ) : !isCommunityProfile(profile) ? (
+                  <p className={styles.sanFrancisco} id="location">
+                    San Francisco
+                  </p>
+                ): null}
               </div>
               <div className={styles.locationParent}>
                 <img className={styles.locationIcon} alt="" src="/threepeople.svg" />
