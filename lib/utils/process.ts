@@ -116,24 +116,14 @@ async function refreshTwitterFollowsIfNeeded(
       console.error("Failed to update follow refresh timestamp");
     }
 
-    // Delete any cached intersection data where user is user1
-    const { error: user1DeletionError } = await supabase
+    // Delete any cached intersection data where user is user1 or user2
+    const { error: cacheDeletionError } = await supabase
       .from("follow_intersections")
       .delete()
-      .eq("user_1_id", userData.user_id);
+      .or(`user_1_id.eq.${userData.user_id},user_2_id.eq.${userData.user_id}`);
 
-    if (user1DeletionError) {
+    if (cacheDeletionError) {
       console.error("Failed to delete cached intersection where user is user1");
-    }
-
-    // Delete any cached intersection data where user is user2
-    const { error: user2DeletionError } = await supabase
-      .from("follow_intersections")
-      .delete()
-      .eq("user_2_id", userData.user_id);
-
-    if (user2DeletionError) {
-      console.error("Failed to delete cached intersection where user is user2");
     }
   } else {
     console.error("Failed to refresh Twitter follows");
