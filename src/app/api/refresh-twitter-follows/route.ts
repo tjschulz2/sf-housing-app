@@ -10,19 +10,25 @@ import { JwtPayload } from "jsonwebtoken";
 export async function GET() {
   const headersList = headers();
   try {
+    const headersList = headers();
     const jwt = headersList.get("accessToken");
     if (!jwt) {
-      throw "missing header: accessToken";
+      throw new Error("Missing header: accessToken");
     }
 
-    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
-      JwtPayload;
+    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User & JwtPayload;
     const { sub: userID } = user;
     const { sub: twitterID } = user.user_metadata;
 
     if (userID && typeof userID === "string") {
-      const followingPromise = twitter.following.getFromTwitter(twitterID);
-      const followersPromise = twitter.followers.getFromTwitter(twitterID);
+      const followingPromise = twitter.following.getFromTwitter(twitterID).catch(err => {
+        console.error('Error in followingPromise:', err);
+        return [];
+      });
+      const followersPromise = twitter.followers.getFromTwitter(twitterID).catch(err => {
+        console.error('Error in followersPromise:', err);
+        return [];
+      });
 
       const [followingResponse, followersResponse] = await Promise.all([
         followingPromise,
@@ -64,11 +70,12 @@ export async function GET() {
       //redisClient.quit();
     }
   } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { msg: `error: ${JSON.stringify(err)}` },
-      { status: 500 }
-    );
+    console.error('Unexpected error in GET function:', err);
+    if (err instanceof Error && err.message.includes('Rate limit reached')) {
+      return NextResponse.json({ msg: 'Rate limit reached. Try again later.' }, { status: 429 });
+    } else if (err instanceof Error) {
+      return NextResponse.json({ msg: `Unexpected server error: ${err.message}` }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ msg: "success" }, { status: 200 });

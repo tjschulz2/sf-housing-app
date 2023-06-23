@@ -8,7 +8,7 @@ import TwitterLogo from '../src/images/twitter-logo.svg'
 import ContactMeButton  from '../components/contactme-button/contactme-button'
 import React, { useState, useEffect } from 'react'
 import { getImageLink } from "../lib/utils/process";
-import { twitter } from "../lib/utils/data";
+import { getReferrerName } from "../lib/utils/data";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -17,6 +17,8 @@ type ProfileCardProps = {
 
 const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [referrer, setReferrer] = useState<{ name: string | null, twitter_handle: string | null, twitter_avatar_url: string | null }>({ name: null, twitter_handle: null, twitter_avatar_url: null });
+
 
   const { user } = profile;
   let colorClass: any;
@@ -48,6 +50,20 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
     return (profile as CommunityProfile).resident_count !== undefined;
   }
 
+  const renderReferrer = () => {
+    if (referrer.name !== null) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ fontWeight: '600' }}>Referred by:</div>
+          <a href={`https://twitter.com/${referrer.twitter_handle}`} className={styles.referrerContainer}>
+            <img style={{marginLeft: '4px', marginRight: '4px', borderRadius: '100px', height: '25px', width: '25px'}} src={referrer.twitter_avatar_url|| ""}></img>
+            <div className={`${colorClass}`}>{referrer.name}</div>
+          </a>
+        </div>
+      )
+    }
+  }
+
 
   useEffect(() => {
     if (isCommunityProfile(profile) && profile.user_id) {
@@ -59,6 +75,16 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         })
         .catch((error) => console.error('Error fetching image:', error));
     }
+    const fetchReferrer = async () => {
+      try {
+        const referrerData = await getReferrerName(profile.user_id ?? "");
+        setReferrer(referrerData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchReferrer();
   }, [profile.user_id]);
 
   const renderHousingAndOrganizerOrCommunity = () => {
@@ -176,6 +202,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 : isOrganizerProfile(profile) ? housingMap.moveIn[profile.pref_lease_start ?? 1] : null}
             </span>
           </p>
+          {renderReferrer()}
         </div>
       </li>
       ) 
@@ -276,14 +303,15 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               </div>
             </div>
             <p className={styles.wants1YearLeaseContainer} id="wants-text">
-            <span className={styles.wants}>Montly rent:</span>
-            <span>
-              {" "}
-              {profile.room_price_range
-                ? housingMap.roomPrice[profile.room_price_range]
-                : null}{" "}
-            </span>
-          </p>
+              <span className={styles.wants}>Montly rent:</span>
+              <span>
+                {" "}
+                {profile.room_price_range
+                  ? housingMap.roomPrice[profile.room_price_range]
+                  : null}{" "}
+              </span>
+            </p>
+            {renderReferrer()}
           </div>
         </li>
       );

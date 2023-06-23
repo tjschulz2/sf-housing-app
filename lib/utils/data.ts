@@ -122,6 +122,34 @@ export async function genReferral(userID: string) {
   }
 }
 
+export async function getReferrerName(userId: string) {
+  const { data: referralData, error: referralError } = await supabase
+    .from("referrals")
+    .select("originator_id")
+    .eq("recipient_id", userId);
+
+  if (referralError || !referralData || referralData.length === 0) {
+    throw new Error('No referral data found for this user');
+  }
+
+  const originatorId = referralData[0].originator_id;
+
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("name, twitter_handle, twitter_avatar_url")
+    .eq("user_id", originatorId);
+
+  if (userError || !userData || userData.length === 0) {
+    throw new Error('No user found with this ID');
+  }
+
+  return {
+    name: userData[0].name,
+    twitter_handle: userData[0].twitter_handle,
+    twitter_avatar_url: userData[0].twitter_avatar_url
+  };
+}
+
 export async function getReferralDetails(referralCode: string) {
   const { data, error } = await supabase
     .from("referrals")
@@ -348,10 +376,11 @@ export async function fetchFromTwitter(
   const response = await fetch(url, options);
 
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw new Error(`HTTP ${response.status}: Network response was not ok`);
   }
   return response;
 }
+
 
 export const twitter = {
   following: {
@@ -359,9 +388,8 @@ export const twitter = {
       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
       let cursor = null;
       let following: User[] = [];
-
-      do {
-        try {
+      try {
+        do {
           const res = await fetchFromTwitter(
             `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
           );
@@ -370,11 +398,14 @@ export const twitter = {
             following = [...following, ...data.data];
             cursor = data.meta.next_token;
           }
-        } catch (err) {
-          console.error(`Failed to fetch following for user ${twitterID}: ${err}`);
+        } while (cursor);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes('Rate limit reached')) {
+          console.error('Rate limit reached for following. Returning what we have so far.');
+        } else {
+          throw err;
         }
-      } while (cursor);
-
+      }
       return following;
     },
     setToStore: storeFollowing,
@@ -382,11 +413,10 @@ export const twitter = {
   followers: {
     getFromTwitter: async (twitterID: string) => {
       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/followers`;
-      let cursor = null;
+      let cursor: string | null = null;
       let followers: User[] = [];
-
-      do {
-        try {
+      try {
+        do {
           const res = await fetchFromTwitter(
             `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
           );
@@ -395,11 +425,14 @@ export const twitter = {
             followers = [...followers, ...data.data];
             cursor = data.meta.next_token;
           }
-        } catch (err) {
-          console.error(`Failed to fetch followers for user ${twitterID}: ${err}`);
+        } while (cursor);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes('Rate limit reached')) {
+          console.error('Rate limit reached for followers. Returning what we have so far.');
+        } else {
+          throw err;
         }
-      } while (cursor);
-
+      }
       return followers;
     },
     setToStore: storeFollowers,
