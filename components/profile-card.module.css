@@ -302,7 +302,6 @@
 
 .frameContainer {
   align-self: stretch;
-  height: 10.44rem;
   gap: var(--gap-base);
   color: var(--color-darkslategray);
 }
