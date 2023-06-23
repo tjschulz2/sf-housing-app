@@ -20,6 +20,7 @@ const MyForm: NextPage = () => {
   const router = useRouter();
   const [roomPrice, setRoomPrice] = useState("");
   const [communityName, setCommunityName] = useState("");
+  const [location, setLocation] = useState("");
   const [housemates, setHousemates] = useState("");
   const [contactMethod, setContactMethod] = useState("");
   const [link, setLink] = useState("");
@@ -71,6 +72,18 @@ const MyForm: NextPage = () => {
             setHousemates("6-12");
           } else if (directoryData.residentCount === 4) {
             setHousemates("12+");
+          }
+        }
+
+        if (directoryData.location) {
+          if (directoryData.location === 1) {
+            setLocation("San Francisco");
+          } else if (directoryData.location === 2) {
+            setLocation("Berkeley");
+          } else if (directoryData.location === 3) {
+            setLocation("Oakland");
+          } else if (directoryData.location === 4) {
+            setLocation("Hillsborough");
           }
         }
     
@@ -157,7 +170,8 @@ const MyForm: NextPage = () => {
           contactMethod,
           session?.userID,
           session?.twitterHandle,
-          phone
+          phone,
+          location
         );
       } else {
         await uploadImageLink(selectedImage, session!.userID);
@@ -173,7 +187,8 @@ const MyForm: NextPage = () => {
             contactMethod,
             session?.userID,
             session?.twitterHandle,
-            phone
+            phone,
+            location
           );
         }
       }
@@ -265,6 +280,7 @@ const MyForm: NextPage = () => {
       link &&
       housemates &&
       communityName &&
+      location &&
       contactMethod &&
       ((contactMethod === "phone" && phoneRegex.test(phone)) ||
         contactMethod !== "phone") &&
@@ -285,6 +301,7 @@ const MyForm: NextPage = () => {
     imagePreview,
     communityName,
     isModalActive,
+    location
   ]);
 
   return (
@@ -466,6 +483,54 @@ const MyForm: NextPage = () => {
               }`}
             ></div>
             12+
+          </div>
+        </div>
+
+        <div>
+          <h2>Where is the house located?</h2>
+          <div
+            className={styles.options}
+            onClick={() => handleOptionClick(setLocation, "San Francisco")}
+          >
+            <div
+              className={`${styles.option} ${
+                location === "San Francisco" ? styles.optionSelected : ""
+              }`}
+            ></div>
+            San Francisco
+          </div>
+          <div
+            className={styles.options}
+            onClick={() => handleOptionClick(setLocation, "Berkeley")}
+          >
+            <div
+              className={`${styles.option} ${
+                location === "Berkeley" ? styles.optionSelected : ""
+              }`}
+            ></div>
+            Berkeley
+          </div>
+          <div
+            className={styles.options}
+            onClick={() => handleOptionClick(setLocation, "Oakland")}
+          >
+            <div
+              className={`${styles.option} ${
+                location === "Oakland" ? styles.optionSelected : ""
+              }`}
+            ></div>
+            Oakland
+          </div>
+          <div
+            className={styles.options}
+            onClick={() => handleOptionClick(setLocation, "Hillsborough")}
+          >
+            <div
+              className={`${styles.option} ${
+                location === "Hillsborough" ? styles.optionSelected : ""
+              }`}
+            ></div>
+            Hillsborough
           </div>
         </div>
 

@@ -78,9 +78,3 @@ export async function signInWithTwitter() {
     return { status: "error", message: "failed to authenticate user" };
   }
 }
-
-export async function signUpWithTwitter() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "twitter",
-  });
-}

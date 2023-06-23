@@ -301,6 +301,7 @@ export const getDataFromDirectory = async (userID: string) => {
         roomPriceRange: data[0].room_price_range,
         imageUrl: data[0].image_url,
         directoryType: "communities",
+        location: data[0].location,
       };
     }
     return null;
@@ -401,7 +402,8 @@ export const addCommunityData = async (
   contactMethod: string,
   userID: string | undefined,
   twitterHandle: string | null,
-  phone: string
+  phone: string,
+  location: string
 ) => {
   // Translate options into numbers
   const roomPriceOptions = [
@@ -414,9 +416,16 @@ export const addCommunityData = async (
   ];
   const housematesOptions = ["1-2", "3-5", "6-12", "12+"];
   const contactMethodOptions = ["phone", "email", "twitter", "website"];
+  const locationOptions = [
+    "San Francisco",
+    "Berkeley",
+    "Oakland",
+    "Hillsborough",
+  ];
 
   const roomPriceNum = roomPriceOptions.indexOf(roomPrice) + 1;
   const housematesNum = housematesOptions.indexOf(housemates) + 1;
+  const locationNum = locationOptions.indexOf(location) + 1;
   const contactMethodNum = contactMethodOptions.indexOf(contactMethod) + 1;
 
   // Get the actual contact method
@@ -456,6 +465,7 @@ export const addCommunityData = async (
       image_url: imageLink,
       pref_contact_method: actualContactMethod,
       user_id: userID,
+      location: locationNum,
     },
   ]);
 
