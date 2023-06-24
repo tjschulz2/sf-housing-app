@@ -16,19 +16,22 @@ export async function GET() {
       throw new Error("Missing header: accessToken");
     }
 
-    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User & JwtPayload;
+    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
+      JwtPayload;
     const { sub: userID } = user;
     const { sub: twitterID } = user.user_metadata;
 
     if (userID && typeof userID === "string") {
-      const followingPromise = twitter.following.getFromTwitter(twitterID).catch(err => {
-        console.error('Error in followingPromise:', err);
-        return [];
-      });
-      const followersPromise = twitter.followers.getFromTwitter(twitterID).catch(err => {
-        console.error('Error in followersPromise:', err);
-        return [];
-      });
+      const followingPromise = twitter.following
+        .getFromTwitter(twitterID)
+        .catch((err) => {
+          throw `Error in followingPromise: ${err}`;
+        });
+      const followersPromise = twitter.followers
+        .getFromTwitter(twitterID)
+        .catch((err) => {
+          throw `Error in followersPromise: ${err}`;
+        });
 
       const [followingResponse, followersResponse] = await Promise.all([
         followingPromise,
@@ -43,12 +46,12 @@ export async function GET() {
         throw "server error - no redis client";
       }
 
-      const followingStoragePromise = await twitter.following.setToStore(
+      const followingStoragePromise = twitter.following.setToStore(
         redisClient,
         userID,
         followingList
       );
-      const followersStoragePromise = await twitter.followers.setToStore(
+      const followersStoragePromise = twitter.followers.setToStore(
         redisClient,
         userID,
         followersList
@@ -59,24 +62,26 @@ export async function GET() {
 
       redisClient.quit();
 
-
       if (
         followingStorageResult.status === "error" ||
         followersStorageResult.status === "error"
       ) {
         throw "Failed to store follow data";
       }
-
-      //redisClient.quit();
     }
   } catch (err) {
-    console.error('Unexpected error in GET function:', err);
-    if (err instanceof Error && err.message.includes('Rate limit reached')) {
-      return NextResponse.json({ msg: 'Rate limit reached. Try again later.' }, { status: 429 });
-    } else if (err instanceof Error) {
-      return NextResponse.json({ msg: `Unexpected server error: ${err.message}` }, { status: 500 });
+    if (err instanceof Error && err.message.includes("Rate limit reached")) {
+      return NextResponse.json(
+        { message: "Rate limit reached. Try again later." },
+        { status: 429 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: `Unexpected server error: ${err}` },
+        { status: 500 }
+      );
     }
   }
 
-  return NextResponse.json({ msg: "success" }, { status: 200 });
+  return NextResponse.json({ message: "success" }, { status: 200 });
 }
