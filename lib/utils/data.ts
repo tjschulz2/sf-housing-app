@@ -129,7 +129,7 @@ export async function getReferrerName(userId: string) {
     .eq("recipient_id", userId);
 
   if (referralError || !referralData || referralData.length === 0) {
-    throw new Error('No referral data found for this user');
+    throw new Error("No referral data found for this user");
   }
 
   const originatorId = referralData[0].originator_id;
@@ -140,13 +140,13 @@ export async function getReferrerName(userId: string) {
     .eq("user_id", originatorId);
 
   if (userError || !userData || userData.length === 0) {
-    throw new Error('No user found with this ID');
+    throw new Error("No user found with this ID");
   }
 
   return {
     name: userData[0].name,
     twitter_handle: userData[0].twitter_handle,
-    twitter_avatar_url: userData[0].twitter_avatar_url
+    twitter_avatar_url: userData[0].twitter_avatar_url,
   };
 }
 
@@ -271,7 +271,7 @@ async function computeFollowIntersection(userID1: string, userID2: string) {
     body: JSON.stringify({ userID1, userID2 }),
   });
   if (response.status !== 200) {
-    const body = await response.json()
+    const body = await response.json();
     console.log("Intersection compute response: ", body);
     throw "failed to compute intersection";
   } else {
@@ -332,7 +332,10 @@ export async function getFollowIntersectionWithCaching(
     if (typeof cachedIntersection?.intersection_count === "number") {
       intersectionCount = cachedIntersection.intersection_count;
       console.log("cache HIT");
-    } else if (!cachedIntersection) {
+    } else if (
+      !cachedIntersection ||
+      cachedIntersection.intersection_count === null
+    ) {
       const computedIntersection = await computeFollowIntersection(
         userID1,
         userID2
@@ -381,7 +384,6 @@ export async function fetchFromTwitter(
   return response;
 }
 
-
 export const twitter = {
   following: {
     getFromTwitter: async (twitterID: string) => {
@@ -400,8 +402,13 @@ export const twitter = {
           }
         } while (cursor);
       } catch (err) {
-        if (err instanceof Error && err.message.includes('Rate limit reached')) {
-          console.error('Rate limit reached for following. Returning what we have so far.');
+        if (
+          err instanceof Error &&
+          err.message.includes("Rate limit reached")
+        ) {
+          console.error(
+            "Rate limit reached for following. Returning what we have so far."
+          );
         } else {
           throw err;
         }
@@ -427,8 +434,13 @@ export const twitter = {
           }
         } while (cursor);
       } catch (err) {
-        if (err instanceof Error && err.message.includes('Rate limit reached')) {
-          console.error('Rate limit reached for followers. Returning what we have so far.');
+        if (
+          err instanceof Error &&
+          err.message.includes("Rate limit reached")
+        ) {
+          console.error(
+            "Rate limit reached for followers. Returning what we have so far."
+          );
         } else {
           throw err;
         }
