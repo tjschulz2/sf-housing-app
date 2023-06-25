@@ -106,33 +106,44 @@ export async function getCommunities(startIdx: number = 0, count: number = 25) {
 
 // ----- Referrals -----
 
-export async function genReferral(userID: string) {
-  // Postgres RLS to ensure:
-  // 1. Originator_id matches authenticated users's ID
-  // 2. User has remaining referrals before executing query
-  const { data, error } = await supabase
-    .from("referrals")
-    .insert([{ originator_id: userID }]);
+// export async function genReferral(userID: string) {
+//   // Postgres RLS to ensure:
+//   // 1. Originator_id matches authenticated users's ID
+//   // 2. User has remaining referrals before executing query
+//   const { data, error } = await supabase
+//     .from("referrals")
+//     .insert([{ originator_id: userID }]);
 
-  if (error) {
-    console.error(error);
-  } else {
-    const availableReferrals = await decAvailableReferrals(userID);
-    return [data, availableReferrals];
-  }
-}
+//   if (error) {
+//     console.error(error);
+//   } else {
+//     const availableReferrals = await decAvailableReferrals(userID);
+//     return [data, availableReferrals];
+//   }
+// }
 
 export async function getReferrerName(userId: string) {
   const { data: referralData, error: referralError } = await supabase
-    .from("referrals")
-    .select("originator_id")
+    .from("referral_recipients")
+    .select("referral_id")
     .eq("recipient_id", userId);
 
   if (referralError || !referralData || referralData.length === 0) {
     throw new Error("No referral data found for this user");
   }
 
-  const originatorId = referralData[0].originator_id;
+  const referralCode = referralData[0].referral_id
+
+  const { data: referralInfo, error: referralInfoError } = await supabase
+    .from("referrals")
+    .select("originator_id")
+    .eq("referral_id", referralCode)
+
+  if (referralInfoError || !referralInfo || referralInfo.length === 0) {
+    throw new Error("No referral data found for this user");
+  }
+
+  const originatorId = referralInfo[0].originator_id;
 
   const { data: userData, error: userError } = await supabase
     .from("users")
@@ -165,7 +176,7 @@ export async function getReferralDetails(referralCode: string) {
 
   if (!data) {
     status = "invalid";
-  } else if (data.recipient_id) {
+  } else if (data.usage_count && data.usage_limit && (data.usage_count >= data.usage_limit)) {
     status = "claimed";
   } else {
     status = "unclaimed";
@@ -174,7 +185,6 @@ export async function getReferralDetails(referralCode: string) {
   return {
     referralCreatedAt: data?.created_at,
     originatorID: data?.originator_id,
-    recipientID: data?.recipient_id,
     referralID: data?.referral_id,
     // @ts-ignore
     originatorName: data?.originator.name,
@@ -183,41 +193,84 @@ export async function getReferralDetails(referralCode: string) {
 }
 
 export async function claimReferral(referralID: string, userID: string) {
-  const { data, error } = await supabase
+  // Fetch the current referral record
+  const { data: referralData, error: referralError } = await supabase
     .from("referrals")
-    .update({ recipient_id: userID })
-    .eq("referral_id", referralID)
-    .is("recipient_id", null)
-    .select();
-  if (error || data[0]?.recipient_id !== userID) {
-    return { status: "error", message: "failed to claim referral" };
+    .select("usage_count, usage_limit")
+    .eq("referral_id", Number(referralID));
+  
+  // If there was an error fetching the referral record, return an error message
+  if (referralError || !referralData || referralData.length === 0) {
+    return { status: "error", message: "failed to claim referral: invalid referral code" };
   }
-  return { status: "success" };
-}
 
-async function decAvailableReferrals(userID: string) {
-  // Postgres RLS to ensure:
-  // 1. user_id matches authenticated users's ID
+  const referral = referralData[0];
 
-  const { data, error } = await supabase
-    .rpc("decrement_available_referrals")
-    .eq("user_id", userID);
-  if (error) {
-    console.error(error);
+  // Check if the usage_count is less than the usage_limit
+  if ((referral.usage_count ?? 0) < (referral.usage_limit ?? 0)) {
+    // If it is less than usage_limit, then add 1 to the current usage count
+    const { data, error: updateError } = await supabase
+    .from("referrals")
+    .update({ usage_count: (referral.usage_count ?? 0) + 1 })
+    .eq("referral_id", Number(referralID))
+    .select("*");
+  
+    // If there was an error updating the referral record or no rows were affected, return an error message
+    if (updateError || !data || data.length === 0) {
+      return { status: "error", message: "Failed to claim referral" };
+    }
+
+    // Add row to referral_recipients table
+    const { data: insertData, error: insertError } = await supabase
+      .from("referral_recipients")
+      .insert([
+        { referral_id: Number(referralID), recipient_id: userID },
+      ])
+      .select("*");
+
+    // If there was an error inserting the record, log it and return an error message
+    if (insertError) {
+      console.error("Insert error:", insertError);
+      return { status: "error", message: "failed to record the claim" };
+    }
+
+    // If no rows were affected, return an error message
+    if (!insertData || insertData.length === 0) {
+      return { status: "error", message: "failed to record the claim - no rows affected" };
+    }
+
+    return { status: "success" };
   } else {
-    return data;
+    // If usage_count is === to usage_limit, then return status: error and message" failed to claim referral
+    return { status: "error", message: "failed to claim referral: referral limit reached" };
   }
 }
 
-export async function getAvailableReferrals(userID: string) {
-  // Postgres RLS to ensure:
-  // 1. user_id matches authenticated users's ID
 
-  let { data, error } = await supabase
-    .from("users")
-    .select("available_referrals")
-    .eq("user_id", userID);
-}
+
+// async function decAvailableReferrals(userID: string) {
+//   // Postgres RLS to ensure:
+//   // 1. user_id matches authenticated users's ID
+
+//   const { data, error } = await supabase
+//     .rpc("decrement_available_referrals")
+//     .eq("user_id", userID);
+//   if (error) {
+//     console.error(error);
+//   } else {
+//     return data;
+//   }
+// }
+
+// export async function getAvailableReferrals(userID: string) {
+//   // Postgres RLS to ensure:
+//   // 1. user_id matches authenticated users's ID
+
+//   let { data, error } = await supabase
+//     .from("users")
+//     .select("available_referrals")
+//     .eq("user_id", userID);
+// }
 
 // ----- Redis: Twitter follow data -----
 

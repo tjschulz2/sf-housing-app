@@ -13,7 +13,7 @@ declare module "*.svg" {
 type ReferralDetails = {
   referralCreatedAt: string | null | undefined;
   originatorID: string | undefined;
-  recipientID: string | null | undefined;
+  //recipientID: string | null | undefined;
   referralID: number | undefined;
   originatorName: any;
   status: string;
@@ -131,29 +131,23 @@ interface Database {
       follow_intersections: {
         Row: {
           intersection_count: number | null
-          last_updated: string
+          last_updated: string | null
           user_1_id: string
           user_2_id: string
         }
         Insert: {
           intersection_count?: number | null
-          last_updated?: string
+          last_updated?: string | null
           user_1_id: string
           user_2_id: string
         }
         Update: {
           intersection_count?: number | null
-          last_updated?: string
+          last_updated?: string | null
           user_1_id?: string
           user_2_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "follow_intersections_user_1_id_fkey"
-            columns: ["user_1_id"]
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
           {
             foreignKeyName: "follow_intersections_user_2_id_fkey"
             columns: ["user_2_id"]
@@ -182,7 +176,7 @@ interface Database {
           pref_housemate_details?: string | null
           pref_housing_type?: number | null
           pref_move_in?: number | null
-          profile_id: number
+          profile_id?: number
           user_id?: string | null
         }
         Update: {
@@ -207,7 +201,7 @@ interface Database {
       }
       organizer_profiles: {
         Row: {
-          created_at: string
+          created_at: string | null
           link: string | null
           pref_contact_method: string | null
           pref_house_details: string | null
@@ -218,18 +212,18 @@ interface Database {
           user_id: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           link?: string | null
           pref_contact_method?: string | null
           pref_house_details?: string | null
           pref_housemate_count?: number | null
           pref_housing_type?: number | null
           pref_lease_start?: number | null
-          profile_id: number
+          profile_id?: number
           user_id: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           link?: string | null
           pref_contact_method?: string | null
           pref_house_details?: string | null
@@ -248,24 +242,49 @@ interface Database {
           }
         ]
       }
+      referral_recipients: {
+        Row: {
+          recipient_id: string
+          referral_id: number | null
+        }
+        Insert: {
+          recipient_id: string
+          referral_id?: number | null
+        }
+        Update: {
+          recipient_id?: string
+          referral_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_recipients_referral_id_fkey"
+            columns: ["referral_id"]
+            referencedRelation: "referrals"
+            referencedColumns: ["referral_id"]
+          }
+        ]
+      }
       referrals: {
         Row: {
           created_at: string | null
           originator_id: string
-          recipient_id: string | null
           referral_id: number
+          usage_count: number | null
+          usage_limit: number | null
         }
         Insert: {
           created_at?: string | null
           originator_id: string
-          recipient_id?: string | null
           referral_id?: number
+          usage_count?: number | null
+          usage_limit?: number | null
         }
         Update: {
           created_at?: string | null
           originator_id?: string
-          recipient_id?: string | null
           referral_id?: number
+          usage_count?: number | null
+          usage_limit?: number | null
         }
         Relationships: [
           {
@@ -284,6 +303,7 @@ interface Database {
           created_at: string | null
           email: string | null
           follows_last_refresh: string | null
+          is_super: boolean | null
           name: string | null
           phone_number: string | null
           twitter_avatar_url: string | null
@@ -299,6 +319,7 @@ interface Database {
           created_at?: string | null
           email?: string | null
           follows_last_refresh?: string | null
+          is_super?: boolean | null
           name?: string | null
           phone_number?: string | null
           twitter_avatar_url?: string | null
@@ -314,6 +335,7 @@ interface Database {
           created_at?: string | null
           email?: string | null
           follows_last_refresh?: string | null
+          is_super?: boolean | null
           name?: string | null
           phone_number?: string | null
           twitter_avatar_url?: string | null
@@ -329,10 +351,7 @@ interface Database {
       [_ in never]: never
     }
     Functions: {
-      decrement_available_referrals: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
