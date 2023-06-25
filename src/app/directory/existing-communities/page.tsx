@@ -29,13 +29,13 @@ const Directory: NextPage = () => {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>Do you already have an apartment or coliving house?</h2>
+        <h2>Do you have a vacant room, sublet, or coliving house?</h2>
         <span className={styles.addInfoText}>
-          Add your information and we will add you to the Existing communities
+          Add your information and we will add you to the Existing spaces
           directory so you can be discovered by people looking for housing
         </span>
         <Link className={styles.addMeButton} href="/community-form">
-          Add my community house
+          Add my space
         </Link>
       </div>
       {todayProfiles && todayProfiles.length > 0 && (

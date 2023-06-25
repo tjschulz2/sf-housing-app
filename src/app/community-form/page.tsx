@@ -319,7 +319,7 @@ const MyForm: NextPage = () => {
       />
       <form className={styles.form}>
         <Link href="/directory/existing-communities">Back to directory</Link>
-        <h1>Add community to the directory</h1>
+        <h1>Add your space to the directory</h1>
         <div
           style={{ height: "1px", backgroundColor: "gray", width: "100%" }}
         />
@@ -328,7 +328,7 @@ const MyForm: NextPage = () => {
           <label>
             <h2>What&#39;s the name of your community?</h2>
             <p className={styles.maxCharacters}>
-              If no formal name, just put Apartment or House
+              If no formal name, just put Apartment, House, Sublet, etc
             </p>
             <input
               className={`${styles.inputStyle} ${visitedFields.has("communityName") && !communityName ? styles.inputError : ""}`}
@@ -348,9 +348,9 @@ const MyForm: NextPage = () => {
 
         <div>
           <label>
-            <h2>Introduce yourself and what your community is about.</h2>
+            <h2>Introduce yourself and share some information about your space.</h2>
             <p className={styles.maxCharacters}>
-              Who is it for? How do residents create value for one another?
+              Who is it for?
             </p>
             <div style={{ display: "flex", alignItems: "center" }}>
               <textarea
@@ -559,7 +559,7 @@ const MyForm: NextPage = () => {
         </div>
 
         <div>
-          <h2>Upload an image or logo of your community</h2>
+          <h2>Upload an image or logo of your community (if coliving)</h2>
           <p className={styles.maxCharacters}>
             Optional. If you upload nothing, we will use your Twitter profile
             picture. JPG, JPEG, and PNG only.

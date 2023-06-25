@@ -15,7 +15,7 @@ const navConfig = [
   },
   {
     path: "/directory/existing-communities",
-    title: "Existing coliving spaces",
+    title: "Existing spaces",
   },
 ];
 
