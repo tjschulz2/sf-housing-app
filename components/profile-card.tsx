@@ -61,6 +61,15 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
           </a>
         </div>
       )
+    } else {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ fontWeight: '600', marginRight: '4px' }}>Referred by:</div>
+          <div className={styles.referrerContainer}>
+            <div style={{ height: '25px', display: 'flex', alignItems: 'center' }}>{`DirectorySF`}</div>
+          </div>
+        </div>
+      )
     }
   }
 
