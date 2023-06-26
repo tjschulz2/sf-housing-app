@@ -129,6 +129,7 @@ export async function getReferrerName(userId: string) {
     .eq("recipient_id", userId);
 
   if (referralError || !referralData || referralData.length === 0) {
+    return;
     throw new Error("No referral data found for this user");
   }
 
@@ -140,6 +141,7 @@ export async function getReferrerName(userId: string) {
     .eq("referral_id", referralCode)
 
   if (referralInfoError || !referralInfo || referralInfo.length === 0) {
+    return;
     throw new Error("No referral data found for this user");
   }
 

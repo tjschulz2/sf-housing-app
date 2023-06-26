@@ -87,7 +87,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
     const fetchReferrer = async () => {
       try {
         const referrerData = await getReferrerName(profile.user_id ?? "");
-        setReferrer(referrerData);
+        if (referrerData) setReferrer(referrerData);
       } catch (error) {
         console.error(error);
       }
