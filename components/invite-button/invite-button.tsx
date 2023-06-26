@@ -11,22 +11,30 @@ const InviteButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [referralLink, setReferralLink] = useState('');
   const [isSuper, setIsSuper] = useState(false);
+  const [userID, setUserID] = useState("");
+
+  // I'm trying to get the user's information
+  // Test to see if the user has is_super && if has is_super, then also check to see if they have an active referral code
+  // If is_super & has referral code, then show that referral code
+  // If the user isn't is_super, then just generate a new code upon opening up the modal
+  // If the user is_super and the referral code's usage_limit == usage_count, then generate a new code
 
   useEffect(() => {
     const fetchUserData = async () => {
       const session = await getUserSession();
 
-      if (session && session.twitterID) {
+      if (session && session.userID) {
+        setUserID(session.userID)
         const { data, error } = await supabase
           .from('users')
-          .select('user_id, is_super')
-          .eq('twitter_id', session.twitterID);
+          .select('*')
+          .eq('user_id', session.userID);
 
         if (error) console.error('Error fetching user:', error);
 
         if (data && data.length > 0) {
           const user = data[0];
-          setIsSuper(user.is_super !== null ? user.is_super : false);
+          if (user.is_super !== null) setIsSuper(user.is_super)
         }
       }
     };
@@ -35,57 +43,53 @@ const InviteButton = () => {
   }, []);
 
   const generateReferralCode = async () => {
-    try {
-      const { data: userData } = await supabase
-        .from('users')
+    if (isSuper) {
+      const {data: referralsData, error: referralsError} = await supabase
+        .from('referrals')
         .select('*')
-        .eq('is_super', isSuper);
+        .eq('originator_id', userID)
+        .eq('usage_limit', 500)
+        .not('usage_count', 'gte', 500)
+      
+      if (referralsError) {
+        console.error('Error fetching user:', referralsError);
+        return
+      }  
 
-      if (userData && userData.length > 0) {
-        const user = userData[0];
-        let referralCode;
-        let newReferralLink;
+      if (referralsData && referralsData.length > 0) {
+        const referralCode = referralsData[0].referral_id
+        setReferralLink(`${referralBaseLink}${referralCode}`)
+      } else {
+        const referralCode = Math.floor(Math.random() * 1000000000000000);
+        setReferralLink(`${referralBaseLink}${referralCode}`)
+        // Insert a new record into the `referrals` table
+        const { error: insertError } = await supabase.from('referrals').insert([
+          {
+            referral_id: referralCode,
+            originator_id: userID,
+            usage_limit: 500,
+            usage_count: 0,
+          },
+        ]);
 
-        // Fetch existing referral from the referrals table
-        const { data: referralData } = await supabase
-          .from('referrals')
-          .select('*')
-          .eq('originator_id', user.user_id)
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        // If user is a super user and the usage limit has not been reached, use the existing referral code
-        if (  user.is_super &&
-          referralData &&
-          referralData.length > 0 &&
-          referralData[0] &&
-          (referralData[0].usage_limit || 1) > (referralData[0]?.usage_count || 0)) {
-          referralCode = referralData[0].referral_id;
-          newReferralLink = `${referralBaseLink}${referralCode}`;
-        } else {
-          // Generate a new referral code for the user
-          referralCode = Math.floor(Math.random() * 1000000000000000);
-          newReferralLink = `${referralBaseLink}${referralCode}`;
-
-          // Insert a new record into the `referrals` table
-          const { error: insertError } = await supabase.from('referrals').insert([
-            {
-              referral_id: referralCode,
-              originator_id: user.user_id,
-              usage_limit: isSuper ? 500 : 1,
-              usage_count: 0,
-            },
-          ]);
-
-          if (insertError) throw insertError;
-        }
-
-        setReferralLink(newReferralLink);
+        if (insertError) throw insertError;
       }
-    } catch (error) {
-      console.error('Failed to generate referral code:', error);
+    } else {
+      const referralCode = Math.floor(Math.random() * 1000000000000000);
+      setReferralLink(`${referralBaseLink}${referralCode}`)
+      // Insert a new record into the `referrals` table
+      const { error: insertError } = await supabase.from('referrals').insert([
+        {
+          referral_id: referralCode,
+          originator_id: userID,
+          usage_limit: 1,
+          usage_count: 0,
+        },
+      ]);
+
+      if (insertError) throw insertError;
     }
-  };
+  }
 
   const openModal = async () => {
     await generateReferralCode();

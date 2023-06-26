@@ -38,8 +38,9 @@ const Home: NextPage = () => {
         //localStorage.setItem("referral-code", "")
         setIsLoading(true);
         const signInResult = await handleSignIn();
+        console.log(signInResult)
         setIsLoading(false);
-        console.log(signInResult);
+        
         if (signInResult?.status !== "success") {
           return;
         }
