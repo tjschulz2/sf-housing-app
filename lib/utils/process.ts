@@ -126,7 +126,8 @@ async function refreshTwitterFollowsIfNeeded(
       console.error("Failed to delete cached intersection where user is user1");
     }
   } else {
-    console.error("Failed to refresh Twitter follows");
+    const responseBody = await refreshResponse.json();
+    console.error(`Failed to refresh Twitter follows: ${responseBody.message}`);
   }
 }
 
