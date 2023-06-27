@@ -172,9 +172,9 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <h4 className={styles.maxKrieger} id="twitter-name">
                   {userName}
               </h4>
-              <div className={styles.maxKriegerParent}>
+              <div className={styles.nameAndHandleContainer}>
+                <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>@{twitterHandle}</div>
                 <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
-                <div className={`${styles.maxkriegers} ${colorClass}`}>@{twitterHandle}</div>
               </div>
               {/* <FollowedBy profile={profile} /> */}
             </div>
@@ -298,8 +298,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <div className={styles.twitterProfileContainer}>
                 <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{userName}</div>
                 <div className={styles.nameAndHandleContainer}>
+                  <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>@{user?.twitter_handle}</div>
                   <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
-                  <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>{user?.twitter_handle}</div>
                 </div>
                 {/* <FollowedBy profile={profile} /> */}
               </div>
