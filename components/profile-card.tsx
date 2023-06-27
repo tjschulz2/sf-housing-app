@@ -104,12 +104,12 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         contactMethod = profile.pref_contact_method;
       }
       let userName = user?.name || ""
-      if (userName.length > 15) {
-        userName = userName?.substring(0,14) + "...";
+      if (userName.length > 20) {
+        userName = userName?.substring(0,19) + "...";
       }
       let twitterHandle = user?.twitter_handle || ""
-      if (twitterHandle.length > 10) {
-        twitterHandle = twitterHandle.substring(0,9) + "..."
+      if (twitterHandle.length > 15) {
+        twitterHandle = twitterHandle.substring(0,14) + "..."
       }
       let link = profile.link || ""
       link = cleanURL(link);
@@ -169,14 +169,14 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             className={styles.frameALink}
           >
             <div className={styles.frameA}>
-              <div className={styles.maxKriegerParent}>
-                <h4 className={styles.maxKrieger} id="twitter-name">
+              <h4 className={styles.maxKrieger} id="twitter-name">
                   {userName}
-                </h4>
-                <div className={`${styles.maxkriegers} ${colorClass}`}>@{twitterHandle}</div>
+              </h4>
+              <div className={styles.maxKriegerParent}>
                 <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
+                <div className={`${styles.maxkriegers} ${colorClass}`}>@{twitterHandle}</div>
               </div>
-              <FollowedBy profile={profile} />
+              {/* <FollowedBy profile={profile} /> */}
             </div>
           </a>
           <div className={styles.lookingToLive} id="looking-for-text">
@@ -221,8 +221,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
         contactMethod = profile.pref_contact_method;
       }
       let userName = user?.name || ""
-      if (userName.length > 16) {
-        userName = userName?.substring(0,15) + "...";
+      if (userName.length > 22) {
+        userName = userName?.substring(0,21) + "...";
       }
       let link = profile.website_url || ""
       link = cleanURL(link);
@@ -296,12 +296,12 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               className={styles.frameALink}
             >
               <div className={styles.twitterProfileContainer}>
+                <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{userName}</div>
                 <div className={styles.nameAndHandleContainer}>
-                  <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{userName}</div>
-                  <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>{user?.twitter_handle}</div>
                   <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
+                  <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>{user?.twitter_handle}</div>
                 </div>
-                <FollowedBy profile={profile} />
+                {/* <FollowedBy profile={profile} /> */}
               </div>
             </a>
             <div className={styles.lookingToLive} id="looking-for-text">
