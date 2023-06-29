@@ -87,6 +87,7 @@
   padding: 20px 80px;
   box-sizing: border-box;
   max-width: 1625px;
+  padding-bottom: 80px;
 }
 
 .containerGrid {
