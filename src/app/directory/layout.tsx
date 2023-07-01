@@ -58,6 +58,7 @@ export default function DirectoryLayout({
         <Navbar />
       </div>
       <div className={styles.directoryContainer}>{children}</div>
+      <a href="https://github.com/tjschulz2/sf-housing-app">Want to see a new feature on DirectorySF? Submit a pull request! DirectorySF is open-source.</a>
     </div>
   );
 }
