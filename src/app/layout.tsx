@@ -13,6 +13,10 @@ const siteURL = "https://www.directorysf.com/";
 export const metadata: Metadata = {
   title: siteTitle,
   description: siteDescription,
+  authors: [
+    { name: "Thomas Schulz", url: "https://twitter.com/thomasschulzz" },
+    { name: "Neall Seth", url: "https://neall.org" },
+  ],
   openGraph: {
     title: siteTitle,
     description: siteDescription,
