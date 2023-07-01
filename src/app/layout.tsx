@@ -8,11 +8,16 @@ const siteTitle = "DirectorySF";
 const siteDescription =
   "An invite-only directory of people you probably know that are looking for housing in San Francisco.";
 const siteImage = "/sfd.png";
+const siteURL = "https://www.directorysf.com/";
 
 export const metadata: Metadata = {
   title: siteTitle,
   description: siteDescription,
   openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteURL,
+    siteName: siteTitle,
     images: siteImage,
   },
   twitter: {
