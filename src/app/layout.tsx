@@ -1,8 +1,15 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
+
+export type ProfilesContextType = {
+  searcherProfiles: HousingSearchProfile[] | null;
+  setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
+};
 
 const inter = Inter({ subsets: ["latin"] });
+export const ProfilesContext = createContext<ProfilesContextType | null>(null);
 
 const siteTitle = "DirectorySF";
 const siteDescription =
@@ -37,6 +44,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [searcherProfiles, setSearcherProfiles] = useState<
+    HousingSearchProfile[]
+  >([]);
+
   return (
     <html lang="en">
       <head>
@@ -46,7 +57,11 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <ProfilesContext.Provider
+        value={{ searcherProfiles, setSearcherProfiles }}
+      >
+        <body className={inter.className}>{children}</body>
+      </ProfilesContext.Provider>
     </html>
   );
 }
