@@ -1,12 +1,11 @@
 "use client";
 import styles from "./page.module.css";
-import { NextPage } from "next";
 import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
 import { useEffect, useState, useContext } from "react";
 import { getHousingSearchProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
-import { ProfilesContext, ProfilesContextType } from "../layout";
+import { ProfilesContext, ProfilesContextType } from "./layout";
 
 function Directory() {
   // const [profiles, setSearcherProfiles] = useState<HousingSearchProfile[]>();
