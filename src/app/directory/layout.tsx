@@ -1,18 +1,30 @@
 "use client";
 import styles from "./page.module.css";
 import Navbar from "../../../components/navbar/navbar";
-import Link from "next/link";
 import InviteButton from "../../../components/invite-button/invite-button";
 import { signout } from "../../../lib/utils/auth";
-import { useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
 import { getUserData } from "../../../lib/utils/data";
 import Dropdown from "../../../components/dropdown/dropdown";
 
+export type ProfilesContextType = {
+  searcherProfiles: HousingSearchProfile[] | null;
+  setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
+};
+
 type User = {
   twitterAvatarUrl: string;
 };
+
+export const ProfilesContext = createContext<ProfilesContextType | null>(null);
 
 export default function DirectoryLayout({
   children,
@@ -21,6 +33,9 @@ export default function DirectoryLayout({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const [searcherProfiles, setSearcherProfiles] = useState<
+    HousingSearchProfile[]
+  >([]);
 
   useEffect(() => {
     async function checkSession() {
@@ -32,13 +47,13 @@ export default function DirectoryLayout({
       }
       const user: User = {
         twitterAvatarUrl: fetchedUser.twitterAvatarURL,
-      }
+      };
       setUser(user);
     }
     async function checkUserData() {
       const userData = await getUserData();
       if (userData && !userData.contact_email) {
-        router.push("/email-signup")
+        router.push("/email-signup");
       }
     }
 
@@ -57,8 +72,16 @@ export default function DirectoryLayout({
         </div>
         <Navbar />
       </div>
-      <div className={styles.directoryContainer}>{children}</div>
-      <a href="https://github.com/tjschulz2/sf-housing-app">Want to see a new feature on DirectorySF? Submit a pull request! DirectorySF is open-source.</a>
+      <ProfilesContext.Provider
+        value={{ searcherProfiles, setSearcherProfiles }}
+      >
+        <div className={styles.directoryContainer}>{children}</div>
+      </ProfilesContext.Provider>
+
+      <a href="https://github.com/tjschulz2/sf-housing-app">
+        Want to see a new feature on DirectorySF? Submit a pull request!
+        DirectorySF is open-source.
+      </a>
     </div>
   );
 }

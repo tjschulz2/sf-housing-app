@@ -1,29 +1,48 @@
 "use client";
 import styles from "./page.module.css";
-import { NextPage } from "next";
 import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getHousingSearchProfiles } from "../../../lib/utils/data";
-import { differenceInDays } from 'date-fns'; 
+import { differenceInDays } from "date-fns";
+import { ProfilesContext, ProfilesContextType } from "./layout";
 
 function Directory() {
-  const [profiles, setProfiles] = useState<HousingSearchProfile[]>();
+  // const [profiles, setSearcherProfiles] = useState<HousingSearchProfile[]>();
+  const { searcherProfiles, setSearcherProfiles } = useContext(
+    ProfilesContext
+  ) as ProfilesContextType;
 
   useEffect(() => {
     async function pullProfiles() {
       const profiles = await getHousingSearchProfiles();
       if (profiles) {
-        setProfiles(profiles);
+        setSearcherProfiles(profiles);
       }
     }
-    pullProfiles();
+    if (!searcherProfiles?.length) {
+      pullProfiles();
+    }
   }, []);
 
-  const todayProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 1);
-  const thisWeekProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 7 && differenceInDays(new Date(), new Date(profile.created_at || '')) >= 1);
-  const thisMonthProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 31 && differenceInDays(new Date(), new Date(profile.created_at || '')) >= 7);
-  const olderProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) >= 31);
+  const todayProfiles = searcherProfiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
+  );
+  const thisWeekProfiles = searcherProfiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 7 &&
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 1
+  );
+  const thisMonthProfiles = searcherProfiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 31 &&
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 7
+  );
+  const olderProfiles = searcherProfiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
+  );
 
   return (
     <>
@@ -42,7 +61,11 @@ function Directory() {
           <h2>Today</h2>
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="blue" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="blue"
+              />
             ))}
           </div>
         </>
@@ -53,7 +76,11 @@ function Directory() {
           <h2>This Week</h2>
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="blue" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="blue"
+              />
             ))}
           </div>
         </>
@@ -64,7 +91,11 @@ function Directory() {
           <h2>This Month</h2>
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="blue" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="blue"
+              />
             ))}
           </div>
         </>
@@ -75,7 +106,11 @@ function Directory() {
           <h2>Older</h2>
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="blue" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="blue"
+              />
             ))}
           </div>
         </>
