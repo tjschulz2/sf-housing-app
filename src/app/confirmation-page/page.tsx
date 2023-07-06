@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/router"; // The correct import is "next/router"
+import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { checkConfirmationCode } from '../../../lib/utils/confirmation';
 import { updateUserContactEmail } from "../../../lib/utils/auth";

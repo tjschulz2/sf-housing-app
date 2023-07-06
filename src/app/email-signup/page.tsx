@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/router"; // The correct import is "next/router"
+import { useRouter } from "next/navigation";
 import { generateAndSendConfirmation } from '../../../lib/utils/confirmation';
 import loadingStyles from '../loadingOverlay.module.css'
 
