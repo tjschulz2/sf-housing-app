@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import Link from 'next/link';
 import { generateAndSendConfirmation } from '../../../lib/utils/confirmation';
 import loadingStyles from '../loadingOverlay.module.css'
 
@@ -25,12 +24,11 @@ const EmailSignup: NextPage = () => {
         setIsFormValid(emailRegex.test(email));
     }, [email]);
     
-    const handleLinkClick = async (e: React.MouseEvent) => {
-        if (!isFormValid) {
-            e.preventDefault();
-        } else {
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (isFormValid) {
             // If form is valid, generate and send confirmation code
-            e.preventDefault();
             try {
                 setIsLoading(true);
                 await generateAndSendConfirmation(email);
@@ -54,7 +52,7 @@ const EmailSignup: NextPage = () => {
           <div className={loadingStyles.spinner}></div>
         </div>
       )}
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={handleFormSubmit}>
         <h1>Email confirmation</h1>
         <div style={{ height: '1px', backgroundColor: 'gray', width: '100%' }} />
 
@@ -66,9 +64,9 @@ const EmailSignup: NextPage = () => {
             </label>
         </div>
 
-        <Link href="#" onClick={(e) => {e.preventDefault(); handleLinkClick(e);}} className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
+        <button type="submit" className={`${styles.nextButton} ${isFormValid ? '' : styles.disabled}`}>
             Next
-        </Link>
+        </button>
     </form>
 </div>
   );
