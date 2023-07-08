@@ -6,6 +6,30 @@
     object-fit: cover;
     z-index: 3;
   }
+  .membersBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 60px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    padding-right: 40px;
+    padding-left: 40px;
+    border-radius: 100px;
+    border-width: 1px;
+    border-color: rgb(211, 211, 211);
+    border-style: solid;
+  }
+  .generalWords {
+    color: #474747;
+    font-size: 18px;
+    font-family: var(--font-inter);
+  }
+  .boldAndColored {
+    font-weight: bold;
+    color: var(--color-cornflowerblue-100)
+  }
   .frameItem {
     position: relative;
     border-radius: 50%;
@@ -141,7 +165,7 @@
   }
   .signInSmall {
     text-decoration: none;
-    color: var(--color-gray);
+    color: rgb(150, 150, 150);
   }
   .signInSmall:hover {
     opacity: 0.7;
@@ -243,8 +267,17 @@
 
     .signInSmall,
     .apply,
-    .thisIsAn {
+    .thisIsAn,
+    .generalWords {
       font-size: var(--font-size-base);
+    }
+
+    .membersBox {
+      gap: 24px;
+      padding-right: 24px;
+      padding-left: 24px;
+      padding-top: 22px;
+      padding-bottom: 22px;
     }
 
     .applyWrapper {

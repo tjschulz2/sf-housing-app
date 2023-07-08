@@ -1,9 +1,13 @@
 "use client";
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
+import { getHousingSearchProfiles, getCommunities, getOrganizerProfiles } from "../lib/utils/data";
 import Link from "next/link";
 import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
+import { differenceInDays } from 'date-fns';
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -12,6 +16,42 @@ type HomePageComponentProps = {
 const HomePageComponent: NextPage<HomePageComponentProps> = ({
   referralDetails,
 }) => {
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [totalWeeklyProfiles, setTotalWeeklyProfiles] = useState(0);
+
+  useEffect(() => {
+    const fetchNumberOfUsers = async () => {
+      let { data, error, count } = await supabase
+        .from('users')
+        .select('*', { count: 'exact' });
+
+        if (!error && data) {
+          setNumberOfUsers(count ?? 0);
+        }
+    };
+
+    fetchNumberOfUsers();
+  }, []);
+
+  useEffect(() => {
+    const countThisWeekProfiles = (profiles: any) => 
+      profiles.filter((profile: any) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 7).length;
+
+    const fetchProfiles = async () => {
+      const searcherProfiles = await getHousingSearchProfiles();
+      const organizerProfiles = await getOrganizerProfiles();
+      const communityProfiles = await getCommunities();
+
+      const total = countThisWeekProfiles(searcherProfiles) 
+                  + countThisWeekProfiles(organizerProfiles) 
+                  + countThisWeekProfiles(communityProfiles);
+
+      setTotalWeeklyProfiles(total);
+    };
+
+    fetchProfiles();
+  }, []);
+
   const renderContent = () => {
     if (referralDetails?.status === "unclaimed") {
       return (
@@ -72,6 +112,14 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   return (
     <section className={styles.frameParent}>
       <div className={styles.frameWrapper}>
+        <div className={styles.membersBox}>
+          <div className={styles.generalWords}>
+            <span className={styles.boldAndColored}>{numberOfUsers}</span> members of DirectorySF
+          </div>
+          <div className={styles.generalWords}>
+            <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span> listings posted this week 🔥
+          </div>
+        </div>
         <div className={styles.ellipseParent}>
           <img className={styles.frameChild} alt="" src="/ellipse-51@3x.jpg" />
           <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
@@ -80,11 +128,11 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
         </div>
       </div>
       <h1 className={styles.findHousemates}>
-        Find housemates & coliving communities in the San Francisco tech scene
+        Find sublets, housemates, and coliving communities in the SF tech scene
       </h1>
       <p className={styles.thisIsAn}>
         This is an invite-only directory of people you probably know that are
-        looking for housing in San Francisco.
+        looking for housing in San Francisco
       </p>
       {renderContent()}
     </section>
