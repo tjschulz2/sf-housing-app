@@ -48,6 +48,7 @@ export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25
 ) {
+  console.log("from: ", startIdx, " to: ", count);
   const { data, error } = await supabase
     .from("housing_search_profiles")
     .select(
@@ -55,8 +56,8 @@ export async function getHousingSearchProfiles(
       *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
-    .range(startIdx, startIdx + count);
-  // .eq("housing_search_profiles.user_id", "follow_intersections.user_id_1");
+    .range(startIdx, startIdx + count)
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error(error);
@@ -133,12 +134,12 @@ export async function getReferrerName(userId: string) {
     throw new Error("No referral data found for this user");
   }
 
-  const referralCode = referralData[0].referral_id
+  const referralCode = referralData[0].referral_id;
 
   const { data: referralInfo, error: referralInfoError } = await supabase
     .from("referrals")
     .select("originator_id")
-    .eq("referral_id", referralCode)
+    .eq("referral_id", referralCode);
 
   if (referralInfoError || !referralInfo || referralInfo.length === 0) {
     return;
@@ -178,7 +179,11 @@ export async function getReferralDetails(referralCode: string) {
 
   if (!data) {
     status = "invalid";
-  } else if (data.usage_count && data.usage_limit && (data.usage_count >= data.usage_limit)) {
+  } else if (
+    data.usage_count &&
+    data.usage_limit &&
+    data.usage_count >= data.usage_limit
+  ) {
     status = "claimed";
   } else {
     status = "unclaimed";
@@ -200,10 +205,13 @@ export async function claimReferral(referralID: string, userID: string) {
     .from("referrals")
     .select("usage_count, usage_limit")
     .eq("referral_id", Number(referralID));
-  
+
   // If there was an error fetching the referral record, return an error message
   if (referralError || !referralData || referralData.length === 0) {
-    return { status: "error", message: "failed to claim referral: invalid referral code" };
+    return {
+      status: "error",
+      message: "failed to claim referral: invalid referral code",
+    };
   }
 
   const referral = referralData[0];
@@ -212,11 +220,11 @@ export async function claimReferral(referralID: string, userID: string) {
   if ((referral.usage_count ?? 0) < (referral.usage_limit ?? 0)) {
     // If it is less than usage_limit, then add 1 to the current usage count
     const { data, error: updateError } = await supabase
-    .from("referrals")
-    .update({ usage_count: (referral.usage_count ?? 0) + 1 })
-    .eq("referral_id", Number(referralID))
-    .select("*");
-  
+      .from("referrals")
+      .update({ usage_count: (referral.usage_count ?? 0) + 1 })
+      .eq("referral_id", Number(referralID))
+      .select("*");
+
     // If there was an error updating the referral record or no rows were affected, return an error message
     if (updateError || !data || data.length === 0) {
       return { status: "error", message: "Failed to claim referral" };
@@ -225,9 +233,7 @@ export async function claimReferral(referralID: string, userID: string) {
     // Add row to referral_recipients table
     const { data: insertData, error: insertError } = await supabase
       .from("referral_recipients")
-      .insert([
-        { referral_id: Number(referralID), recipient_id: userID },
-      ])
+      .insert([{ referral_id: Number(referralID), recipient_id: userID }])
       .select("*");
 
     // If there was an error inserting the record, log it and return an error message
@@ -238,17 +244,21 @@ export async function claimReferral(referralID: string, userID: string) {
 
     // If no rows were affected, return an error message
     if (!insertData || insertData.length === 0) {
-      return { status: "error", message: "failed to record the claim - no rows affected" };
+      return {
+        status: "error",
+        message: "failed to record the claim - no rows affected",
+      };
     }
 
     return { status: "success" };
   } else {
     // If usage_count is === to usage_limit, then return status: error and message" failed to claim referral
-    return { status: "error", message: "failed to claim referral: referral limit reached" };
+    return {
+      status: "error",
+      message: "failed to claim referral: referral limit reached",
+    };
   }
 }
-
-
 
 // async function decAvailableReferrals(userID: string) {
 //   // Postgres RLS to ensure:
