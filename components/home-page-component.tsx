@@ -35,7 +35,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
 
   useEffect(() => {
     const countThisWeekProfiles = (profiles: any) => 
-      profiles.filter((profile: any) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 7).length;
+      profiles.filter((profile: any) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 30).length;
 
     const fetchProfiles = async () => {
       const searcherProfiles = await getHousingSearchProfiles();
@@ -112,14 +112,6 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   return (
     <section className={styles.frameParent}>
       <div className={styles.frameWrapper}>
-        <div className={styles.membersBox}>
-          <div className={styles.generalWords}>
-            <span className={styles.boldAndColored}>{numberOfUsers}</span> members of DirectorySF
-          </div>
-          <div className={styles.generalWords}>
-            <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span> listings posted this week 🔥
-          </div>
-        </div>
         <div className={styles.ellipseParent}>
           <img className={styles.frameChild} alt="" src="/ellipse-51@3x.jpg" />
           <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
@@ -135,6 +127,14 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
         looking for housing in San Francisco
       </p>
       {renderContent()}
+      <div className={styles.membersBox}>
+        <div className={styles.generalWords}>
+          <span className={styles.boldAndColored}>{numberOfUsers}</span> members of DirectorySF
+        </div>
+        <div className={styles.generalWords}>
+          <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span> listings posted this month 🔥
+        </div>
+      </div>
     </section>
   );
 };
