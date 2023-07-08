@@ -336,6 +336,7 @@
       padding-left: var(--padding-6xl);
       padding-right: var(--padding-6xl);
       box-sizing: border-box;
+      
     }
   }
   @media screen and (max-width: 568px) {
