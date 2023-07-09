@@ -56,7 +56,7 @@ export async function getHousingSearchProfiles(
       *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
-    .range(startIdx, startIdx + count)
+    .range(startIdx, startIdx + count - 1)
     .order("created_at", { ascending: false });
 
   if (error) {

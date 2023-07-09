@@ -2,20 +2,68 @@
 import styles from "./page.module.css";
 import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { getHousingSearchProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
 
 function Directory() {
-  // const [profiles, setSearcherProfiles] = useState<HousingSearchProfile[]>();
   const { searcherProfiles, setSearcherProfiles } = useContext(
     ProfilesContext
   ) as ProfilesContextType;
+  const allowDataPull = useRef(false);
+  const [allDataRetrieved, setAllDataRetrieved] = useState(false);
+
+  console.log("rendering: ", searcherProfiles);
+  const observerTarget = useRef(null);
+
+  const pullNextBatch = useCallback(async () => {
+    if (!searcherProfiles?.length || allDataRetrieved) {
+      console.log("skipping pull");
+      return;
+    }
+    const additionalProfiles = await getHousingSearchProfiles(
+      searcherProfiles.length,
+      1
+    );
+
+    if (additionalProfiles?.length) {
+      setSearcherProfiles((prevProfiles) => [
+        ...prevProfiles,
+        ...additionalProfiles,
+      ]);
+    } else {
+      setAllDataRetrieved(true);
+    }
+  }, [searcherProfiles, setSearcherProfiles, allDataRetrieved]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && allowDataPull.current) {
+          pullNextBatch();
+          allowDataPull.current = false;
+        } else {
+          allowDataPull.current = true;
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget, pullNextBatch, allowDataPull]);
 
   useEffect(() => {
     async function pullProfiles() {
-      const profiles = await getHousingSearchProfiles();
+      const profiles = await getHousingSearchProfiles(0, 1);
       if (profiles) {
         setSearcherProfiles(profiles);
       }
@@ -23,7 +71,7 @@ function Directory() {
     if (!searcherProfiles?.length) {
       pullProfiles();
     }
-  }, []);
+  }, [setSearcherProfiles, searcherProfiles]);
 
   const todayProfiles = searcherProfiles?.filter(
     (profile) =>
@@ -115,6 +163,8 @@ function Directory() {
           </div>
         </>
       )}
+
+      <div ref={observerTarget}></div>
     </>
   );
 }
