@@ -32,7 +32,7 @@
 }
 @media screen and (max-width: 478px) {
   .home {
-    padding-top: var(--padding-161xl);
+    padding-top: 4rem;
     box-sizing: border-box;
   }
 }
