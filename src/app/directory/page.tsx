@@ -24,7 +24,7 @@ function Directory() {
     }
     const additionalProfiles = await getHousingSearchProfiles(
       searcherProfiles.length,
-      1
+      10
     );
 
     if (additionalProfiles?.length) {
@@ -63,7 +63,7 @@ function Directory() {
 
   useEffect(() => {
     async function pullProfiles() {
-      const profiles = await getHousingSearchProfiles(0, 1);
+      const profiles = await getHousingSearchProfiles(0, 25);
       if (profiles) {
         setSearcherProfiles(profiles);
       }

@@ -48,7 +48,7 @@ export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25
 ) {
-  console.log("from: ", startIdx, " to: ", count);
+  console.log("startIdx: ", startIdx, " count: ", count);
   const { data, error } = await supabase
     .from("housing_search_profiles")
     .select(
