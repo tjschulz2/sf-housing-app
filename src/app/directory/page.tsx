@@ -14,7 +14,6 @@ function Directory() {
   const allowDataPull = useRef(false);
   const [allDataRetrieved, setAllDataRetrieved] = useState(false);
 
-  console.log("rendering: ", searcherProfiles);
   const observerTarget = useRef(null);
 
   const pullNextBatch = useCallback(async () => {
