@@ -1,6 +1,5 @@
 "use client";
 import styles from "./page.module.css";
-import loadingStyles from "./loadingOverlay.module.css";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -9,7 +8,7 @@ import { useState } from "react";
 import { getReferralDetails } from "../../lib/utils/data";
 import { useRouter } from "next/navigation";
 import { handleSignIn } from "../../lib/utils/process";
-import { error } from "console";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -21,10 +20,18 @@ const Home: NextPage = () => {
   useEffect(() => {
     async function handlePageLoad() {
       // Check for error query parameter in URL
-      if (errorDescription === "Error getting user email from external provider") {
-        alert('You need to add your email address to your Twitter account. \n\nGo to Twitter -> More -> Settings and Support -> Your account -> Email. \n\nAfter you do this, try again.');
+      if (
+        errorDescription === "Error getting user email from external provider"
+      ) {
+        alert(
+          "You need to add your email address to your Twitter account. \n\nGo to Twitter -> More -> Settings and Support -> Your account -> Email. \n\nAfter you do this, try again."
+        );
       } else if (errorDescription) {
-        alert('You got an error:\n\n' + errorDescription + '\n\nContact @thomasschulzz on Twitter to investigate.');
+        alert(
+          "You got an error:\n\n" +
+            errorDescription +
+            "\n\nContact @thomasschulzz on Twitter to investigate."
+        );
       }
       if (referralCode) {
         const referral = await getReferralDetails(referralCode);
@@ -38,9 +45,9 @@ const Home: NextPage = () => {
         //localStorage.setItem("referral-code", "")
         setIsLoading(true);
         const signInResult = await handleSignIn();
-        console.log(signInResult)
+        console.log(signInResult);
         setIsLoading(false);
-        
+
         if (signInResult?.status !== "success") {
           return;
         }
@@ -52,15 +59,11 @@ const Home: NextPage = () => {
       }
     }
     handlePageLoad();
-  }, []);
+  }, [errorDescription, referralCode, router]);
 
   return (
     <div className={styles.home}>
-      {isLoading && (
-        <div className={loadingStyles.overlay}>
-          <div className={loadingStyles.spinner}></div>
-        </div>
-      )}
+      {isLoading && <LoadingSpinner />}
       <HomePageComponent referralDetails={referralDetails} />
     </div>
   );

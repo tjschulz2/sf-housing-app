@@ -14,7 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
 import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
-import loadingStyles from '../loadingOverlay.module.css'
+import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
 
 const MyForm: NextPage = () => {
   const router = useRouter();
@@ -32,19 +32,21 @@ const MyForm: NextPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-  const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
+  const urlRegex =
+    /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let directoryData = null;
-    if (typeof window !== "undefined") { // check if window is defined (it won't be during server-side rendering)
+    if (typeof window !== "undefined") {
+      // check if window is defined (it won't be during server-side rendering)
       const urlParams = new URLSearchParams(window.location.search);
-      const data = urlParams.get('data');
+      const data = urlParams.get("data");
       if (data) {
         directoryData = JSON.parse(decodeURIComponent(data));
-        console.log(directoryData.contactMethod)
+        console.log(directoryData.contactMethod);
         setCommunityName(directoryData.houseName);
         setDescription(directoryData.description);
         if (directoryData.roomPriceRange === 1) {
@@ -62,7 +64,7 @@ const MyForm: NextPage = () => {
         } else {
           return;
         }
- 
+
         if (directoryData.residentCount) {
           if (directoryData.residentCount === 1) {
             setHousemates("1-2");
@@ -86,34 +88,34 @@ const MyForm: NextPage = () => {
             setLocation("Hillsborough");
           }
         }
-    
+
         if (directoryData.websiteUrl) {
           setLink(directoryData.websiteUrl);
         }
-    
+
         if (directoryData.contactMethod) {
-          if (directoryData.contactMethod.includes('@')) {
-            setContactMethod('email');
+          if (directoryData.contactMethod.includes("@")) {
+            setContactMethod("email");
           } else if (phoneRegex.test(directoryData.contactMethod)) {
-            setContactMethod('phone');
+            setContactMethod("phone");
             setPhone(directoryData.contactMethod);
-          } else if (directoryData.contactMethod.includes('twitter')) {
-            setContactMethod('twitter');
+          } else if (directoryData.contactMethod.includes("twitter")) {
+            setContactMethod("twitter");
           } else {
-            setContactMethod('website');
+            setContactMethod("website");
           }
         }
 
         if (directoryData.imageUrl) {
-          urlToFile(directoryData.imageUrl, 'image.jpg', 'image/jpeg')
-            .then(file => {
+          urlToFile(directoryData.imageUrl, "image.jpg", "image/jpeg").then(
+            (file) => {
               if (!selectedImage) setSelectedImage(file);
-            });
+            }
+          );
           if (!selectedImage) {
             setImagePreview(directoryData.imageUrl);
           }
         }
-
       }
     }
   }, []);
@@ -121,10 +123,9 @@ const MyForm: NextPage = () => {
   const urlToFile = async (url: string, filename: string, mimeType: string) => {
     const res = await fetch(url);
     const buf = await res.arrayBuffer();
-    const file = new File([buf], filename, {type: mimeType});
+    const file = new File([buf], filename, { type: mimeType });
     return file;
-  }
-
+  };
 
   const handleOptionClick = (
     setOption: React.Dispatch<React.SetStateAction<string>>,
@@ -157,8 +158,8 @@ const MyForm: NextPage = () => {
     // This is the code that will be executed when the "Yes" button is clicked
     try {
       const session = await getUserSession();
-      const twitterImageUrl = session?.twitterAvatarURL
-      let higherResImageUrl = twitterImageUrl.replace('_normal', '_400x400');
+      const twitterImageUrl = session?.twitterAvatarURL;
+      let higherResImageUrl = twitterImageUrl.replace("_normal", "_400x400");
       if (!selectedImage) {
         await addCommunityData(
           communityName,
@@ -218,8 +219,8 @@ const MyForm: NextPage = () => {
     ) => {
       let { value } = event.target;
 
-      if (typeof field === 'undefined') {
-        setFocusedField(null);  // or however you want to handle this case
+      if (typeof field === "undefined") {
+        setFocusedField(null); // or however you want to handle this case
       } else {
         setFocusedField(field);
       }
@@ -301,16 +302,12 @@ const MyForm: NextPage = () => {
     imagePreview,
     communityName,
     isModalActive,
-    location
+    location,
   ]);
 
   return (
     <div className={styles.container}>
-      {isLoading && (
-        <div className={loadingStyles.overlay}>
-          <div className={loadingStyles.spinner}></div>
-        </div>
-      )}
+      {isLoading && <LoadingSpinner />}
       <DirectoryOverrideModal
         modalActivity={isModalActive}
         handleSubmit={handleSubmit}
@@ -331,11 +328,17 @@ const MyForm: NextPage = () => {
               If no formal name, just put Apartment, House, Sublet, etc
             </p>
             <input
-              className={`${styles.inputStyle} ${visitedFields.has("communityName") && !communityName ? styles.inputError : ""}`}
+              className={`${styles.inputStyle} ${
+                visitedFields.has("communityName") && !communityName
+                  ? styles.inputError
+                  : ""
+              }`}
               type="text"
               placeholder="Solaris"
               onChange={handleInputChange(setCommunityName, "communityName")}
-              onFocus={() => setVisitedFields((prev) => new Set([...prev, "communityName"]))}
+              onFocus={() =>
+                setVisitedFields((prev) => new Set([...prev, "communityName"]))
+              }
               onBlur={() => handleBlur("communityName")}
               autoFocus={true}
               value={communityName}
@@ -348,16 +351,22 @@ const MyForm: NextPage = () => {
 
         <div>
           <label>
-            <h2>Introduce yourself and share some information about your space.</h2>
-            <p className={styles.maxCharacters}>
-              Who is it for?
-            </p>
+            <h2>
+              Introduce yourself and share some information about your space.
+            </h2>
+            <p className={styles.maxCharacters}>Who is it for?</p>
             <div style={{ display: "flex", alignItems: "center" }}>
               <textarea
-                className={`${styles.textareaStyle} ${visitedFields.has("description") && !description ? styles.inputError : ""}`}
+                className={`${styles.textareaStyle} ${
+                  visitedFields.has("description") && !description
+                    ? styles.inputError
+                    : ""
+                }`}
                 placeholder="We are a group of founders building early-stage startups and looking for people that have found something meaningful to work on. We help one another by informally making connections and giving feedback to one another on what we're working on."
                 onChange={handleInputChange(setDescription, "description")}
-                onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
+                onFocus={() =>
+                  setVisitedFields((prev) => new Set([...prev, "description"]))
+                }
                 onBlur={() => handleBlur("description")}
                 value={description}
               />
@@ -542,7 +551,11 @@ const MyForm: NextPage = () => {
               link that represents you
             </p>
             <input
-              className={`${styles.inputStyle} ${visitedFields.has("url") && (!link || !urlRegex.test(link)) ? styles.inputError : ""}`}
+              className={`${styles.inputStyle} ${
+                visitedFields.has("url") && (!link || !urlRegex.test(link))
+                  ? styles.inputError
+                  : ""
+              }`}
               type="url"
               placeholder="mywebsite.io"
               onChange={handleInputChange(setLink, "url")}
@@ -552,7 +565,9 @@ const MyForm: NextPage = () => {
             />
             {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
               <div className={styles.errorMessage}>
-                {!link ? "This field is required." : "Please enter a valid URL."}
+                {!link
+                  ? "This field is required."
+                  : "Please enter a valid URL."}
               </div>
             )}
           </label>
@@ -565,7 +580,11 @@ const MyForm: NextPage = () => {
             picture. JPG, JPEG, and PNG only.
           </p>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <input type="file" accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
+            <input
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              onChange={handleImageChange}
+            />
             {imagePreview && (
               <img
                 style={{ width: "100px", height: "100px", marginTop: "24px" }}
@@ -626,7 +645,12 @@ const MyForm: NextPage = () => {
           {contactMethod === "phone" && (
             <label>
               <input
-                className={`${styles.inputStyle} ${visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) ? styles.inputError : ""}`}
+                className={`${styles.inputStyle} ${
+                  visitedFields.has("phone") &&
+                  (!phone || !phoneRegex.test(phone))
+                    ? styles.inputError
+                    : ""
+                }`}
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleInputChange(setPhone, "phone")}
@@ -634,11 +658,14 @@ const MyForm: NextPage = () => {
                 onBlur={() => handleBlur("phone")}
                 value={phone}
               />
-              {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
-                <div className={styles.errorMessage}>
-                  {!phone ? "This field is required." : "Please enter a valid phone number."}
-                </div>
-              )}
+              {visitedFields.has("phone") &&
+                (!phone || !phoneRegex.test(phone)) && (
+                  <div className={styles.errorMessage}>
+                    {!phone
+                      ? "This field is required."
+                      : "Please enter a valid phone number."}
+                  </div>
+                )}
             </label>
           )}
         </div>
