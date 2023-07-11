@@ -48,9 +48,9 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <Suspense fallback={<LoadingSpinner />}>
-        <body className={inter.className}>{children}</body>
-      </Suspense>
+      <body className={inter.className}>
+        <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+      </body>
     </html>
   );
 }
