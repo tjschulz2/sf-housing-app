@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const siteTitle = "DirectorySF";
 const siteDescription =
-  "An invite-only directory of people you probably know that are looking for housing in San Francisco.";
+  "The SF housing directory with people you probably know";
 const siteImage = "/sfd.png";
 const siteURL = "https://www.directorysf.com/";
 
