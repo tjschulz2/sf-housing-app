@@ -4,9 +4,9 @@ import SeeMoreButton from "./see-more-button/see-more-button";
 import { housingMap } from "../lib/prefMap";
 import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
-import TwitterLogo from '../src/images/twitter-logo.svg'
-import ContactMeButton  from '../components/contactme-button/contactme-button'
-import React, { useState, useEffect } from 'react'
+import TwitterLogo from "../src/images/twitter-logo.svg";
+import ContactMeButton from "../components/contactme-button/contactme-button";
+import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
 
@@ -17,72 +17,98 @@ type ProfileCardProps = {
 
 const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [referrer, setReferrer] = useState<{ name: string | null, twitter_handle: string | null, twitter_avatar_url: string | null }>({ name: null, twitter_handle: null, twitter_avatar_url: null });
-
+  const [referrer, setReferrer] = useState<{
+    name: string | null;
+    twitter_handle: string | null;
+    twitter_avatar_url: string | null;
+  }>({ name: null, twitter_handle: null, twitter_avatar_url: null });
 
   const { user } = profile;
   let colorClass: any;
   let svgImage: string;
   let colorClassWrapper: any;
-  if (color === 'purple') {
+  if (color === "purple") {
     colorClass = styles.colorPurple;
-    svgImage = "#6B31E7"
-    colorClassWrapper = styles.backgroundPurple
-  } else if (color === 'green') {
-    colorClass = styles.colorGreen;  // Make sure to define colorGreen in your styles
-    svgImage = "#25CB8F"
-    colorClassWrapper = styles.backgroundGreen
+    svgImage = "#6B31E7";
+    colorClassWrapper = styles.backgroundPurple;
+  } else if (color === "green") {
+    colorClass = styles.colorGreen; // Make sure to define colorGreen in your styles
+    svgImage = "#25CB8F";
+    colorClassWrapper = styles.backgroundGreen;
   } else {
     colorClass = styles.colorBlue;
-    svgImage = "#3191e7"
-    colorClassWrapper = styles.backgroundBlue
+    svgImage = "#3191e7";
+    colorClassWrapper = styles.backgroundBlue;
   }
 
-  function isHousingSearchProfile(profile: HousingSearchProfile | OrganizerProfile | CommunityProfile): profile is HousingSearchProfile {
-    return (profile as HousingSearchProfile).pref_housemate_details !== undefined;
+  function isHousingSearchProfile(
+    profile: HousingSearchProfile | OrganizerProfile | CommunityProfile
+  ): profile is HousingSearchProfile {
+    return (
+      (profile as HousingSearchProfile).pref_housemate_details !== undefined
+    );
   }
-  
-  function isOrganizerProfile(profile: HousingSearchProfile | OrganizerProfile | CommunityProfile): profile is OrganizerProfile {
+
+  function isOrganizerProfile(
+    profile: HousingSearchProfile | OrganizerProfile | CommunityProfile
+  ): profile is OrganizerProfile {
     return (profile as OrganizerProfile).pref_house_details !== undefined;
   }
 
-  function isCommunityProfile(profile: HousingSearchProfile | OrganizerProfile | CommunityProfile): profile is CommunityProfile {
+  function isCommunityProfile(
+    profile: HousingSearchProfile | OrganizerProfile | CommunityProfile
+  ): profile is CommunityProfile {
     return (profile as CommunityProfile).resident_count !== undefined;
   }
 
   const renderReferrer = () => {
     if (referrer.name !== null) {
       return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ fontWeight: '600' }}>Referred by:</div>
-          <a href={`https://twitter.com/${referrer.twitter_handle}`} className={styles.referrerContainer}>
-            <img style={{marginLeft: '4px', marginRight: '4px', borderRadius: '100px', height: '25px', width: '25px'}} src={referrer.twitter_avatar_url|| ""}></img>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ fontWeight: "600" }}>Referred by:</div>
+          <a
+            href={`https://twitter.com/${referrer.twitter_handle}`}
+            className={styles.referrerContainer}
+          >
+            <img
+              style={{
+                marginLeft: "4px",
+                marginRight: "4px",
+                borderRadius: "100px",
+                height: "25px",
+                width: "25px",
+              }}
+              src={referrer.twitter_avatar_url || ""}
+            ></img>
             <div className={`${colorClass}`}>{referrer.name}</div>
           </a>
         </div>
-      )
+      );
     } else {
       return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ fontWeight: '600', marginRight: '4px' }}>Referred by:</div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ fontWeight: "600", marginRight: "4px" }}>
+            Referred by:
+          </div>
           <div className={styles.referrerContainer}>
-            <div style={{ height: '25px', display: 'flex', alignItems: 'center' }}>{`DirectorySF`}</div>
+            <div
+              style={{ height: "25px", display: "flex", alignItems: "center" }}
+            >{`DirectorySF`}</div>
           </div>
         </div>
-      )
+      );
     }
-  }
-
+  };
 
   useEffect(() => {
     if (isCommunityProfile(profile) && profile.user_id) {
       getImageLink(profile.user_id)
         .then((url: string | Error) => {
-          if (typeof url === 'string') {
+          if (typeof url === "string") {
             setImageUrl(url);
           }
         })
-        .catch((error) => console.error('Error fetching image:', error));
+        .catch((error) => console.error("Error fetching image:", error));
     }
     const fetchReferrer = async () => {
       try {
@@ -97,145 +123,163 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   }, [profile.user_id]);
 
   const renderHousingAndOrganizerOrCommunity = () => {
-
-    if (!isCommunityProfile(profile) && (isOrganizerProfile(profile) || isHousingSearchProfile(profile))) {
-      let contactMethod = ""
+    if (
+      !isCommunityProfile(profile) &&
+      (isOrganizerProfile(profile) || isHousingSearchProfile(profile))
+    ) {
+      let contactMethod = "";
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
-      let userName = user?.name || ""
+      let userName = user?.name || "";
       if (userName.length > 20) {
-        userName = userName?.substring(0,19) + "...";
+        userName = userName?.substring(0, 19) + "...";
       }
-      let twitterHandle = user?.twitter_handle || ""
+      let twitterHandle = user?.twitter_handle || "";
       if (twitterHandle.length > 15) {
-        twitterHandle = twitterHandle.substring(0,14) + "..."
+        twitterHandle = twitterHandle.substring(0, 14) + "...";
       }
-      let link = profile.link || ""
+      let link = profile.link || "";
       link = cleanURL(link);
       if (link.length > 14) {
-        link = link.substring(0,14) + "...";
+        link = link.substring(0, 14) + "...";
       }
       let housingDescription = "";
       if (isHousingSearchProfile(profile)) {
         housingDescription = profile.pref_housemate_details ?? "";
         if (housingDescription.length > 45) {
-          housingDescription = housingDescription.substring(0,43) + "..."
-          console.log(housingDescription)
+          housingDescription = housingDescription.substring(0, 43) + "...";
         }
       }
       let organizerDescription = "";
       if (isOrganizerProfile(profile)) {
         organizerDescription = profile.pref_house_details ?? "";
         if (organizerDescription.length > 45) {
-          organizerDescription = organizerDescription.substring(0,43) + "..."
+          organizerDescription = organizerDescription.substring(0, 43) + "...";
         }
       }
 
       return (
         <li className={styles.frameParent} id="profile-card-element">
-        <div className={styles.image3Parent}>
-          {user?.twitter_avatar_url ? (
-            <img
-              className={styles.image3Icon}
-              alt=""
-              src={user.twitter_avatar_url}
-            />
-          ) : null}
-          <div className={styles.frameGroup}>
-            <ContactMeButton contactMethod={contactMethod} color={color} />
-            {profile.link ? (
-              <a
-                className={`${styles.vectorParent} ${colorClass}`}
-                href={addProtocolToURL(profile.link)}
-                target="_blank"
-              >
-                <img className={styles.vectorIcon} alt="" src="/link.svg" />
-                <div className={`${styles.a9io} ${colorClass}`}>{link}</div>
-              </a>
+          <div className={styles.image3Parent}>
+            {user?.twitter_avatar_url ? (
+              <img
+                className={styles.image3Icon}
+                alt=""
+                src={user.twitter_avatar_url}
+              />
             ) : null}
-            <div className={styles.locationParent}>
-              <img className={styles.locationIcon} alt="" src="/location.svg" />
-              <p className={styles.sanFrancisco} id="location">
-                San Francisco
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className={styles.frameContainer}>
-          <a
-            href={`https://twitter.com/${user?.twitter_handle}`}
-            target="_blank"
-            className={styles.frameALink}
-          >
-            <div className={styles.frameA}>
-              <h4 className={styles.maxKrieger} id="twitter-name">
-                  {userName}
-              </h4>
-              <div className={styles.nameAndHandleContainer}>
-                <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>@{twitterHandle}</div>
-                <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
-              </div>
-              {/* <FollowedBy profile={profile} /> */}
-            </div>
-          </a>
-          <div className={styles.lookingToLive} id="looking-for-text">
-            <div className={styles.content}>
-              <span className={styles.wants}>About me: </span>
-              {isHousingSearchProfile(profile) ? housingDescription : organizerDescription}
-              {isHousingSearchProfile(profile) ? (
-                <SeeMoreButton color={color} seeMoreText={profile.pref_housemate_details ?? ""} />
-              ) : isOrganizerProfile(profile) ? (
-                <SeeMoreButton color={color} seeMoreText={profile.pref_house_details ?? ""} />
+            <div className={styles.frameGroup}>
+              <ContactMeButton contactMethod={contactMethod} color={color} />
+              {profile.link ? (
+                <a
+                  className={`${styles.vectorParent} ${colorClass}`}
+                  href={addProtocolToURL(profile.link)}
+                  target="_blank"
+                >
+                  <img className={styles.vectorIcon} alt="" src="/link.svg" />
+                  <div className={`${styles.a9io} ${colorClass}`}>{link}</div>
+                </a>
               ) : null}
+              <div className={styles.locationParent}>
+                <img
+                  className={styles.locationIcon}
+                  alt=""
+                  src="/location.svg"
+                />
+                <p className={styles.sanFrancisco} id="location">
+                  San Francisco
+                </p>
+              </div>
             </div>
           </div>
-          <p className={styles.wants1YearLeaseContainer} id="wants-text">
-            <span className={styles.wants}>Wants:</span>
-            <span>
-              {" "}
-              {profile.pref_housing_type
-                ? housingMap.housingType[profile.pref_housing_type] + ", "
-                : null}{" "}
-              {profile.pref_housemate_count
-                ? housingMap.housemates[profile.pref_housemate_count]
-                : null}
-            </span>
-          </p>
-          <p className={styles.wants1YearLeaseContainer} id="moving-text">
-            <span className={styles.wants}>Moving:</span>
-            <span>
-              {" "}
-              {isHousingSearchProfile(profile)
-                ? housingMap.moveIn[profile.pref_move_in ?? 1]
-                : isOrganizerProfile(profile) ? housingMap.moveIn[profile.pref_lease_start ?? 1] : null}
-            </span>
-          </p>
-          {renderReferrer()}
-        </div>
-      </li>
-      ) 
+          <div className={styles.frameContainer}>
+            <a
+              href={`https://twitter.com/${user?.twitter_handle}`}
+              target="_blank"
+              className={styles.frameALink}
+            >
+              <div className={styles.frameA}>
+                <h4 className={styles.maxKrieger} id="twitter-name">
+                  {userName}
+                </h4>
+                <div className={styles.nameAndHandleContainer}>
+                  <div
+                    className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}
+                  >
+                    @{twitterHandle}
+                  </div>
+                  <TwitterLogo fill={svgImage} className={styles.vectorIcon1} />
+                </div>
+                {/* <FollowedBy profile={profile} /> */}
+              </div>
+            </a>
+            <div className={styles.lookingToLive} id="looking-for-text">
+              <div className={styles.content}>
+                <span className={styles.wants}>About me: </span>
+                {isHousingSearchProfile(profile)
+                  ? housingDescription
+                  : organizerDescription}
+                {isHousingSearchProfile(profile) ? (
+                  <SeeMoreButton
+                    color={color}
+                    seeMoreText={profile.pref_housemate_details ?? ""}
+                  />
+                ) : isOrganizerProfile(profile) ? (
+                  <SeeMoreButton
+                    color={color}
+                    seeMoreText={profile.pref_house_details ?? ""}
+                  />
+                ) : null}
+              </div>
+            </div>
+            <p className={styles.wants1YearLeaseContainer} id="wants-text">
+              <span className={styles.wants}>Wants:</span>
+              <span>
+                {" "}
+                {profile.pref_housing_type
+                  ? housingMap.housingType[profile.pref_housing_type] + ", "
+                  : null}{" "}
+                {profile.pref_housemate_count
+                  ? housingMap.housemates[profile.pref_housemate_count]
+                  : null}
+              </span>
+            </p>
+            <p className={styles.wants1YearLeaseContainer} id="moving-text">
+              <span className={styles.wants}>Moving:</span>
+              <span>
+                {" "}
+                {isHousingSearchProfile(profile)
+                  ? housingMap.moveIn[profile.pref_move_in ?? 1]
+                  : isOrganizerProfile(profile)
+                  ? housingMap.moveIn[profile.pref_lease_start ?? 1]
+                  : null}
+              </span>
+            </p>
+            {renderReferrer()}
+          </div>
+        </li>
+      );
     } else if (isCommunityProfile(profile)) {
-      let contactMethod = ""
+      let contactMethod = "";
       if (profile.pref_contact_method) {
         contactMethod = profile.pref_contact_method;
       }
-      let userName = user?.name || ""
+      let userName = user?.name || "";
       if (userName.length > 22) {
-        userName = userName?.substring(0,21) + "...";
+        userName = userName?.substring(0, 21) + "...";
       }
-      let link = profile.website_url || ""
+      let link = profile.website_url || "";
       link = cleanURL(link);
       if (link.length > 14) {
-        link = link.substring(0,14) + "...";
+        link = link.substring(0, 14) + "...";
       }
       let communityDescription = "";
       if (isCommunityProfile(profile)) {
         communityDescription = profile.description ?? "";
         if (communityDescription.length > 45) {
-          communityDescription = communityDescription.substring(0,43) + "..."
+          communityDescription = communityDescription.substring(0, 43) + "...";
         }
-
       }
 
       return (
@@ -267,7 +311,11 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 </a>
               ) : null}
               <div className={styles.locationParent}>
-                <img className={styles.locationIcon} alt="" src="/location.svg" />
+                <img
+                  className={styles.locationIcon}
+                  alt=""
+                  src="/location.svg"
+                />
                 {isCommunityProfile(profile) && profile.location ? (
                   <p className={styles.sanFrancisco} id="location">
                     {housingMap.location[profile.location]}
@@ -276,14 +324,18 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   <p className={styles.sanFrancisco} id="location">
                     San Francisco
                   </p>
-                ): null}
+                ) : null}
               </div>
               <div className={styles.locationParent}>
-                <img className={styles.locationIcon} alt="" src="/threepeople.svg" />
+                <img
+                  className={styles.locationIcon}
+                  alt=""
+                  src="/threepeople.svg"
+                />
                 <p className={styles.sanFrancisco} id="location">
-                {profile.resident_count
-                  ? housingMap.housemates[profile.resident_count]
-                  : null}
+                  {profile.resident_count
+                    ? housingMap.housemates[profile.resident_count]
+                    : null}
                 </p>
               </div>
             </div>
@@ -296,10 +348,18 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               className={styles.frameALink}
             >
               <div className={styles.twitterProfileContainer}>
-                <div className={`${styles.maxKrieger} ${styles.biggerExtension}`}>{userName}</div>
+                <div
+                  className={`${styles.maxKrieger} ${styles.biggerExtension}`}
+                >
+                  {userName}
+                </div>
                 <div className={styles.nameAndHandleContainer}>
-                  <div className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}>@{user?.twitter_handle}</div>
-                  <TwitterLogo fill={svgImage} className={styles.vectorIcon1}  />
+                  <div
+                    className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}
+                  >
+                    @{user?.twitter_handle}
+                  </div>
+                  <TwitterLogo fill={svgImage} className={styles.vectorIcon1} />
                 </div>
                 {/* <FollowedBy profile={profile} /> */}
               </div>
@@ -308,7 +368,10 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <div className={styles.content}>
                 <span className={styles.wants}>About us: </span>
                 {communityDescription}
-                <SeeMoreButton color={color} seeMoreText={profile.description ?? ""} />
+                <SeeMoreButton
+                  color={color}
+                  seeMoreText={profile.description ?? ""}
+                />
               </div>
             </div>
             <p className={styles.wants1YearLeaseContainer} id="wants-text">
@@ -327,13 +390,9 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
     } else {
       return null;
     }
-  }
+  };
 
-  return (
-    <div>
-      {renderHousingAndOrganizerOrCommunity()}
-    </div>
-  );
+  return <div>{renderHousingAndOrganizerOrCommunity()}</div>;
 };
 
 export default ProfileCard;
