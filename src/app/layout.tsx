@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,7 +48,9 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <Suspense fallback={<LoadingSpinner />}>
+        <body className={inter.className}>{children}</body>
+      </Suspense>
     </html>
   );
 }
