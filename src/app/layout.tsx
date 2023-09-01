@@ -1,12 +1,14 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const siteTitle = "DirectorySF";
 const siteDescription =
-  "An invite-only directory of people you probably know that are looking for housing in San Francisco.";
+  "The SF housing directory with people you probably know";
 const siteImage = "/sfd.png";
 const siteURL = "https://www.directorysf.com/";
 
@@ -46,7 +48,9 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+      </body>
     </html>
   );
 }
