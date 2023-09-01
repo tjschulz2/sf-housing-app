@@ -12,8 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
 import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
-import loadingStyles from '../loadingOverlay.module.css'
-
+import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");
@@ -28,16 +27,18 @@ const MyForm: NextPage = () => {
   const router = useRouter();
   const phoneRegex =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-  const urlRegex = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
+  const urlRegex =
+    /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let directoryData = null;
-    if (typeof window !== "undefined") { // check if window is defined (it won't be during server-side rendering)
+    if (typeof window !== "undefined") {
+      // check if window is defined (it won't be during server-side rendering)
       const urlParams = new URLSearchParams(window.location.search);
-      const data = urlParams.get('data');
+      const data = urlParams.get("data");
       if (data) {
         directoryData = JSON.parse(decodeURIComponent(data));
         setDescription(directoryData.prefHouseDetails);
@@ -48,7 +49,7 @@ const MyForm: NextPage = () => {
         } else {
           return;
         }
- 
+
         if (directoryData.prefLeaseStart) {
           if (directoryData.prefLeaseStart === 1) {
             setMoveIn("ASAP");
@@ -70,22 +71,21 @@ const MyForm: NextPage = () => {
             setHousemates("12+");
           }
         }
-    
+
         if (directoryData.link) {
           setLink(directoryData.link);
         }
-    
+
         if (directoryData.prefContactMethod) {
-          if (directoryData.prefContactMethod.includes('@')) {
-            setContactMethod('email');
+          if (directoryData.prefContactMethod.includes("@")) {
+            setContactMethod("email");
           } else if (phoneRegex.test(directoryData.prefContactMethod)) {
-            setContactMethod('phone');
+            setContactMethod("phone");
             setPhone(directoryData.prefContactMethod);
-          } else if (directoryData.prefContactMethod.includes('twitter')) {
-            setContactMethod('twitter');
+          } else if (directoryData.prefContactMethod.includes("twitter")) {
+            setContactMethod("twitter");
           }
         }
-
       }
     }
   }, []);
@@ -157,8 +157,8 @@ const MyForm: NextPage = () => {
     ) => {
       let { value } = event.target;
 
-      if (typeof field === 'undefined') {
-        setFocusedField(null);  // or however you want to handle this case
+      if (typeof field === "undefined") {
+        setFocusedField(null); // or however you want to handle this case
       } else {
         setFocusedField(field);
       }
@@ -221,11 +221,7 @@ const MyForm: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      {isLoading && (
-        <div className={loadingStyles.overlay}>
-          <div className={loadingStyles.spinner}></div>
-        </div>
-      )}
+      {isLoading && <LoadingSpinner />}
       <DirectoryOverrideModal
         modalActivity={isModalActive}
         handleSubmit={handleSubmit}
@@ -247,18 +243,32 @@ const MyForm: NextPage = () => {
             <p className={styles.maxCharacters}>
               Who are you? Who is the ideal person you want to live with?
             </p>
-            <div style={{ display: "flex", alignItems: "left", flexDirection: 'column' }}>
-            <textarea
-              className={`${styles.textareaStyle} ${visitedFields.has("description") && !description ? styles.inputError : ""}`}
-              placeholder="I want to live with people exploring AI with the intent to build a company. Ideally, we build projects together and eventually find great companies to start."
-              onChange={handleInputChange(setDescription, "description")}
-              onFocus={() => setVisitedFields((prev) => new Set([...prev, "description"]))}
-              onBlur={() => handleBlur("description")}
-              autoFocus={true}
-              value={description}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "left",
+                flexDirection: "column",
+              }}
+            >
+              <textarea
+                className={`${styles.textareaStyle} ${
+                  visitedFields.has("description") && !description
+                    ? styles.inputError
+                    : ""
+                }`}
+                placeholder="I want to live with people exploring AI with the intent to build a company. Ideally, we build projects together and eventually find great companies to start."
+                onChange={handleInputChange(setDescription, "description")}
+                onFocus={() =>
+                  setVisitedFields((prev) => new Set([...prev, "description"]))
+                }
+                onBlur={() => handleBlur("description")}
+                autoFocus={true}
+                value={description}
               />
               {visitedFields.has("description") && !description && (
-                <div className={styles.errorMessage}>This field is required.</div>
+                <div className={styles.errorMessage}>
+                  This field is required.
+                </div>
               )}
             </div>
           </label>
@@ -383,7 +393,11 @@ const MyForm: NextPage = () => {
               Personal website, forum page, blog, Instagram, etc.
             </p>
             <input
-              className={`${styles.inputStyle} ${visitedFields.has("url") && (!link || !urlRegex.test(link)) ? styles.inputError : ""}`}
+              className={`${styles.inputStyle} ${
+                visitedFields.has("url") && (!link || !urlRegex.test(link))
+                  ? styles.inputError
+                  : ""
+              }`}
               type="url"
               placeholder="mywebsite.io"
               onChange={handleInputChange(setLink, "url")}
@@ -393,7 +407,9 @@ const MyForm: NextPage = () => {
             />
             {visitedFields.has("url") && (!link || !urlRegex.test(link)) && (
               <div className={styles.errorMessage}>
-                {!link ? "This field is required." : "Please enter a valid URL."}
+                {!link
+                  ? "This field is required."
+                  : "Please enter a valid URL."}
               </div>
             )}
           </label>
@@ -438,7 +454,12 @@ const MyForm: NextPage = () => {
           {contactMethod === "phone" && (
             <label>
               <input
-                className={`${styles.inputStyle} ${visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) ? styles.inputError : ""}`}
+                className={`${styles.inputStyle} ${
+                  visitedFields.has("phone") &&
+                  (!phone || !phoneRegex.test(phone))
+                    ? styles.inputError
+                    : ""
+                }`}
                 type="tel"
                 placeholder="Phone number"
                 onChange={handleInputChange(setPhone, "phone")}
@@ -446,11 +467,14 @@ const MyForm: NextPage = () => {
                 onBlur={() => handleBlur("phone")}
                 value={phone}
               />
-              {visitedFields.has("phone") && (!phone || !phoneRegex.test(phone)) && (
-                <div className={styles.errorMessage}>
-                  {!phone ? "This field is required." : "Please enter a valid phone number."}
-                </div>
-              )}
+              {visitedFields.has("phone") &&
+                (!phone || !phoneRegex.test(phone)) && (
+                  <div className={styles.errorMessage}>
+                    {!phone
+                      ? "This field is required."
+                      : "Please enter a valid phone number."}
+                  </div>
+                )}
             </label>
           )}
         </div>
