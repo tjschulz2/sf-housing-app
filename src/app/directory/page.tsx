@@ -6,6 +6,7 @@ import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { getHousingSearchProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
+import FilterBar from "../../../components/filter-bar/filter-bar";
 
 function Directory() {
   const { searcherProfiles, setSearcherProfiles } = useContext(
@@ -94,7 +95,7 @@ function Directory() {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>👋 Are you looking for housing?</h2>
+        <h2 style={{ marginTop: 0 }}>👋 Are you looking for housing?</h2>
         <span className={styles.addInfoText}>
           Add your information and we will add you to the Looking for housing
           directory so you can be discovered by communities and organizers
@@ -103,6 +104,7 @@ function Directory() {
           Add me
         </Link>
       </div>
+      <FilterBar />
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2>Today</h2>
