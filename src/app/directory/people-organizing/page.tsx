@@ -1,10 +1,10 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import ProfileCard from "../../../../components/profile-card";
+import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { getOrganizerProfiles } from "../../../../lib/utils/data";
+import { getOrganizerProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 
 const Directory: NextPage = () => {

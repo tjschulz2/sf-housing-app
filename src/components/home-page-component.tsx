@@ -1,13 +1,17 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
 import type { NextPage } from "next";
 import styles from "./home-page-component.module.css";
-import { getHousingSearchProfiles, getCommunities, getOrganizerProfiles } from "../lib/utils/data";
+import {
+  getHousingSearchProfiles,
+  getCommunities,
+  getOrganizerProfiles,
+} from "../lib/utils/data";
 import Link from "next/link";
 import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
-import { differenceInDays } from 'date-fns';
+import { differenceInDays } from "date-fns";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -22,29 +26,33 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   useEffect(() => {
     const fetchNumberOfUsers = async () => {
       let { data, error, count } = await supabase
-        .from('users')
-        .select('*', { count: 'exact' });
+        .from("users")
+        .select("*", { count: "exact" });
 
-        if (!error && data) {
-          setNumberOfUsers(count ?? 0);
-        }
+      if (!error && data) {
+        setNumberOfUsers(count ?? 0);
+      }
     };
 
     fetchNumberOfUsers();
   }, []);
 
   useEffect(() => {
-    const countThisWeekProfiles = (profiles: any) => 
-      profiles.filter((profile: any) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 30).length;
+    const countThisWeekProfiles = (profiles: any) =>
+      profiles.filter(
+        (profile: any) =>
+          differenceInDays(new Date(), new Date(profile.created_at || "")) < 30
+      ).length;
 
     const fetchProfiles = async () => {
       const searcherProfiles = await getHousingSearchProfiles();
       const organizerProfiles = await getOrganizerProfiles();
       const communityProfiles = await getCommunities();
 
-      const total = countThisWeekProfiles(searcherProfiles) 
-                  + countThisWeekProfiles(organizerProfiles) 
-                  + countThisWeekProfiles(communityProfiles);
+      const total =
+        countThisWeekProfiles(searcherProfiles) +
+        countThisWeekProfiles(organizerProfiles) +
+        countThisWeekProfiles(communityProfiles);
 
       setTotalWeeklyProfiles(total);
     };
@@ -129,10 +137,12 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
       {renderContent()}
       <div className={styles.membersBox}>
         <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{numberOfUsers}</span> members of DirectorySF
+          <span className={styles.boldAndColored}>{numberOfUsers}</span> members
+          of DirectorySF
         </div>
         <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span> listings posted this month 🔥
+          <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
+          listings posted this month 🔥
         </div>
       </div>
     </section>

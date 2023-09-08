@@ -1,8 +1,8 @@
 "use client";
 import styles from "./page.module.css";
-import Navbar from "../../../components/navbar/navbar";
-import InviteButton from "../../../components/invite-button/invite-button";
-import { signout } from "../../../lib/utils/auth";
+import Navbar from "../../components/navbar/navbar";
+import InviteButton from "../../components/invite-button/invite-button";
+import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
   SetStateAction,
@@ -11,9 +11,9 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { getUserSession } from "../../../lib/utils/auth";
-import { getUserData } from "../../../lib/utils/data";
-import Dropdown from "../../../components/dropdown/dropdown";
+import { getUserSession } from "../../lib/utils/auth";
+import { getUserData } from "../../lib/utils/data";
+import Dropdown from "../../components/dropdown/dropdown";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;

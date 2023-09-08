@@ -1,9 +1,9 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import ProfileCard from "../../../../components/profile-card";
+import ProfileCard from "../../../components/profile-card";
 import React, { useState, useEffect } from "react";
-import { getCommunities } from "../../../../lib/utils/data";
+import { getCommunities } from "../../../lib/utils/data";
 import Link from "next/link";
 import { differenceInDays } from "date-fns";
 

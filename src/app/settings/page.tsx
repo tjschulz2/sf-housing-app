@@ -7,9 +7,9 @@ import { NextPage } from "next";
 import {
   isInDirectoryAlready,
   deleteDataFromDirectory,
-} from "../../../lib/utils/process";
-import { getUserSession } from "../../../lib/utils/auth";
-import Modal from "../../../components/modal/modal";
+} from "../../lib/utils/process";
+import { getUserSession } from "../../lib/utils/auth";
+import Modal from "../../components/modal/modal";
 
 const Settings: NextPage = () => {
   const [isOpen, setIsOpen] = useState(false);

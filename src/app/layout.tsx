@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
-import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
+import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });

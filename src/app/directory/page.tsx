@@ -1,12 +1,12 @@
 "use client";
 import styles from "./page.module.css";
-import ProfileCard from "../../../components/profile-card";
+import ProfileCard from "../../components/profile-card";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef, useCallback } from "react";
-import { getHousingSearchProfiles } from "../../../lib/utils/data";
+import { getHousingSearchProfiles } from "../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
-import FilterBar from "../../../components/filter-bar/filter-bar";
+import FilterBar from "../../components/filter-bar/filter-bar";
 
 function Directory() {
   const { searcherProfiles, setSearcherProfiles } = useContext(

@@ -4,9 +4,9 @@ import { NextPage } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { checkConfirmationCode } from "../../../lib/utils/confirmation";
-import { updateUserContactEmail } from "../../../lib/utils/auth";
-import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
+import { checkConfirmationCode } from "../../lib/utils/confirmation";
+import { updateUserContactEmail } from "../../lib/utils/auth";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 
 const ConfirmationPage: NextPage = () => {
   const [code, setCode] = useState("");

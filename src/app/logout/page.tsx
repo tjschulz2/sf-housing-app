@@ -1,7 +1,7 @@
-'use client';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { signout } from '../../../lib/utils/auth';
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { signout } from "../../lib/utils/auth";
 
 const Logout = () => {
   const router = useRouter();
@@ -9,7 +9,7 @@ const Logout = () => {
   useEffect(() => {
     const signOutAndRedirect = async () => {
       await signout();
-      router.push('/');
+      router.push("/");
     };
 
     signOutAndRedirect();
