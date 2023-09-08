@@ -95,7 +95,7 @@ function Directory() {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2 style={{ marginTop: 0 }}>👋 Are you looking for housing?</h2>
+        <h2 className="text-xl font-bold mb-4">👋 Are you looking for housing?</h2>
         <span className={styles.addInfoText}>
           Add your information and we will add you to the Looking for housing
           directory so you can be discovered by communities and organizers
@@ -122,7 +122,7 @@ function Directory() {
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
-          <h2>This Week</h2>
+          <h2 className="text-2xl font-bold my-4">This Week</h2>
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
               <ProfileCard
@@ -137,7 +137,7 @@ function Directory() {
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
-          <h2>This Month</h2>
+          <h2 className="text-2xl font-bold my-4">This Month</h2>
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
               <ProfileCard
@@ -152,7 +152,7 @@ function Directory() {
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
-          <h2>Older</h2>
+          <h2 className="text-2xl font-bold my-4">Older</h2>
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
               <ProfileCard

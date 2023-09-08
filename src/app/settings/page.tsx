@@ -78,15 +78,20 @@ const Settings: NextPage = () => {
         </div>
       </Modal>
       <div className={styles.form}>
-        <Link href="/directory">Back to directory</Link>
-        <h1>Settings</h1>
+        <Link href="/directory" className="text-blue-900">
+          {" "}
+          &larr; Back to directory
+        </Link>
+        <h1 className="text-3xl font-bold">Settings</h1>
         <div
           style={{ height: "1px", backgroundColor: "gray", width: "100%" }}
         />
 
         <div>
-          <h2>Remove listing from directory</h2>
-          <p className={styles.maxCharacters}>
+          <h2 className="text-2xl font-bold mb-4">
+            Remove listing from directory
+          </h2>
+          <p className="mb-4">
             Removing your listing from the directory will be permanent.
           </p>
           <div style={{ display: "flex", alignItems: "center" }}>

@@ -64,7 +64,7 @@ export default function DirectoryLayout({
     <div className={styles.container}>
       <div className={styles.topArea}>
         <div className={styles.directoryInviteSettings}>
-          <h1>Directory</h1>
+          <h1 className="text-3xl font-bold my-4">Directory</h1>
           <div className={styles.inviteSettingsContainer}>
             <InviteButton />
             {user && <Dropdown user={user} />}
