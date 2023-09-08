@@ -8,9 +8,8 @@ import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
 
 function Directory() {
-  const { searcherProfiles, setSearcherProfiles } = useContext(
-    ProfilesContext
-  ) as ProfilesContextType;
+  const { searcherProfiles, setSearcherProfiles, userHousingSearchProfile } =
+    useContext(ProfilesContext) as ProfilesContextType;
   const allowDataPull = useRef(false);
   const [allDataRetrieved, setAllDataRetrieved] = useState(false);
 
@@ -94,14 +93,30 @@ function Directory() {
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>👋 Are you looking for housing?</h2>
-        <span className={styles.addInfoText}>
-          Add your information and we will add you to the Looking for housing
-          directory so you can be discovered by communities and organizers
-        </span>
-        <Link className={styles.addMeButton} href="/housemates-form">
-          Add me
-        </Link>
+        {userHousingSearchProfile ? (
+          <>
+            <h2>You have an active profile</h2>
+
+            <span className={styles.addInfoText}>
+              You can delete or edit your profile here
+            </span>
+            <Link className={styles.addMeButton} href="/housemates-form">
+              Edit
+            </Link>
+          </>
+        ) : (
+          <>
+            <h2>👋 Are you looking for housing?</h2>
+            <span className={styles.addInfoText}>
+              Add your information and we will add you to the Looking for
+              housing directory so you can be discovered by communities and
+              organizers
+            </span>
+            <Link className={styles.addMeButton} href="/housemates-form">
+              Add me
+            </Link>
+          </>
+        )}
       </div>
       {todayProfiles && todayProfiles.length > 0 && (
         <>

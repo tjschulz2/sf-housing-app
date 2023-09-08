@@ -105,6 +105,20 @@ export async function getCommunities(startIdx: number = 0, count: number = 25) {
   }
 }
 
+export async function getUserHousingSearchProfile(userID: string) {
+  const { data, error } = await supabase
+    .from("housing_search_profiles")
+    .select("*")
+    .eq("user_id", userID)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
 // ----- Referrals -----
 
 // export async function genReferral(userID: string) {

@@ -12,17 +12,26 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../../lib/utils/auth";
-import { getUserData } from "../../../lib/utils/data";
+import {
+  getUserData,
+  getUserHousingSearchProfile,
+} from "../../../lib/utils/data";
 import Dropdown from "../../../components/dropdown/dropdown";
+import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
   setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
+  userHousingSearchProfile: UserHousingSearchProfile;
 };
 
 type User = {
   twitterAvatarUrl: string;
 };
+
+type UserHousingSearchProfile =
+  | Database["public"]["Tables"]["housing_search_profiles"]["Row"]
+  | null;
 
 export const ProfilesContext = createContext<ProfilesContextType | null>(null);
 
@@ -32,56 +41,75 @@ export default function DirectoryLayout({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userHousingSearchProfile, setUserHousingSearchProfile] =
+    useState<UserHousingSearchProfile>(null);
   const router = useRouter();
   const [searcherProfiles, setSearcherProfiles] = useState<
     HousingSearchProfile[]
   >([]);
 
   useEffect(() => {
-    async function checkSession() {
-      const fetchedUser = await getUserSession();
-      if (!fetchedUser) {
-        await signout();
-        router.push("/#");
+    async function pullUserData() {
+      const userSession = await getUserSession();
+      if (!userSession) {
+        router.replace("/");
         return;
       }
-      const user: User = {
-        twitterAvatarUrl: fetchedUser.twitterAvatarURL,
+
+      const userData = await getUserData(userSession.userID);
+      if (!userData) {
+        await signout();
+        router.replace("/");
+        return;
+      }
+      if (!userData.contact_email) {
+        router.push("/email-signup");
+      }
+
+      const userSearchProfile = await getUserHousingSearchProfile(
+        userSession.userID
+      );
+      if (userSearchProfile) {
+        setUserHousingSearchProfile(userSearchProfile);
+      }
+
+      const user = {
+        twitterAvatarUrl: userSession.twitterAvatarURL,
       };
       setUser(user);
     }
-    async function checkUserData() {
-      const userData = await getUserData();
-      if (userData && !userData.contact_email) {
-        router.push("/email-signup");
-      }
-    }
-
-    checkSession();
-    checkUserData();
+    pullUserData();
   }, [router]);
-  return (
-    <div className={styles.container}>
-      <div className={styles.topArea}>
-        <div className={styles.directoryInviteSettings}>
-          <h1>Directory</h1>
-          <div className={styles.inviteSettingsContainer}>
-            <InviteButton />
-            {user && <Dropdown user={user} />}
+  if (user) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.topArea}>
+          <div className={styles.directoryInviteSettings}>
+            <h1>Directory</h1>
+            <div className={styles.inviteSettingsContainer}>
+              <InviteButton />
+              {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
+            </div>
           </div>
+          <Navbar />
         </div>
-        <Navbar />
-      </div>
-      <ProfilesContext.Provider
-        value={{ searcherProfiles, setSearcherProfiles }}
-      >
-        <div className={styles.directoryContainer}>{children}</div>
-      </ProfilesContext.Provider>
+        <ProfilesContext.Provider
+          value={{
+            searcherProfiles,
+            setSearcherProfiles,
+            userHousingSearchProfile,
+          }}
+        >
+          <div className={styles.directoryContainer}>{children}</div>
+        </ProfilesContext.Provider>
 
-      <a href="https://github.com/tjschulz2/sf-housing-app">
-        Want to see a new feature on DirectorySF? Submit a pull request!
-        DirectorySF is open-source.
-      </a>
-    </div>
-  );
+        <a href="https://github.com/tjschulz2/sf-housing-app">
+          Want to see a new feature on DirectorySF? Submit a pull request!
+          DirectorySF is open-source.
+        </a>
+      </div>
+    );
+  } else {
+    return <LoadingSpinner />;
+  }
 }
