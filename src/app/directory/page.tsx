@@ -6,7 +6,7 @@ import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { getHousingSearchProfiles } from "../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
-import FilterBar from "../../components/filter-bar/filter-bar";
+import FilterBar from "../../components/filter-bar";
 
 function Directory() {
   const { searcherProfiles, setSearcherProfiles } = useContext(
