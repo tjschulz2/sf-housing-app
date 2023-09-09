@@ -18,7 +18,11 @@ import Dropdown from "../../components/dropdown/dropdown";
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
   setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
+  searcherProfilesFilter: SearcherProfilesFilterType;
+  setSearcherProfilesFilter: Dispatch<SetStateAction<SearcherProfilesFilterType>>
 };
+
+
 
 type User = {
   twitterAvatarUrl: string;
@@ -36,6 +40,7 @@ export default function DirectoryLayout({
   const [searcherProfiles, setSearcherProfiles] = useState<
     HousingSearchProfile[]
   >([]);
+  const [searcherProfilesFilter, setSearcherProfilesFilter] = useState<SearcherProfilesFilterType>({})
 
   useEffect(() => {
     async function checkSession() {
@@ -73,7 +78,7 @@ export default function DirectoryLayout({
         <Navbar />
       </div>
       <ProfilesContext.Provider
-        value={{ searcherProfiles, setSearcherProfiles }}
+        value={{ searcherProfiles, setSearcherProfiles, searcherProfilesFilter, setSearcherProfilesFilter }}
       >
         <div className={styles.directoryContainer}>{children}</div>
       </ProfilesContext.Provider>

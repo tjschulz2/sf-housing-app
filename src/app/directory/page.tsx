@@ -9,11 +9,12 @@ import { ProfilesContext, ProfilesContextType } from "./layout";
 import FilterBar from "../../components/filter-bar";
 
 function Directory() {
-  const { searcherProfiles, setSearcherProfiles } = useContext(
+  const { searcherProfiles, setSearcherProfiles, searcherProfilesFilter, setSearcherProfilesFilter } = useContext(
     ProfilesContext
   ) as ProfilesContextType;
   const allowDataPull = useRef(false);
   const [allDataRetrieved, setAllDataRetrieved] = useState(false);
+  const initialPullAttempted = useRef(false);
 
   const observerTarget = useRef(null);
 
@@ -59,19 +60,22 @@ function Directory() {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [observerTarget, pullNextBatch, allowDataPull]);
+  }, [observerTarget, pullNextBatch]);
 
   useEffect(() => {
     async function pullProfiles() {
+      initialPullAttempted.current = true;
       const profiles = await getHousingSearchProfiles(0, 25);
       if (profiles) {
         setSearcherProfiles(profiles);
       }
     }
-    if (!searcherProfiles?.length) {
+  
+    if (!initialPullAttempted.current) {
       pullProfiles();
     }
-  }, [setSearcherProfiles, searcherProfiles]);
+  }, [setSearcherProfiles]); // Empty dependency array means this runs once when the component mounts
+  
 
   const todayProfiles = searcherProfiles?.filter(
     (profile) =>
@@ -92,6 +96,21 @@ function Directory() {
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
   );
 
+  function handleFilterChange(filterData: SearcherProfilesFilterType){
+    let filterValuesChanged = false;
+    const newFilterState = {...searcherProfilesFilter, ...filterData};
+    for (let key of Object.keys(newFilterState)){
+      if (!newFilterState[key as keyof SearcherProfilesFilterType]){
+        delete newFilterState[key as keyof SearcherProfilesFilterType];
+      }
+    }
+    // todo: only set to state if obect is not equal to state object. 
+    // Add useEffect to watch for state change and trigger data pull. 
+    // Subsequent infinite scroll calls should use filter state
+    setSearcherProfilesFilter(newFilterState);
+    console.log(searcherProfilesFilter)
+  }
+
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
@@ -104,7 +123,7 @@ function Directory() {
           Add me
         </Link>
       </div>
-      <FilterBar />
+      <FilterBar onFilterChange={handleFilterChange} filterState={searcherProfilesFilter}/>
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2>Today</h2>
