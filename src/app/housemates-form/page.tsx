@@ -8,11 +8,11 @@ import {
   addHousingData,
   isInDirectoryAlready,
   deleteDataFromDirectory,
-} from "../../../lib/utils/process";
-import { getUserSession } from "../../../lib/utils/auth";
+} from "../../lib/utils/process";
+import { getUserSession } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
-import DirectoryOverrideModal from "../../../components/directory-override-modal/directory-override-modal";
-import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
+import DirectoryOverrideModal from "../../components/directory-override-modal/directory-override-modal";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");

@@ -1,11 +1,11 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import ProfileCard from "../../../../components/profile-card";
+import ProfileCard from "../../../components/profile-card";
 import React, { useState, useEffect } from "react";
-import { getCommunities } from "../../../../lib/utils/data";
+import { getCommunities } from "../../../lib/utils/data";
 import Link from "next/link";
-import { differenceInDays } from 'date-fns'; 
+import { differenceInDays } from "date-fns";
 
 const Directory: NextPage = () => {
   const [profiles, setProfiles] = useState<CommunityProfile[]>();
@@ -21,15 +21,31 @@ const Directory: NextPage = () => {
   }, []);
 
   const data = Array.from({ length: 20 }, (_, i) => i + 1);
-  const todayProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 1);
-  const thisWeekProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 7 && differenceInDays(new Date(), new Date(profile.created_at || '')) >= 1);
-  const thisMonthProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) < 31 && differenceInDays(new Date(), new Date(profile.created_at || '')) >= 7);
-  const olderProfiles = profiles?.filter((profile) => differenceInDays(new Date(), new Date(profile.created_at || '')) >= 31);
+  const todayProfiles = profiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
+  );
+  const thisWeekProfiles = profiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 7 &&
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 1
+  );
+  const thisMonthProfiles = profiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) < 31 &&
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 7
+  );
+  const olderProfiles = profiles?.filter(
+    (profile) =>
+      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
+  );
 
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2>Do you have a vacant room, sublet, or coliving house?</h2>
+        <h2 className="text-xl font-bold mb-4">
+          Do you have a vacant room, sublet, or coliving house?
+        </h2>
         <span className={styles.addInfoText}>
           Add your information and we will add you to the Existing spaces
           directory so you can be discovered by people looking for housing
@@ -43,7 +59,11 @@ const Directory: NextPage = () => {
           <h2>Today</h2>
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="green" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="green"
+              />
             ))}
           </div>
         </>
@@ -51,10 +71,14 @@ const Directory: NextPage = () => {
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
-          <h2>This Week</h2>
+          <h2 className="text-2xl font-bold my-4">This Week</h2>
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="green" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="green"
+              />
             ))}
           </div>
         </>
@@ -62,10 +86,14 @@ const Directory: NextPage = () => {
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
-          <h2>This Month</h2>
+          <h2 className="text-2xl font-bold my-4">This Month</h2>
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="green" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="green"
+              />
             ))}
           </div>
         </>
@@ -73,10 +101,14 @@ const Directory: NextPage = () => {
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
-          <h2>Older</h2>
+          <h2 className="text-2xl font-bold my-4">Older</h2>
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
-              <ProfileCard key={profile.profile_id} profile={profile} color="green" />
+              <ProfileCard
+                key={profile.profile_id}
+                profile={profile}
+                color="green"
+              />
             ))}
           </div>
         </>

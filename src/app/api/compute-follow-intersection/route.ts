@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRedisClient } from "../../../../lib/redisClient";
+import { createRedisClient } from "../../../lib/redisClient";
 import { verify } from "jsonwebtoken";
 import { headers } from "next/headers";
 import { User } from "@supabase/supabase-js";

@@ -44,12 +44,12 @@ export default function SeeMoreButton({
       <Modal closeModal={closeModal} isOpen={isOpen}>
         <div className={styles.modalContents}>
           <button
+            className="absolute top-0 right-1 font-bold"
             onClick={closeModal}
-            style={{ position: "absolute", top: 0, right: 0 }}
           >
             x
           </button>
-          <h2>About</h2>
+          <h2 className="text-2xl font-bold my-4">About</h2>
           <p style={{ color: "grey" }}>{seeMoreText}</p>
         </div>
       </Modal>

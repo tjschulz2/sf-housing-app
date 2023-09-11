@@ -3,8 +3,8 @@ import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { generateAndSendConfirmation } from "../../../lib/utils/confirmation";
-import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
+import { generateAndSendConfirmation } from "../../lib/utils/confirmation";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 
 const EmailSignup: NextPage = () => {
   const [email, setEmail] = useState("");

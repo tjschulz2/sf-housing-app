@@ -1,12 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   line-height: normal;
 }
 :root {
   /* fonts */
-  --font-inter: Inter;
-
   /* font sizes */
   --font-size-lg: 1.13rem;
   --font-size-base: 1rem;
@@ -25,8 +26,8 @@ body {
   --color-darkslategray: #3d3d3d;
   --color-dimgray: #4f4f4f;
   --color-steelblue: #297cc5;
-  --color-lightpurple: #6B31E7;
-  --color-lightgreen: #25CB8F;
+  --color-lightpurple: #6b31e7;
+  --color-lightgreen: #25cb8f;
 
   /* Gaps */
   --gap-base: 1rem;

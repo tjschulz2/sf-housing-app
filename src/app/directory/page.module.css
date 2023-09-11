@@ -88,6 +88,10 @@
   box-sizing: border-box;
   max-width: 1625px;
   padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  justify-content: space-between;
 }
 
 .containerGrid {
