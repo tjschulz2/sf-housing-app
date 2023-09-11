@@ -47,7 +47,7 @@ export async function createUser(
 export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25,
-  filters: SearcherProfilesFilterType
+  filters: SearcherProfilesFilterType = {}
 ) {
   console.log("startIdx: ", startIdx, " count: ", count);
   const { leaseLength, housemateCount, movingTime } = filters;

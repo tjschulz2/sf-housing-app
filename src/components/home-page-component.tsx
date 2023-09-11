@@ -27,7 +27,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     const fetchNumberOfUsers = async () => {
       let { data, error, count } = await supabase
         .from("users")
-        .select("*", { count: "exact" });
+        .select("user_id", { count: "exact" });
 
       if (!error && data) {
         setNumberOfUsers(count ?? 0);
@@ -45,10 +45,17 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
       ).length;
 
     const fetchProfiles = async () => {
-      const searcherProfiles = await getHousingSearchProfiles();
-      const organizerProfiles = await getOrganizerProfiles();
-      const communityProfiles = await getCommunities();
-
+      const profilePromises = [
+        getHousingSearchProfiles(),
+        getOrganizerProfiles(),
+        getCommunities(),
+      ];
+      const [searcherProfiles, organizerProfiles, communityProfiles] =
+        await Promise.all(profilePromises);
+      // const searcherProfiles = await getHousingSearchProfiles();
+      // const organizerProfiles = await getOrganizerProfiles();
+      // const communityProfiles = await getCommunities();
+      console.log(searcherProfiles, organizerProfiles, communityProfiles);
       const total =
         countThisWeekProfiles(searcherProfiles) +
         countThisWeekProfiles(organizerProfiles) +
@@ -131,8 +138,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
         Find sublets, housemates, and coliving communities in the SF tech scene
       </h1>
       <p className={styles.thisIsAn}>
-        This is an invite-only directory of people you probably know that are
-        looking for housing in San Francisco
+        The SF housing directory of people you probably know
       </p>
       {renderContent()}
       <div className={styles.membersBox}>
