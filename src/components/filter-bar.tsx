@@ -38,6 +38,7 @@ export default function FilterBar({
           </Select>
 
           <Select
+            value={housemateCount}
             onValueChange={(val) => onFilterChange({ housemateCount: val })}
           >
             <SelectTrigger>
@@ -58,7 +59,10 @@ export default function FilterBar({
       <Separator orientation="vertical" className="hidden sm:inline h-auto" />
       <div id="timeline-filter-group" className="flex flex-col gap-2 grow">
         <Label htmlFor="Timeline">Timeline Filter</Label>
-        <Select onValueChange={(val) => onFilterChange({ movingTime: val })}>
+        <Select
+          value={movingTime}
+          onValueChange={(val) => onFilterChange({ movingTime: val })}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Moving in..." />
           </SelectTrigger>

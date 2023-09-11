@@ -17,14 +17,13 @@ function Directory() {
     setSearcherProfilesFilter,
   } = useContext(ProfilesContext) as ProfilesContextType;
   const allowDataPull = useRef(false);
-  const [allDataRetrieved, setAllDataRetrieved] = useState(false);
+  const allDataRetrieved = useRef(false);
   const [dataLoading, setDataLoading] = useState(true);
-  // const initialPullRequired = useRef(true);
-
+  const initialPullRequired = useRef(true);
   const observerTarget = useRef(null);
 
   const pullNextBatch = useCallback(async () => {
-    if (!searcherProfiles?.length || allDataRetrieved) {
+    if (!searcherProfiles?.length || allDataRetrieved.current) {
       console.log("skipping pull");
       return;
     }
@@ -33,7 +32,6 @@ function Directory() {
       10,
       searcherProfilesFilter
     );
-    console.log({ additionalProfiles });
 
     if (additionalProfiles?.length) {
       setSearcherProfiles((prevProfiles) => [
@@ -41,14 +39,9 @@ function Directory() {
         ...additionalProfiles,
       ]);
     } else {
-      setAllDataRetrieved(true);
+      allDataRetrieved.current = true;
     }
-  }, [
-    searcherProfiles,
-    allDataRetrieved,
-    searcherProfilesFilter,
-    setSearcherProfiles,
-  ]);
+  }, [searcherProfiles, searcherProfilesFilter, setSearcherProfiles]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,7 +69,7 @@ function Directory() {
 
   useEffect(() => {
     async function pullProfiles() {
-      // initialPullRequired.current = false;
+      setDataLoading(true);
       const profiles = await getHousingSearchProfiles(
         0,
         25,
@@ -88,11 +81,10 @@ function Directory() {
       setDataLoading(false);
     }
 
-    pullProfiles();
-
-    // if (initialPullRequired.current) {
-    //   pullProfiles();
-    // }
+    if (initialPullRequired.current) {
+      initialPullRequired.current = false;
+      pullProfiles();
+    }
   }, [setSearcherProfiles, searcherProfilesFilter]);
 
   const todayProfiles = searcherProfiles?.filter(
@@ -120,22 +112,16 @@ function Directory() {
         searcherProfilesFilter[filterKey as keyof SearcherProfilesFilterType] ||
         "";
       if (stateFilterVal !== filterVal) {
-        // update state to match filter
         setDataLoading(true);
-        setAllDataRetrieved(false);
+        allDataRetrieved.current = false;
+        initialPullRequired.current = true;
+        setSearcherProfiles([]);
         const newFilterState = { ...searcherProfilesFilter, ...filterData };
         setSearcherProfilesFilter(newFilterState);
         return;
       }
     }
-    // todo: only set to state if obect is not equal to state object.
-    // Add useEffect to watch for state change and trigger data pull.
-    // Subsequent infinite scroll calls should use filter state
   }
-
-  useEffect(() => {
-    console.log("state updated: ", searcherProfilesFilter);
-  }, [searcherProfilesFilter]);
 
   return (
     <>
@@ -155,7 +141,9 @@ function Directory() {
         onFilterChange={handleFilterChange}
         filterState={searcherProfilesFilter}
       />
-      {dataLoading ? <LoadingSpinner overlay={false} /> : null}
+      {dataLoading && !searcherProfiles?.length ? (
+        <LoadingSpinner overlay={false} />
+      ) : null}
       {!dataLoading && !searcherProfiles?.length ? (
         <p className="m-auto p-4 italic text-neutral-600">No data</p>
       ) : null}

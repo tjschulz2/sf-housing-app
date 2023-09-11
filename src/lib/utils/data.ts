@@ -72,7 +72,6 @@ export async function getHousingSearchProfiles(
   }
 
   const { data, error } = await query;
-
   if (error) {
     console.error(error);
   } else {

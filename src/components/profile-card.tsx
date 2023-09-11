@@ -249,10 +249,10 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <span className={styles.wants}>Moving:</span>
               <span>
                 {" "}
-                {isHousingSearchProfile(profile)
-                  ? housingMap.moveIn[profile.pref_move_in ?? 1]
-                  : isOrganizerProfile(profile)
-                  ? housingMap.moveIn[profile.pref_lease_start ?? 1]
+                {isHousingSearchProfile(profile) && profile.pref_move_in
+                  ? housingMap.moveIn[profile.pref_move_in]
+                  : isOrganizerProfile(profile) && profile.pref_lease_start
+                  ? housingMap.moveIn[profile.pref_lease_start]
                   : null}
               </span>
             </p>
