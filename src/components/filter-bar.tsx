@@ -18,7 +18,7 @@ export default function FilterBar({
 }) {
   const { housemateCount, leaseLength, movingTime } = filterState;
   return (
-    <div className="flex flex-col sm:flex-row h-fit sm:items-center gap-4 mb-4">
+    <div className="flex flex-col sm:flex-row gap-4 mb-4">
       <div id="pref-filter-group" className="flex flex-col gap-2 grow">
         <Label htmlFor="Preferences">Preference Filters</Label>
         <div className="flex flex-row gap-2">
@@ -55,7 +55,7 @@ export default function FilterBar({
         </div>
       </div>
 
-      <Separator orientation="vertical" className="hidden sm:inline" />
+      <Separator orientation="vertical" className="hidden sm:inline h-auto" />
       <div id="timeline-filter-group" className="flex flex-col gap-2 grow">
         <Label htmlFor="Timeline">Timeline Filter</Label>
         <Select onValueChange={(val) => onFilterChange({ movingTime: val })}>

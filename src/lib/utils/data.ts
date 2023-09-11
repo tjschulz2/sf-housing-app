@@ -46,10 +46,12 @@ export async function createUser(
 
 export async function getHousingSearchProfiles(
   startIdx: number = 0,
-  count: number = 25
+  count: number = 25,
+  filters: SearcherProfilesFilterType
 ) {
   console.log("startIdx: ", startIdx, " count: ", count);
-  const { data, error } = await supabase
+  const { leaseLength, housemateCount, movingTime } = filters;
+  let query = supabase
     .from("housing_search_profiles")
     .select(
       `
@@ -58,6 +60,18 @@ export async function getHousingSearchProfiles(
     )
     .range(startIdx, startIdx + count - 1)
     .order("created_at", { ascending: false });
+
+  if (leaseLength) {
+    query = query.eq("pref_housing_type", leaseLength);
+  }
+  if (housemateCount) {
+    query = query.eq("pref_housemate_count", housemateCount);
+  }
+  if (movingTime) {
+    query = query.eq("pref_move_in", movingTime);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);

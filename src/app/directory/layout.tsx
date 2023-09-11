@@ -14,15 +14,17 @@ import { useRouter } from "next/navigation";
 import { getUserSession } from "../../lib/utils/auth";
 import { getUserData } from "../../lib/utils/data";
 import Dropdown from "../../components/dropdown/dropdown";
+import GithubLink from "@/components/github-link";
+import { Separator } from "@/components/ui/separator";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
   setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
   searcherProfilesFilter: SearcherProfilesFilterType;
-  setSearcherProfilesFilter: Dispatch<SetStateAction<SearcherProfilesFilterType>>
+  setSearcherProfilesFilter: Dispatch<
+    SetStateAction<SearcherProfilesFilterType>
+  >;
 };
-
-
 
 type User = {
   twitterAvatarUrl: string;
@@ -40,7 +42,8 @@ export default function DirectoryLayout({
   const [searcherProfiles, setSearcherProfiles] = useState<
     HousingSearchProfile[]
   >([]);
-  const [searcherProfilesFilter, setSearcherProfilesFilter] = useState<SearcherProfilesFilterType>({})
+  const [searcherProfilesFilter, setSearcherProfilesFilter] =
+    useState<SearcherProfilesFilterType>({});
 
   useEffect(() => {
     async function checkSession() {
@@ -78,15 +81,25 @@ export default function DirectoryLayout({
         <Navbar />
       </div>
       <ProfilesContext.Provider
-        value={{ searcherProfiles, setSearcherProfiles, searcherProfilesFilter, setSearcherProfilesFilter }}
+        value={{
+          searcherProfiles,
+          setSearcherProfiles,
+          searcherProfilesFilter,
+          setSearcherProfilesFilter,
+        }}
       >
         <div className={styles.directoryContainer}>{children}</div>
       </ProfilesContext.Provider>
 
-      <a href="https://github.com/tjschulz2/sf-housing-app">
+      {/* <a
+        href="https://github.com/tjschulz2/sf-housing-app"
+        className="text-sm text-blue-400"
+      >
         Want to see a new feature on DirectorySF? Submit a pull request!
         DirectorySF is open-source.
-      </a>
+      </a> */}
+      <Separator className="mb-2" />
+      <GithubLink />
     </div>
   );
 }

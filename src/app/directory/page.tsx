@@ -7,14 +7,19 @@ import { getHousingSearchProfiles } from "../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
 import FilterBar from "../../components/filter-bar";
+import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 
 function Directory() {
-  const { searcherProfiles, setSearcherProfiles, searcherProfilesFilter, setSearcherProfilesFilter } = useContext(
-    ProfilesContext
-  ) as ProfilesContextType;
+  const {
+    searcherProfiles,
+    setSearcherProfiles,
+    searcherProfilesFilter,
+    setSearcherProfilesFilter,
+  } = useContext(ProfilesContext) as ProfilesContextType;
   const allowDataPull = useRef(false);
   const [allDataRetrieved, setAllDataRetrieved] = useState(false);
-  const initialPullAttempted = useRef(false);
+  const [dataLoading, setDataLoading] = useState(true);
+  // const initialPullRequired = useRef(true);
 
   const observerTarget = useRef(null);
 
@@ -25,8 +30,10 @@ function Directory() {
     }
     const additionalProfiles = await getHousingSearchProfiles(
       searcherProfiles.length,
-      10
+      10,
+      searcherProfilesFilter
     );
+    console.log({ additionalProfiles });
 
     if (additionalProfiles?.length) {
       setSearcherProfiles((prevProfiles) => [
@@ -36,7 +43,12 @@ function Directory() {
     } else {
       setAllDataRetrieved(true);
     }
-  }, [searcherProfiles, setSearcherProfiles, allDataRetrieved]);
+  }, [
+    searcherProfiles,
+    allDataRetrieved,
+    searcherProfilesFilter,
+    setSearcherProfiles,
+  ]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,18 +76,24 @@ function Directory() {
 
   useEffect(() => {
     async function pullProfiles() {
-      initialPullAttempted.current = true;
-      const profiles = await getHousingSearchProfiles(0, 25);
+      // initialPullRequired.current = false;
+      const profiles = await getHousingSearchProfiles(
+        0,
+        25,
+        searcherProfilesFilter
+      );
       if (profiles) {
         setSearcherProfiles(profiles);
       }
+      setDataLoading(false);
     }
-  
-    if (!initialPullAttempted.current) {
-      pullProfiles();
-    }
-  }, [setSearcherProfiles]); // Empty dependency array means this runs once when the component mounts
-  
+
+    pullProfiles();
+
+    // if (initialPullRequired.current) {
+    //   pullProfiles();
+    // }
+  }, [setSearcherProfiles, searcherProfilesFilter]);
 
   const todayProfiles = searcherProfiles?.filter(
     (profile) =>
@@ -96,25 +114,35 @@ function Directory() {
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
   );
 
-  function handleFilterChange(filterData: SearcherProfilesFilterType){
-    let filterValuesChanged = false;
-    const newFilterState = {...searcherProfilesFilter, ...filterData};
-    for (let key of Object.keys(newFilterState)){
-      if (!newFilterState[key as keyof SearcherProfilesFilterType]){
-        delete newFilterState[key as keyof SearcherProfilesFilterType];
+  function handleFilterChange(filterData: SearcherProfilesFilterType) {
+    for (const [filterKey, filterVal] of Object.entries(filterData)) {
+      const stateFilterVal =
+        searcherProfilesFilter[filterKey as keyof SearcherProfilesFilterType] ||
+        "";
+      if (stateFilterVal !== filterVal) {
+        // update state to match filter
+        setDataLoading(true);
+        setAllDataRetrieved(false);
+        const newFilterState = { ...searcherProfilesFilter, ...filterData };
+        setSearcherProfilesFilter(newFilterState);
+        return;
       }
     }
-    // todo: only set to state if obect is not equal to state object. 
-    // Add useEffect to watch for state change and trigger data pull. 
+    // todo: only set to state if obect is not equal to state object.
+    // Add useEffect to watch for state change and trigger data pull.
     // Subsequent infinite scroll calls should use filter state
-    setSearcherProfilesFilter(newFilterState);
-    console.log(searcherProfilesFilter)
   }
+
+  useEffect(() => {
+    console.log("state updated: ", searcherProfilesFilter);
+  }, [searcherProfilesFilter]);
 
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
-        <h2 className="text-xl font-bold mb-4">👋 Are you looking for housing?</h2>
+        <h2 className="text-xl font-bold mb-4">
+          👋 Are you looking for housing?
+        </h2>
         <span className={styles.addInfoText}>
           Add your information and we will add you to the Looking for housing
           directory so you can be discovered by communities and organizers
@@ -123,7 +151,14 @@ function Directory() {
           Add me
         </Link>
       </div>
-      <FilterBar onFilterChange={handleFilterChange} filterState={searcherProfilesFilter}/>
+      <FilterBar
+        onFilterChange={handleFilterChange}
+        filterState={searcherProfilesFilter}
+      />
+      {dataLoading ? <LoadingSpinner overlay={false} /> : null}
+      {!dataLoading && !searcherProfiles?.length ? (
+        <p className="m-auto p-4 italic text-neutral-600">No data</p>
+      ) : null}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2>Today</h2>
