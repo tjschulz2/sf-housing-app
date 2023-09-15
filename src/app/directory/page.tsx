@@ -1,28 +1,37 @@
 "use client";
 import styles from "./page.module.css";
-import ProfileCard from "../../../components/profile-card";
+import ProfileCard from "../../components/profile-card";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef, useCallback } from "react";
-import { getHousingSearchProfiles } from "../../../lib/utils/data";
+import { getHousingSearchProfiles } from "../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
+import FilterBar from "../../components/filter-bar";
+import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 
 function Directory() {
-  const { searcherProfiles, setSearcherProfiles, userHousingSearchProfile } =
-    useContext(ProfilesContext) as ProfilesContextType;
+  const {
+    searcherProfiles,
+    setSearcherProfiles,
+    searcherProfilesFilter,
+    setSearcherProfilesFilter,
+    userHousingSearchProfile,
+  } = useContext(ProfilesContext) as ProfilesContextType;
   const allowDataPull = useRef(false);
-  const [allDataRetrieved, setAllDataRetrieved] = useState(false);
-
+  const allDataRetrieved = useRef(false);
+  const [dataLoading, setDataLoading] = useState(true);
+  const initialPullRequired = useRef(true);
   const observerTarget = useRef(null);
 
   const pullNextBatch = useCallback(async () => {
-    if (!searcherProfiles?.length || allDataRetrieved) {
+    if (!searcherProfiles?.length || allDataRetrieved.current) {
       console.log("skipping pull");
       return;
     }
     const additionalProfiles = await getHousingSearchProfiles(
       searcherProfiles.length,
-      10
+      10,
+      searcherProfilesFilter
     );
 
     if (additionalProfiles?.length) {
@@ -31,9 +40,9 @@ function Directory() {
         ...additionalProfiles,
       ]);
     } else {
-      setAllDataRetrieved(true);
+      allDataRetrieved.current = true;
     }
-  }, [searcherProfiles, setSearcherProfiles, allDataRetrieved]);
+  }, [searcherProfiles, searcherProfilesFilter, setSearcherProfiles]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,19 +66,27 @@ function Directory() {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [observerTarget, pullNextBatch, allowDataPull]);
+  }, [observerTarget, pullNextBatch]);
 
   useEffect(() => {
     async function pullProfiles() {
-      const profiles = await getHousingSearchProfiles(0, 25);
+      setDataLoading(true);
+      const profiles = await getHousingSearchProfiles(
+        0,
+        25,
+        searcherProfilesFilter
+      );
       if (profiles) {
         setSearcherProfiles(profiles);
       }
+      setDataLoading(false);
     }
-    if (!searcherProfiles?.length) {
+
+    if (initialPullRequired.current) {
+      initialPullRequired.current = false;
       pullProfiles();
     }
-  }, [setSearcherProfiles, searcherProfiles]);
+  }, [setSearcherProfiles, searcherProfilesFilter]);
 
   const todayProfiles = searcherProfiles?.filter(
     (profile) =>
@@ -90,6 +107,23 @@ function Directory() {
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
   );
 
+  function handleFilterChange(filterData: SearcherProfilesFilterType) {
+    for (const [filterKey, filterVal] of Object.entries(filterData)) {
+      const stateFilterVal =
+        searcherProfilesFilter[filterKey as keyof SearcherProfilesFilterType] ||
+        "";
+      if (stateFilterVal !== filterVal) {
+        setDataLoading(true);
+        allDataRetrieved.current = false;
+        initialPullRequired.current = true;
+        setSearcherProfiles([]);
+        const newFilterState = { ...searcherProfilesFilter, ...filterData };
+        setSearcherProfilesFilter(newFilterState);
+        return;
+      }
+    }
+  }
+
   return (
     <>
       <div className={styles.lookingHousematesContainer}>
@@ -106,7 +140,9 @@ function Directory() {
           </>
         ) : (
           <>
-            <h2>👋 Are you looking for housing?</h2>
+            <h2 className="text-xl font-bold mb-4">
+              👋 Are you looking for housing?
+            </h2>
             <span className={styles.addInfoText}>
               Add your information and we will add you to the Looking for
               housing directory so you can be discovered by communities and
@@ -118,6 +154,16 @@ function Directory() {
           </>
         )}
       </div>
+      <FilterBar
+        onFilterChange={handleFilterChange}
+        filterState={searcherProfilesFilter}
+      />
+      {dataLoading && !searcherProfiles?.length ? (
+        <LoadingSpinner overlay={false} />
+      ) : null}
+      {!dataLoading && !searcherProfiles?.length ? (
+        <p className="m-auto p-4 italic text-neutral-600">No data</p>
+      ) : null}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2>Today</h2>
@@ -135,7 +181,7 @@ function Directory() {
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
-          <h2>This Week</h2>
+          <h2 className="text-2xl font-bold my-4">This Week</h2>
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
               <ProfileCard
@@ -150,7 +196,7 @@ function Directory() {
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
-          <h2>This Month</h2>
+          <h2 className="text-2xl font-bold my-4">This Month</h2>
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
               <ProfileCard
@@ -165,7 +211,7 @@ function Directory() {
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
-          <h2>Older</h2>
+          <h2 className="text-2xl font-bold my-4">Older</h2>
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
               <ProfileCard

@@ -1,8 +1,8 @@
 "use client";
 import styles from "./page.module.css";
-import Navbar from "../../../components/navbar/navbar";
-import InviteButton from "../../../components/invite-button/invite-button";
-import { signout } from "../../../lib/utils/auth";
+import Navbar from "../../components/navbar/navbar";
+import InviteButton from "../../components/invite-button/invite-button";
+import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
   SetStateAction,
@@ -11,17 +11,22 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { getUserSession } from "../../../lib/utils/auth";
+import { getUserSession } from "../../lib/utils/auth";
 import {
   getUserData,
   getUserHousingSearchProfile,
-} from "../../../lib/utils/data";
-import Dropdown from "../../../components/dropdown/dropdown";
+} from "../../lib/utils/data";
+import Dropdown from "../../components/dropdown/dropdown";
+import Footer from "@/components/footer";
 import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
   setSearcherProfiles: Dispatch<SetStateAction<HousingSearchProfile[]>>;
+  searcherProfilesFilter: SearcherProfilesFilterType;
+  setSearcherProfilesFilter: Dispatch<
+    SetStateAction<SearcherProfilesFilterType>
+  >;
   userHousingSearchProfile: UserHousingSearchProfile;
 };
 
@@ -47,6 +52,8 @@ export default function DirectoryLayout({
   const [searcherProfiles, setSearcherProfiles] = useState<
     HousingSearchProfile[]
   >([]);
+  const [searcherProfilesFilter, setSearcherProfilesFilter] =
+    useState<SearcherProfilesFilterType>({});
 
   useEffect(() => {
     async function pullUserData() {
@@ -83,30 +90,41 @@ export default function DirectoryLayout({
   if (user) {
     return (
       <div className={styles.container}>
-        <div className={styles.topArea}>
-          <div className={styles.directoryInviteSettings}>
-            <h1>Directory</h1>
-            <div className={styles.inviteSettingsContainer}>
-              <InviteButton />
-              {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
-            </div>
+      <div>
+          <div className={styles.topArea}>
+            <div className={styles.directoryInviteSettings}>
+              <h1 className="text-3xl font-bold my-4">Directory</h1>
+              <div className={styles.inviteSettingsContainer}>
+                <InviteButton />
+                {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
+              </div>
           </div>
-          <Navbar />
-        </div>
-        <ProfilesContext.Provider
-          value={{
+              <Navbar />
+          </div>
+          <ProfilesContext.Provider
+            value={{
+           
             searcherProfiles,
             setSearcherProfiles,
+            searcherProfilesFilter,
+           
+            setSearcherProfilesFilter,
+         ,
             userHousingSearchProfile,
           }}
-        >
-          <div className={styles.directoryContainer}>{children}</div>
-        </ProfilesContext.Provider>
+          >
+            <div className={styles.directoryContainer}>{children}</div>
+          </ProfilesContext.Provider>
 
-        <a href="https://github.com/tjschulz2/sf-housing-app">
+          {/* <a
+        href="https://github.com/tjschulz2/sf-housing-app"
+        className="text-sm text-blue-400"
+      >
           Want to see a new feature on DirectorySF? Submit a pull request!
           DirectorySF is open-source.
-        </a>
+        </a> */}
+      </div>
+      <Footer />
       </div>
     );
   } else {

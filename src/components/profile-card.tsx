@@ -4,8 +4,8 @@ import SeeMoreButton from "./see-more-button/see-more-button";
 import { housingMap } from "../lib/prefMap";
 import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
-import TwitterLogo from "../src/images/twitter-logo.svg";
-import ContactMeButton from "../components/contactme-button/contactme-button";
+import TwitterLogo from "../images/twitter-logo.svg";
+import ContactMeButton from "./contactme-button/contactme-button";
 import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
@@ -249,10 +249,10 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <span className={styles.wants}>Moving:</span>
               <span>
                 {" "}
-                {isHousingSearchProfile(profile)
-                  ? housingMap.moveIn[profile.pref_move_in ?? 1]
-                  : isOrganizerProfile(profile)
-                  ? housingMap.moveIn[profile.pref_lease_start ?? 1]
+                {isHousingSearchProfile(profile) && profile.pref_move_in
+                  ? housingMap.moveIn[profile.pref_move_in]
+                  : isOrganizerProfile(profile) && profile.pref_lease_start
+                  ? housingMap.moveIn[profile.pref_lease_start]
                   : null}
               </span>
             </p>

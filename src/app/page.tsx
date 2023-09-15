@@ -3,12 +3,12 @@ import styles from "./page.module.css";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import HomePageComponent from "../../components/home-page-component";
+import HomePageComponent from "../components/home-page-component";
 import { useState } from "react";
-import { getReferralDetails } from "../../lib/utils/data";
+import { getReferralDetails } from "../lib/utils/data";
 import { useRouter } from "next/navigation";
-import { handleSignIn } from "../../lib/utils/process";
-import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
+import { handleSignIn } from "../lib/utils/process";
+import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 
 const Home: NextPage = () => {
   const router = useRouter();

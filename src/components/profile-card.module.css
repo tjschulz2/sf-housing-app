@@ -241,8 +241,6 @@
 }
 
 .content {
-  padding-right: 68px; /* reserve space for the button */
-  position: relative;
   width: 100%;
   line-height: 1.2em; /* adjust to match your text size */
   max-height: 2.4em; /* adjust to match your text size */

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { storeFollowing, storeFollowers } from "../../../../lib/utils/data";
-import { createRedisClient } from "../../../../lib/redisClient";
+import { storeFollowing, storeFollowers } from "../../../lib/utils/data";
+import { createRedisClient } from "../../../lib/redisClient";
 import { verify } from "jsonwebtoken";
-import { twitter } from "../../../../lib/utils/data";
+import { twitter } from "../../../lib/utils/data";
 import { headers } from "next/headers";
 import { User } from "@supabase/supabase-js";
 import { JwtPayload } from "jsonwebtoken";
