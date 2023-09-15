@@ -12,13 +12,10 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { getUserSession } from "../../lib/utils/auth";
-import {
-  getUserData,
-  getUserHousingSearchProfile,
-} from "../../lib/utils/data";
+import { getUserData, getUserHousingSearchProfile } from "../../lib/utils/data";
 import Dropdown from "../../components/dropdown/dropdown";
 import Footer from "@/components/footer";
-import LoadingSpinner from "../../../components/loading-spinner/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -90,7 +87,7 @@ export default function DirectoryLayout({
   if (user) {
     return (
       <div className={styles.container}>
-      <div>
+        <div>
           <div className={styles.topArea}>
             <div className={styles.directoryInviteSettings}>
               <h1 className="text-3xl font-bold my-4">Directory</h1>
@@ -98,20 +95,17 @@ export default function DirectoryLayout({
                 <InviteButton />
                 {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
               </div>
-          </div>
-              <Navbar />
+            </div>
+            <Navbar />
           </div>
           <ProfilesContext.Provider
             value={{
-           
-            searcherProfiles,
-            setSearcherProfiles,
-            searcherProfilesFilter,
-           
-            setSearcherProfilesFilter,
-         ,
-            userHousingSearchProfile,
-          }}
+              searcherProfiles,
+              setSearcherProfiles,
+              searcherProfilesFilter,
+              setSearcherProfilesFilter,
+              userHousingSearchProfile,
+            }}
           >
             <div className={styles.directoryContainer}>{children}</div>
           </ProfilesContext.Provider>
@@ -123,8 +117,8 @@ export default function DirectoryLayout({
           Want to see a new feature on DirectorySF? Submit a pull request!
           DirectorySF is open-source.
         </a> */}
-      </div>
-      <Footer />
+        </div>
+        <Footer />
       </div>
     );
   } else {
