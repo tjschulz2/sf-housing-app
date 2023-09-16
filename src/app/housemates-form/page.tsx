@@ -1,5 +1,4 @@
 "use client";
-// Import required libraries
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"; // Assuming you have a CSS module at this path
@@ -13,10 +12,7 @@ import { getUserSession, signout } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
 import DirectoryOverrideModal from "../../components/directory-override-modal/directory-override-modal";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
-import {
-  getUserData,
-  getUserHousingSearchProfile,
-} from "../../../lib/utils/data";
+import { getUserData, getUserHousingSearchProfile } from "@/lib/utils/data";
 
 type UserHousingSearchProfile =
   | Database["public"]["Tables"]["housing_search_profiles"]["Row"]
