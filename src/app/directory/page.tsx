@@ -8,6 +8,7 @@ import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
 import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
+import ActiveProfileBanner from "@/components/active-profile-banner";
 
 function Directory() {
   const {
@@ -126,20 +127,11 @@ function Directory() {
 
   return (
     <>
-      <div className={styles.lookingHousematesContainer}>
+      <div className="mb-8">
         {userHousingSearchProfile ? (
-          <>
-            <h2>You have an active profile</h2>
-
-            <span className={styles.addInfoText}>
-              You can delete or edit your profile here
-            </span>
-            <Link className={styles.addMeButton} href="/housemates-form">
-              Edit
-            </Link>
-          </>
+          <ActiveProfileBanner />
         ) : (
-          <>
+          <div className={styles.lookingHousematesContainer}>
             <h2 className="text-xl font-bold mb-4">
               👋 Are you looking for housing?
             </h2>
@@ -151,7 +143,7 @@ function Directory() {
             <Link className={styles.addMeButton} href="/housemates-form">
               Add me
             </Link>
-          </>
+          </div>
         )}
       </div>
       <FilterBar
