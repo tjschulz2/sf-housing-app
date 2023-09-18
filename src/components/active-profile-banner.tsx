@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  UserSquare2,
-  UserCircle,
-  UserCircle2,
-  Pencil,
-  Trash,
-} from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 // import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Card,
@@ -16,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import EditSearcherProfileDialog from "./edit-searcher-profile-dialog";
 
 export default function ActiveProfileBanner() {
   return (
@@ -29,12 +24,12 @@ export default function ActiveProfileBanner() {
       </CardContent> */}
       <CardFooter>
         <div className="flex">
-          <Link className="mr-4" href="/housemates-form">
-            <Button className="rounded-3xl text-sm sm:text-md">
+          <EditSearcherProfileDialog>
+            <Button className="rounded-3xl text-sm sm:text-md mr-4">
               <Pencil size="16" className="mr-2" />
               Edit profile
             </Button>
-          </Link>
+          </EditSearcherProfileDialog>
           <Button className="rounded-3xl" variant="secondary">
             <Trash size="16" className="mr-2" />
             Delete profile
