@@ -227,8 +227,8 @@ const MyForm: NextPage = () => {
       housemates &&
       contactMethod &&
       link &&
-      ((contactMethod === "phone" && phoneRegex.test(phone)) ||
-        contactMethod !== "phone") &&
+      // ((contactMethod === "phone" && phoneRegex.test(phone)) ||
+      //   contactMethod !== "phone")
       urlRegex.test(link)
     ) {
       setIsFormValid(true);
@@ -440,7 +440,7 @@ const MyForm: NextPage = () => {
           </label>
         </div>
 
-        <div>
+        {/* <div>
           <h2>How would you like people to contact you about housing?</h2>
           <div
             className={styles.options}
@@ -502,7 +502,7 @@ const MyForm: NextPage = () => {
                 )}
             </label>
           )}
-        </div>
+        </div> */}
 
         <Link
           href="#"

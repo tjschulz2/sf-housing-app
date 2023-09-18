@@ -18,39 +18,36 @@ import { toast } from "@/components/ui/use-toast";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useContext } from "react";
+import { ProfilesContext } from "@/app/directory/layout";
 
 const formSchema = z.object({
-  bio: z.string().min(10, {
+  pref_housemate_details: z.string().min(10, {
     message: "Bio must be at least 10 characters.",
   }),
-  housingType: z.enum(["1", "2"], {
+  pref_housing_type: z.coerce.string({
     required_error: "You need to select a housing type.",
   }),
-  moveIn: z.enum(["1", "2", "3"], {
+  pref_move_in: z.coerce.string({
     required_error: "You need to select a move-in preference.",
   }),
-  housemateCount: z.enum(["1", "2", "3", "4"], {
+  pref_housemate_count: z.coerce.string({
     required_error: "You need to select a housing type.",
   }),
-  selfLink: z.string().url(),
-  preferredContact: z.enum(["1", "2"], {
-    required_error: "You need to select a move-in preference.",
-  }),
+  link: z.coerce.string(),
 });
 
 export default function SearcherProfileForm() {
-  // 1. Define your form.
+  const userProfile = formSchema.parse(
+    useContext(ProfilesContext)?.userHousingSearchProfile
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      //   bio: "",
-    },
+    defaultValues: userProfile,
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
     toast({
       title: "You submitted the following values:",
@@ -67,7 +64,7 @@ export default function SearcherProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="bio"
+          name="pref_housemate_details"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Bio</FormLabel>
@@ -88,7 +85,7 @@ export default function SearcherProfileForm() {
         />
         <FormField
           control={form.control}
-          name="housingType"
+          name="pref_housing_type"
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>What type of housing do you want?</FormLabel>
@@ -120,7 +117,7 @@ export default function SearcherProfileForm() {
         />
         <FormField
           control={form.control}
-          name="moveIn"
+          name="pref_move_in"
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>When do you want to move in?</FormLabel>
@@ -161,7 +158,7 @@ export default function SearcherProfileForm() {
 
         <FormField
           control={form.control}
-          name="housemateCount"
+          name="pref_housemate_count"
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>
@@ -206,7 +203,7 @@ export default function SearcherProfileForm() {
 
         <FormField
           control={form.control}
-          name="selfLink"
+          name="link"
           render={({ field }) => (
             <FormItem>
               <FormLabel>What&apos;s a link that best describes you?</FormLabel>
@@ -221,9 +218,9 @@ export default function SearcherProfileForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
-          name="preferredContact"
+          name="pref_contact_method"
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>
@@ -252,7 +249,7 @@ export default function SearcherProfileForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <Button type="submit">Submit</Button>
       </form>
