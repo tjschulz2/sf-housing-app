@@ -2,6 +2,7 @@ import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
 import { getUserSession } from "./auth";
 import { getCurrentTimestamp } from "./general";
+import { z } from "zod";
 
 // ----- Users & Profiles -----
 
@@ -124,6 +125,35 @@ export async function getUserHousingSearchProfile(userID: string) {
     .select("*")
     .eq("user_id", userID)
     .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
+export async function saveUserHousingSearchProfile(profileData: {
+  link: string;
+  pref_housemate_count: string;
+  pref_housemate_details: string;
+  pref_housing_type: string;
+  pref_move_in: string;
+  user_id: string;
+}) {
+  const dbSchema = z.object({
+    pref_housemate_details: z.coerce.string(),
+    pref_housing_type: z.coerce.number(),
+    pref_move_in: z.coerce.number(),
+    pref_housemate_count: z.coerce.number(),
+    link: z.coerce.string(),
+    user_id: z.coerce.string().uuid(),
+  });
+
+  const { data, error } = await supabase
+    .from("housing_search_profiles")
+    .upsert(dbSchema.parse(profileData))
+    .select();
 
   if (error) {
     console.error(error);

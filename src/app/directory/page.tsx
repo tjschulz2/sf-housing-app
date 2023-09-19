@@ -114,22 +114,26 @@ function Directory() {
         searcherProfilesFilter[filterKey as keyof SearcherProfilesFilterType] ||
         "";
       if (stateFilterVal !== filterVal) {
-        setDataLoading(true);
-        allDataRetrieved.current = false;
-        initialPullRequired.current = true;
-        setSearcherProfiles([]);
-        const newFilterState = { ...searcherProfilesFilter, ...filterData };
-        setSearcherProfilesFilter(newFilterState);
-        return;
+        refreshProfileData(filterData);
       }
     }
+  }
+
+  function refreshProfileData(filterData: SearcherProfilesFilterType = {}) {
+    setDataLoading(true);
+    allDataRetrieved.current = false;
+    initialPullRequired.current = true;
+    setSearcherProfiles([]);
+    const newFilterState = { ...searcherProfilesFilter, ...filterData };
+    setSearcherProfilesFilter(newFilterState);
+    return;
   }
 
   return (
     <>
       <div className="mb-8">
         {userHousingSearchProfile ? (
-          <ActiveProfileBanner />
+          <ActiveProfileBanner refreshProfileData={refreshProfileData} />
         ) : (
           <div className={styles.lookingHousematesContainer}>
             <h2 className="text-xl font-bold mb-4">

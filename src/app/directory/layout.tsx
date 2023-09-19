@@ -25,6 +25,7 @@ export type ProfilesContextType = {
     SetStateAction<SearcherProfilesFilterType>
   >;
   userHousingSearchProfile: UserHousingSearchProfile;
+  refreshUserHousingSearchProfileData: (userID: string) => Promise<void>;
 };
 
 type User = {
@@ -70,12 +71,7 @@ export default function DirectoryLayout({
         router.push("/email-signup");
       }
 
-      const userSearchProfile = await getUserHousingSearchProfile(
-        userSession.userID
-      );
-      if (userSearchProfile) {
-        setUserHousingSearchProfile(userSearchProfile);
-      }
+      await refreshUserHousingSearchProfileData(userSession.userID);
 
       const user = {
         twitterAvatarUrl: userSession.twitterAvatarURL,
@@ -84,6 +80,14 @@ export default function DirectoryLayout({
     }
     pullUserData();
   }, [router]);
+
+  async function refreshUserHousingSearchProfileData(userID: string) {
+    const userSearchProfile = await getUserHousingSearchProfile(userID);
+    if (userSearchProfile) {
+      setUserHousingSearchProfile(userSearchProfile);
+    }
+  }
+
   if (user) {
     return (
       <div className={styles.container}>
@@ -105,6 +109,7 @@ export default function DirectoryLayout({
               searcherProfilesFilter,
               setSearcherProfilesFilter,
               userHousingSearchProfile,
+              refreshUserHousingSearchProfileData,
             }}
           >
             <div className={styles.directoryContainer}>{children}</div>

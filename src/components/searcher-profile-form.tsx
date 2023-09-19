@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -13,13 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "@/components/ui/use-toast";
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ProfilesContext } from "@/app/directory/layout";
+import { saveUserHousingSearchProfile } from "@/lib/utils/data";
+import { getUserSession } from "@/lib/utils/auth";
 
 const formSchema = z.object({
   pref_housemate_details: z.string().min(10, {
@@ -37,28 +38,42 @@ const formSchema = z.object({
   link: z.coerce.string(),
 });
 
-export default function SearcherProfileForm() {
-  const userProfile = formSchema.parse(
-    useContext(ProfilesContext)?.userHousingSearchProfile
-  );
+export default function SearcherProfileForm({
+  handleSuccess,
+}: {
+  handleSuccess: (success: boolean) => void;
+}) {
+  const [submitted, setSubmitted] = useState(false);
+  const context = useContext(ProfilesContext);
+  const rawUserProfile = context?.userHousingSearchProfile;
+  const userProfile = formSchema.parse(rawUserProfile);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: userProfile,
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    setSubmitted(true);
+    const session = await getUserSession();
+    if (!session) {
+      handleSuccess(false);
+      return;
+    }
 
+    const saveResult = await saveUserHousingSearchProfile({
+      ...data,
+      user_id: session.userID,
+    });
+
+    if (saveResult) {
+      handleSuccess(true);
+    }
+    // await new Promise((res) => {
+    //   setTimeout(res, 500);
+    // });
+    handleSuccess(false);
+  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -251,7 +266,10 @@ export default function SearcherProfileForm() {
           )}
         /> */}
 
-        <Button type="submit">Submit</Button>
+        <Button disabled={!form.formState.isDirty || submitted} type="submit">
+          {submitted ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          Submit
+        </Button>
       </form>
     </Form>
   );

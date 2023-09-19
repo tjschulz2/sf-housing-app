@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/card";
 import EditSearcherProfileDialog from "./edit-searcher-profile-dialog";
 
-export default function ActiveProfileBanner() {
+export default function ActiveProfileBanner({
+  refreshProfileData,
+}: {
+  refreshProfileData: () => void;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -24,7 +28,7 @@ export default function ActiveProfileBanner() {
       </CardContent> */}
       <CardFooter>
         <div className="flex">
-          <EditSearcherProfileDialog>
+          <EditSearcherProfileDialog refreshProfileData={refreshProfileData}>
             <Button className="rounded-3xl text-sm sm:text-md mr-4">
               <Pencil size="16" className="mr-2" />
               Edit profile

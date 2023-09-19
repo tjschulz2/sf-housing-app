@@ -5,6 +5,7 @@ import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
+import { Toaster } from "@/components/ui/toaster";
 
 const siteTitle = "DirectorySF";
 const siteDescription =
@@ -50,6 +51,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+        <Toaster />
       </body>
     </html>
   );
