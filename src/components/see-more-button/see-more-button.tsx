@@ -69,7 +69,7 @@ export default function SeeMoreButton({
       <DialogTrigger className="ml-1 text-sky-600 hover:text-sky-700">
         See More
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[600px] md:max-h-[750px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>About</DialogTitle>
           <DialogDescription className="whitespace-pre-line">
