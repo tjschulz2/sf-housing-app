@@ -55,7 +55,7 @@ const Directory: NextPage = () => {
       </div>
       {todayProfiles && todayProfiles.length > 0 && (
         <>
-          <h2>Today</h2>
+          <h2 className="text-2xl font-bold my-4">Today</h2>
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
               <ProfileCard
