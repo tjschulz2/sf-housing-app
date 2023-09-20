@@ -162,6 +162,20 @@ export async function saveUserHousingSearchProfile(profileData: {
   }
 }
 
+export async function deleteUserHousingSearchProfile(userID: string) {
+  const { error } = await supabase
+    .from("housing_search_profiles")
+    .delete()
+    .eq("user_id", userID);
+
+  if (error) {
+    console.error(error);
+    return { status: "error" };
+  } else {
+    return { status: "success" };
+  }
+}
+
 // ----- Referrals -----
 
 // export async function genReferral(userID: string) {

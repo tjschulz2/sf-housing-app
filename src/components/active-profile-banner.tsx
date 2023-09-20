@@ -10,7 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EditSearcherProfileDialog from "./edit-searcher-profile-dialog";
+import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
+import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
 
 export default function ActiveProfileBanner({
   refreshProfileData,
@@ -34,10 +35,12 @@ export default function ActiveProfileBanner({
               Edit profile
             </Button>
           </EditSearcherProfileDialog>
-          <Button className="rounded-3xl" variant="secondary">
-            <Trash size="16" className="mr-2" />
-            Delete profile
-          </Button>
+          <DeleteSearcherProfileDialog refreshProfileData={refreshProfileData}>
+            <Button className="rounded-3xl" variant="secondary">
+              <Trash size="16" className="mr-2" />
+              Delete profile
+            </Button>
+          </DeleteSearcherProfileDialog>
         </div>
       </CardFooter>
 

@@ -20,9 +20,11 @@ import { getUserSession } from "@/lib/utils/auth";
 export default function EditSearcherProfileDialog({
   children,
   refreshProfileData,
+  newProfile = false,
 }: {
   children: ReactNode;
   refreshProfileData: () => void;
+  newProfile?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const context = useContext(ProfilesContext);
@@ -49,9 +51,13 @@ export default function EditSearcherProfileDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[600px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>
+            {newProfile ? "Create profile" : "Edit profile"}
+          </DialogTitle>
           <DialogDescription>
-            Make changes to your profile here
+            {newProfile
+              ? "Make yourself discoverable on DirectorySF"
+              : "Make changes to your profile here"}
           </DialogDescription>
         </DialogHeader>
         <SearcherProfileForm handleSuccess={handleSuccessfulSubmission} />

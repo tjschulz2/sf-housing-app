@@ -9,6 +9,7 @@ import { ProfilesContext, ProfilesContextType } from "./layout";
 import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
+import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 
 function Directory() {
   const {
@@ -140,13 +141,15 @@ function Directory() {
               👋 Are you looking for housing?
             </h2>
             <span className={styles.addInfoText}>
-              Add your information and we will add you to the Looking for
-              housing directory so you can be discovered by communities and
+              Add your information here to be discovered by communities and
               organizers
             </span>
-            <Link className={styles.addMeButton} href="/housemates-form">
-              Add me
-            </Link>
+            <EditSearcherProfileDialog
+              newProfile={true}
+              refreshProfileData={refreshProfileData}
+            >
+              <button className={styles.addMeButton}>Add me</button>
+            </EditSearcherProfileDialog>
           </div>
         )}
       </div>

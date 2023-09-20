@@ -18,25 +18,46 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useState } from "react";
-import { ProfilesContext } from "@/app/directory/layout";
+import {
+  ProfilesContext,
+  UserHousingSearchProfile,
+} from "@/app/directory/layout";
 import { saveUserHousingSearchProfile } from "@/lib/utils/data";
 import { getUserSession } from "@/lib/utils/auth";
 
 const formSchema = z.object({
-  pref_housemate_details: z.string().min(10, {
-    message: "Bio must be at least 10 characters.",
-  }),
-  pref_housing_type: z.coerce.string({
+  pref_housemate_details: z
+    .string()
+    .min(10, {
+      message: "Bio must be at least 10 characters.",
+    })
+    .max(4000, { message: "Bio cannot be more than 4000 characters." }),
+  pref_housing_type: z.enum(["1", "2"], {
     required_error: "You need to select a housing type.",
   }),
-  pref_move_in: z.coerce.string({
+  pref_move_in: z.enum(["1", "2", "3"], {
     required_error: "You need to select a move-in preference.",
   }),
-  pref_housemate_count: z.coerce.string({
+  pref_housemate_count: z.enum(["1", "2", "3", "4"], {
     required_error: "You need to select a housing type.",
   }),
-  link: z.coerce.string(),
+  link: z.string().url({ message: "Invalid URL" }),
 });
+
+function preprocessFormData(data: UserHousingSearchProfile) {
+  if (!data) {
+    return;
+  }
+  const parsed: { [key: string]: any } = {};
+  for (const [k, v] of Object.entries(data)) {
+    if (typeof v === "number") {
+      parsed[k] = v.toString();
+    } else {
+      parsed[k] = v;
+    }
+  }
+  return parsed;
+}
 
 export default function SearcherProfileForm({
   handleSuccess,
@@ -46,14 +67,19 @@ export default function SearcherProfileForm({
   const [submitted, setSubmitted] = useState(false);
   const context = useContext(ProfilesContext);
   const rawUserProfile = context?.userHousingSearchProfile;
-  const userProfile = formSchema.parse(rawUserProfile);
+  // rawUserProfile will be undefined if user is creating a new profile, rather than editing an existing one
+  const userProfile = rawUserProfile
+    ? formSchema.parse(preprocessFormData(rawUserProfile))
+    : null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: userProfile,
+    defaultValues: userProfile || { link: "" },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(form.getValues());
+    console.log({ data });
     setSubmitted(true);
     const session = await getUserSession();
     if (!session) {
@@ -69,9 +95,7 @@ export default function SearcherProfileForm({
     if (saveResult) {
       handleSuccess(true);
     }
-    // await new Promise((res) => {
-    //   setTimeout(res, 500);
-    // });
+
     handleSuccess(false);
   }
   return (
@@ -86,7 +110,7 @@ export default function SearcherProfileForm({
               <FormControl>
                 {/* <Input placeholder="shadcn" {...field} /> */}
                 <Textarea
-                  placeholder="What is important to you? What type of environment do you want to live in?"
+                  placeholder="What are you working on? What is important to you? What type of environment do you want to live in?"
                   className="resize-none"
                   {...field}
                 />

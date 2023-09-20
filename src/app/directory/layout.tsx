@@ -32,7 +32,7 @@ type User = {
   twitterAvatarUrl: string;
 };
 
-type UserHousingSearchProfile =
+export type UserHousingSearchProfile =
   | Database["public"]["Tables"]["housing_search_profiles"]["Row"]
   | null;
 
@@ -83,9 +83,10 @@ export default function DirectoryLayout({
 
   async function refreshUserHousingSearchProfileData(userID: string) {
     const userSearchProfile = await getUserHousingSearchProfile(userID);
-    if (userSearchProfile) {
-      setUserHousingSearchProfile(userSearchProfile);
-    }
+    // if (userSearchProfile) {
+    //   setUserHousingSearchProfile(userSearchProfile);
+    // }
+    setUserHousingSearchProfile(userSearchProfile || null);
   }
 
   if (user) {
