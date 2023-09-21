@@ -47,13 +47,15 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
           JSON.stringify(directoryData)
         )}`
       );
-    } else if (directoryData?.directoryType === "housing_search_profiles") {
-      router.push(
-        `/housemates-form?data=${encodeURIComponent(
-          JSON.stringify(directoryData)
-        )}`
-      );
-    } else if (directoryData?.directoryType === "organizer_profiles") {
+    }
+    // else if (directoryData?.directoryType === "housing_search_profiles") {
+    //   router.push(
+    //     `/housemates-form?data=${encodeURIComponent(
+    //       JSON.stringify(directoryData)
+    //     )}`
+    //   );
+    // }
+    else if (directoryData?.directoryType === "organizer_profiles") {
       router.push(
         `/organizer-form?data=${encodeURIComponent(
           JSON.stringify(directoryData)
