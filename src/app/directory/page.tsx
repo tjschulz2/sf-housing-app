@@ -8,6 +8,8 @@ import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
 import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
+import ActiveProfileBanner from "@/components/active-profile-banner";
+import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 
 function Directory() {
   const {
@@ -15,6 +17,7 @@ function Directory() {
     setSearcherProfiles,
     searcherProfilesFilter,
     setSearcherProfilesFilter,
+    userHousingSearchProfile,
   } = useContext(ProfilesContext) as ProfilesContextType;
   const allowDataPull = useRef(false);
   const allDataRetrieved = useRef(false);
@@ -112,30 +115,43 @@ function Directory() {
         searcherProfilesFilter[filterKey as keyof SearcherProfilesFilterType] ||
         "";
       if (stateFilterVal !== filterVal) {
-        setDataLoading(true);
-        allDataRetrieved.current = false;
-        initialPullRequired.current = true;
-        setSearcherProfiles([]);
-        const newFilterState = { ...searcherProfilesFilter, ...filterData };
-        setSearcherProfilesFilter(newFilterState);
-        return;
+        refreshProfileData(filterData);
       }
     }
   }
 
+  function refreshProfileData(filterData: SearcherProfilesFilterType = {}) {
+    setDataLoading(true);
+    allDataRetrieved.current = false;
+    initialPullRequired.current = true;
+    setSearcherProfiles([]);
+    const newFilterState = { ...searcherProfilesFilter, ...filterData };
+    setSearcherProfilesFilter(newFilterState);
+    return;
+  }
+
   return (
     <>
-      <div className={styles.lookingHousematesContainer}>
-        <h2 className="text-xl font-bold mb-4">
-          👋 Are you looking for housing?
-        </h2>
-        <span className={styles.addInfoText}>
-          Add your information and we will add you to the Looking for housing
-          directory so you can be discovered by communities and organizers
-        </span>
-        <Link className={styles.addMeButton} href="/housemates-form">
-          Add me
-        </Link>
+      <div className="mb-8">
+        {userHousingSearchProfile ? (
+          <ActiveProfileBanner refreshProfileData={refreshProfileData} />
+        ) : (
+          <div className={styles.lookingHousematesContainer}>
+            <h2 className="text-xl font-bold mb-4">
+              👋 Are you looking for housing?
+            </h2>
+            <span className={styles.addInfoText}>
+              Add your information here to be discovered by communities and
+              organizers
+            </span>
+            <EditSearcherProfileDialog
+              newProfile={true}
+              refreshProfileData={refreshProfileData}
+            >
+              <button className={styles.addMeButton}>Add me</button>
+            </EditSearcherProfileDialog>
+          </div>
+        )}
       </div>
       <FilterBar
         onFilterChange={handleFilterChange}
@@ -153,7 +169,7 @@ function Directory() {
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="blue"
               />
@@ -168,7 +184,7 @@ function Directory() {
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="blue"
               />
@@ -183,7 +199,7 @@ function Directory() {
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="blue"
               />
@@ -198,7 +214,7 @@ function Directory() {
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="blue"
               />

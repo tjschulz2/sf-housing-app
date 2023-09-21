@@ -1,5 +1,4 @@
 "use client";
-// Import required libraries
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css"; // Assuming you have a CSS module at this path
@@ -9,10 +8,15 @@ import {
   isInDirectoryAlready,
   deleteDataFromDirectory,
 } from "../../lib/utils/process";
-import { getUserSession } from "../../lib/utils/auth";
+import { getUserSession, signout } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
 import DirectoryOverrideModal from "../../components/directory-override-modal/directory-override-modal";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
+import { getUserData, getUserHousingSearchProfile } from "@/lib/utils/data";
+
+type UserHousingSearchProfile =
+  | Database["public"]["Tables"]["housing_search_profiles"]["Row"]
+  | null;
 
 const MyForm: NextPage = () => {
   const [housingType, setHousingType] = useState("");
@@ -31,64 +35,87 @@ const MyForm: NextPage = () => {
     /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [visitedFields, setVisitedFields] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [workingProfileData, setWorkingProfileData] =
+    useState<UserHousingSearchProfile>(null);
+
+  // useEffect(() => {
+  //   let directoryData = null;
+  //   if (typeof window !== "undefined") {
+  //     // check if window is defined (it won't be during server-side rendering)
+  //     const urlParams = new URLSearchParams(window.location.search);
+  //     const data = urlParams.get("data");
+  //     if (data) {
+  //       directoryData = JSON.parse(decodeURIComponent(data));
+  //       setDescription(directoryData.prefHousemateDetails);
+  //       if (directoryData.prefHousingType === 1) {
+  //         setHousingType("lease");
+  //       } else if (directoryData.prefHousingType === 2) {
+  //         setHousingType("short");
+  //       } else {
+  //         return;
+  //       }
+
+  //       if (directoryData.prefMoveIn) {
+  //         if (directoryData.prefMoveIn === 1) {
+  //           setMoveIn("ASAP");
+  //         } else if (directoryData.prefMoveIn === 2) {
+  //           setMoveIn("3months");
+  //         } else if (directoryData.prefMoveIn === 3) {
+  //           setMoveIn("over3months");
+  //         }
+  //       }
+
+  //       if (directoryData.prefHousemateCount) {
+  //         if (directoryData.prefHousemateCount === 1) {
+  //           setHousemates("1-2");
+  //         } else if (directoryData.prefHousemateCount === 2) {
+  //           setHousemates("3-5");
+  //         } else if (directoryData.prefHousemateCount === 3) {
+  //           setHousemates("6-12");
+  //         } else if (directoryData.prefHousemateCount === 4) {
+  //           setHousemates("12+");
+  //         }
+  //       }
+
+  //       if (directoryData.link) {
+  //         setLink(directoryData.link);
+  //       }
+
+  //       if (directoryData.prefContactMethod) {
+  //         if (directoryData.prefContactMethod.includes("@")) {
+  //           setContactMethod("email");
+  //         } else if (phoneRegex.test(directoryData.prefContactMethod)) {
+  //           setContactMethod("phone");
+  //           setPhone(directoryData.prefContactMethod);
+  //         } else if (directoryData.prefContactMethod.includes("twitter")) {
+  //           setContactMethod("twitter");
+  //         }
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
-    let directoryData = null;
-    if (typeof window !== "undefined") {
-      // check if window is defined (it won't be during server-side rendering)
-      const urlParams = new URLSearchParams(window.location.search);
-      const data = urlParams.get("data");
-      if (data) {
-        directoryData = JSON.parse(decodeURIComponent(data));
-        setDescription(directoryData.prefHousemateDetails);
-        if (directoryData.prefHousingType === 1) {
-          setHousingType("lease");
-        } else if (directoryData.prefHousingType === 2) {
-          setHousingType("short");
-        } else {
-          return;
-        }
-
-        if (directoryData.prefMoveIn) {
-          if (directoryData.prefMoveIn === 1) {
-            setMoveIn("ASAP");
-          } else if (directoryData.prefMoveIn === 2) {
-            setMoveIn("3months");
-          } else if (directoryData.prefMoveIn === 3) {
-            setMoveIn("over3months");
-          }
-        }
-
-        if (directoryData.prefHousemateCount) {
-          if (directoryData.prefHousemateCount === 1) {
-            setHousemates("1-2");
-          } else if (directoryData.prefHousemateCount === 2) {
-            setHousemates("3-5");
-          } else if (directoryData.prefHousemateCount === 3) {
-            setHousemates("6-12");
-          } else if (directoryData.prefHousemateCount === 4) {
-            setHousemates("12+");
-          }
-        }
-
-        if (directoryData.link) {
-          setLink(directoryData.link);
-        }
-
-        if (directoryData.prefContactMethod) {
-          if (directoryData.prefContactMethod.includes("@")) {
-            setContactMethod("email");
-          } else if (phoneRegex.test(directoryData.prefContactMethod)) {
-            setContactMethod("phone");
-            setPhone(directoryData.prefContactMethod);
-          } else if (directoryData.prefContactMethod.includes("twitter")) {
-            setContactMethod("twitter");
-          }
-        }
+    async function pullProfileData() {
+      const userData = await getUserData();
+      if (!userData) {
+        await signout();
+        router.replace("/");
+        return;
       }
+
+      const userSearchProfile = await getUserHousingSearchProfile(
+        userData.user_id
+      );
+      if (userSearchProfile) {
+        setWorkingProfileData(userSearchProfile);
+        setDescription(userSearchProfile.pref_housemate_details || "");
+      }
+      setIsLoading(false);
     }
-  }, []);
+    pullProfileData();
+  }, [router]);
 
   const handleOptionClick = (
     setOption: React.Dispatch<React.SetStateAction<string>>,
@@ -200,8 +227,8 @@ const MyForm: NextPage = () => {
       housemates &&
       contactMethod &&
       link &&
-      ((contactMethod === "phone" && phoneRegex.test(phone)) ||
-        contactMethod !== "phone") &&
+      // ((contactMethod === "phone" && phoneRegex.test(phone)) ||
+      //   contactMethod !== "phone")
       urlRegex.test(link)
     ) {
       setIsFormValid(true);
@@ -262,7 +289,7 @@ const MyForm: NextPage = () => {
                 }
                 onBlur={() => handleBlur("description")}
                 autoFocus={true}
-                value={description}
+                value={workingProfileData?.pref_housemate_details || ""}
               />
               {visitedFields.has("description") && !description && (
                 <div className={styles.errorMessage}>
@@ -413,7 +440,7 @@ const MyForm: NextPage = () => {
           </label>
         </div>
 
-        <div>
+        {/* <div>
           <h2>How would you like people to contact you about housing?</h2>
           <div
             className={styles.options}
@@ -475,7 +502,7 @@ const MyForm: NextPage = () => {
                 )}
             </label>
           )}
-        </div>
+        </div> */}
 
         <Link
           href="#"

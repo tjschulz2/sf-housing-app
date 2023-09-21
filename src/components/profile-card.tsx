@@ -9,6 +9,8 @@ import ContactMeButton from "./contactme-button/contactme-button";
 import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -170,7 +172,19 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               />
             ) : null}
             <div className={styles.frameGroup}>
-              <ContactMeButton contactMethod={contactMethod} color={color} />
+              {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
+              <Link
+                href={`https://x.com/${profile.user?.twitter_handle}`}
+                target="_blank"
+                className="w-full"
+              >
+                <Button
+                  variant="outline"
+                  className="rounded-3xl font-bold w-full text-md"
+                >
+                  Contact me
+                </Button>
+              </Link>
               {profile.link ? (
                 <a
                   className={`${styles.vectorParent} ${colorClass}`}
@@ -299,7 +313,20 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               />
             ) : null}
             <div className={styles.frameGroup}>
-              <ContactMeButton contactMethod={contactMethod} color={color} />
+              {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
+              <Link
+                href={`https://x.com/${profile.user?.twitter_handle}`}
+                target="_blank"
+                className="w-full"
+              >
+                <Button
+                  variant="outline"
+                  className="rounded-3xl font-bold w-full text-md"
+                >
+                  Contact me
+                </Button>
+              </Link>
+
               {profile.website_url ? (
                 <a
                   className={`${styles.vectorParent} ${colorClass}`}

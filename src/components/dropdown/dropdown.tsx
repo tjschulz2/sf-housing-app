@@ -14,13 +14,11 @@ type DropdownProps = {
   user: User;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({ user }) => {
+const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const twitterImageUrl = user.twitterAvatarUrl;
-  let higherResImageUrl = twitterImageUrl.replace("_normal", "_400x400");
-
+  let higherResImageUrl = userAvatarURL?.replace("_normal", "_400x400");
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   useEffect(() => {
@@ -49,13 +47,15 @@ const Dropdown: React.FC<DropdownProps> = ({ user }) => {
           JSON.stringify(directoryData)
         )}`
       );
-    } else if (directoryData?.directoryType === "housing_search_profiles") {
-      router.push(
-        `/housemates-form?data=${encodeURIComponent(
-          JSON.stringify(directoryData)
-        )}`
-      );
-    } else if (directoryData?.directoryType === "organizer_profiles") {
+    }
+    // else if (directoryData?.directoryType === "housing_search_profiles") {
+    //   router.push(
+    //     `/housemates-form?data=${encodeURIComponent(
+    //       JSON.stringify(directoryData)
+    //     )}`
+    //   );
+    // }
+    else if (directoryData?.directoryType === "organizer_profiles") {
       router.push(
         `/organizer-form?data=${encodeURIComponent(
           JSON.stringify(directoryData)

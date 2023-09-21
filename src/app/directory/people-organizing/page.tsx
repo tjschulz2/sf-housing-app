@@ -59,7 +59,7 @@ const Directory: NextPage = () => {
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="purple"
               />
@@ -74,7 +74,7 @@ const Directory: NextPage = () => {
           <div className={styles.containerGrid}>
             {thisWeekProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="purple"
               />
@@ -89,7 +89,7 @@ const Directory: NextPage = () => {
           <div className={styles.containerGrid}>
             {thisMonthProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="purple"
               />
@@ -104,7 +104,7 @@ const Directory: NextPage = () => {
           <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
               <ProfileCard
-                key={profile.profile_id}
+                key={profile.user_id}
                 profile={profile}
                 color="purple"
               />
