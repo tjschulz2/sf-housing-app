@@ -41,7 +41,7 @@ const formSchema = z.object({
   pref_housemate_count: z.enum(["1", "2", "3", "4"], {
     required_error: "You need to select a housing type.",
   }),
-  link: z.string().url({ message: "Invalid URL" }),
+  link: z.string(),
 });
 
 function preprocessFormData(data: UserHousingSearchProfile) {
@@ -69,7 +69,7 @@ export default function SearcherProfileForm({
   const rawUserProfile = context?.userHousingSearchProfile;
   // rawUserProfile will be undefined if user is creating a new profile, rather than editing an existing one
   const userProfile = rawUserProfile
-    ? formSchema.parse(preprocessFormData(rawUserProfile))
+    ? formSchema.safeParse(preprocessFormData(rawUserProfile)).data
     : null;
 
   const form = useForm<z.infer<typeof formSchema>>({
