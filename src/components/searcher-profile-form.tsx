@@ -69,11 +69,12 @@ export default function SearcherProfileForm({
   const rawUserProfile = context?.userHousingSearchProfile;
   // rawUserProfile will be undefined if user is creating a new profile, rather than editing an existing one
   const userProfile = rawUserProfile
-    ? formSchema.safeParse(preprocessFormData(rawUserProfile)).data
+    ? formSchema.safeParse(preprocessFormData(rawUserProfile))
     : null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // @ts-ignore
     defaultValues: userProfile || { link: "" },
   });
 
