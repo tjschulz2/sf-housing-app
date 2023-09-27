@@ -12,25 +12,45 @@ import {
 } from "@/components/ui/card";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
+import { ProfilesContext, ProfilesContextType } from "@/app/directory/layout";
+import { useContext } from "react";
 
 export default function ActiveProfileBanner({
   refreshProfileData,
 }: {
   refreshProfileData: () => void;
 }) {
+  const { userHousingSearchProfile } = useContext(
+    ProfilesContext
+  ) as ProfilesContextType;
+
+  const exampleRecentlyConfirmed = true;
   return (
     <Card>
       <CardHeader>
         <CardTitle>You have an active profile</CardTitle>
         <CardDescription>You can manage your profile here</CardDescription>
       </CardHeader>
-      {/* <CardContent>
-        <Button className="rounded-3xl">Confirm still active</Button>
-      </CardContent> */}
+      <CardContent>
+        <Button
+          disabled={exampleRecentlyConfirmed ? true : false}
+          className="rounded-3xl"
+        >
+          {exampleRecentlyConfirmed
+            ? "You're all set!"
+            : "Confirm still active"}
+        </Button>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          You last confirmed yourself active 12 days ago
+        </p>
+      </CardContent>
       <CardFooter>
         <div className="flex">
           <EditSearcherProfileDialog refreshProfileData={refreshProfileData}>
-            <Button className="rounded-3xl text-sm sm:text-md mr-4">
+            <Button
+              variant="secondary"
+              className="rounded-3xl text-sm sm:text-md mr-4"
+            >
               <Pencil size="16" className="mr-2" />
               Edit profile
             </Button>
