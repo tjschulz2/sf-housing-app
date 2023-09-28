@@ -174,7 +174,7 @@ export const addHousingData = async (
   housemates: string,
   link: string,
   contactMethod: string,
-  userID: string | undefined,
+  userID: string,
   twitterHandle: string | null,
   phone: string
 ) => {
