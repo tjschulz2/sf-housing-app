@@ -50,6 +50,7 @@
     "@svgr/webpack": "^8.0.1",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.29",
+    "supabase": "^1.99.5",
     "tailwindcss": "^3.3.3"
   }
 }
