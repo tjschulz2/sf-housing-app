@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Loader2 } from "lucide-react";
 // import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Card,
@@ -13,35 +13,86 @@ import {
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
 import { ProfilesContext, ProfilesContextType } from "@/app/directory/layout";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import ActivityStatusDot from "@/components/activity-status-dot";
+import { dateDiff } from "@/lib/utils/general";
+import { getUserSession } from "@/lib/utils/auth";
+import { confirmHousingSearchProfileActive } from "@/lib/utils/data";
+import { useToast } from "@/components/ui/use-toast";
+import deriveActivityLevel from "@/lib/configMaps";
 
 export default function ActiveProfileBanner({
   refreshProfileData,
 }: {
   refreshProfileData: () => void;
 }) {
-  const { userHousingSearchProfile } = useContext(
-    ProfilesContext
-  ) as ProfilesContextType;
+  const [confirmationPending, setConfirmationPending] = useState(false);
+  const { toast } = useToast();
 
-  const exampleRecentlyConfirmed = true;
+  const { userHousingSearchProfile, refreshUserHousingSearchProfileData } =
+    useContext(ProfilesContext) as ProfilesContextType;
+
+  let recentlyConfirmed;
+  let daysSinceConfirmed;
+  if (userHousingSearchProfile?.last_updated_date) {
+    const { diffDays } = dateDiff(userHousingSearchProfile.last_updated_date);
+    daysSinceConfirmed = diffDays;
+    recentlyConfirmed = diffDays < 1;
+  }
+
+  async function handleConfirm() {
+    setConfirmationPending(true);
+    const session = await getUserSession();
+    if (!session?.userID) {
+      return;
+    }
+    const { data, error } = await confirmHousingSearchProfileActive(
+      session.userID
+    );
+    setConfirmationPending(false);
+    if (error) {
+      toast({
+        title: "Failed to confirm status",
+      });
+    } else {
+      await refreshUserHousingSearchProfileData?.(session.userID);
+
+      toast({
+        title: "Successfully confirmed search status",
+      });
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>You have an active profile</CardTitle>
+        <CardTitle>
+          You have an active profile{" "}
+          <span className="ml-2 inline-flex">
+            <ActivityStatusDot
+              status={deriveActivityLevel(daysSinceConfirmed || 0)}
+              // showTooltip={false}
+            />
+          </span>
+        </CardTitle>
         <CardDescription>You can manage your profile here</CardDescription>
       </CardHeader>
       <CardContent>
         <Button
-          disabled={exampleRecentlyConfirmed ? true : false}
+          disabled={recentlyConfirmed}
           className="rounded-3xl"
+          onClick={handleConfirm}
         >
-          {exampleRecentlyConfirmed
-            ? "You're all set!"
-            : "Confirm still active"}
+          {confirmationPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          {recentlyConfirmed ? "You're all set!" : "Confirm still looking"}
         </Button>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          You last confirmed yourself active 12 days ago
+
+        <p className="text-sm mt-2 text-neutral-500 dark:text-neutral-400">
+          {recentlyConfirmed
+            ? `Maintain your active status by re-confirming periodically`
+            : `You last confirmed ${daysSinceConfirmed} days ago`}
         </p>
       </CardContent>
       <CardFooter>

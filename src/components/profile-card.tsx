@@ -1,7 +1,7 @@
 "use client";
 import styles from "./profile-card.module.css";
 import SeeMoreButton from "./see-more-button/see-more-button";
-import { housingMap } from "../lib/prefMap";
+import { housingMap } from "../lib/configMaps";
 import { cleanURL, addProtocolToURL } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from "../images/twitter-logo.svg";

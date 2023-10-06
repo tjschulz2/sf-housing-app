@@ -148,11 +148,17 @@ export async function saveUserHousingSearchProfile(profileData: {
     pref_housemate_count: z.coerce.number(),
     link: z.coerce.string(),
     user_id: z.coerce.string().uuid(),
+    last_updated_date: z.coerce.string(),
   });
 
   const { data, error } = await supabase
     .from("housing_search_profiles")
-    .upsert(dbSchema.parse(profileData))
+    .upsert(
+      dbSchema.parse({
+        ...profileData,
+        last_updated_date: getCurrentTimestamp(),
+      })
+    )
     .select();
 
   if (error) {
@@ -160,6 +166,13 @@ export async function saveUserHousingSearchProfile(profileData: {
   } else {
     return data;
   }
+}
+
+export async function confirmHousingSearchProfileActive(user_id: string) {
+  return await supabase
+    .from("housing_search_profiles")
+    .upsert({ user_id, last_updated_date: getCurrentTimestamp() })
+    .select();
 }
 
 export async function deleteUserHousingSearchProfile(userID: string) {
