@@ -21,8 +21,8 @@ export default function ActivityStatusDot({
     colorClass = "bg-yellow-400";
     tooltipContent = "Last confirmed looking a few weeks ago";
   } else {
-    colorClass = "bg-red-600";
-    tooltipContent = "Hasn't confirmed as actively looking recently";
+    colorClass = "bg-red-500";
+    tooltipContent = "Hasn't recently confirmed as looking";
   }
 
   if (showTooltip) {

@@ -60,7 +60,7 @@ export async function getHousingSearchProfiles(
     `
     )
     .range(startIdx, startIdx + count - 1)
-    .order("created_at", { ascending: false });
+    .order("last_updated_date", { ascending: false });
 
   if (leaseLength) {
     query = query.eq("pref_housing_type", leaseLength);

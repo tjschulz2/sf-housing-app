@@ -56,6 +56,7 @@ export default function ActiveProfileBanner({
       });
     } else {
       await refreshUserHousingSearchProfileData?.(session.userID);
+      refreshProfileData();
 
       toast({
         title: "Successfully confirmed search status",
