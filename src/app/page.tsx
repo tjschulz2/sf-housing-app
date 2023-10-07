@@ -49,6 +49,9 @@ const Home: NextPage = () => {
         setIsLoading(false);
 
         if (signInResult?.status !== "success") {
+          if (signInResult?.status === "error") {
+            alert(signInResult.message);
+          }
           return;
         }
         if (signInResult.message === "initial sign in") {
