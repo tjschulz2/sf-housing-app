@@ -55,7 +55,6 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
       // const searcherProfiles = await getHousingSearchProfiles();
       // const organizerProfiles = await getOrganizerProfiles();
       // const communityProfiles = await getCommunities();
-      console.log(searcherProfiles, organizerProfiles, communityProfiles);
       const total =
         countThisWeekProfiles(searcherProfiles) +
         countThisWeekProfiles(organizerProfiles) +

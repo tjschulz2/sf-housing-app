@@ -1,8 +1,8 @@
 "use client";
 import styles from "./profile-card.module.css";
 import SeeMoreButton from "./see-more-button/see-more-button";
-import { housingMap } from "../lib/prefMap";
-import { cleanURL, addProtocolToURL } from "../lib/utils/general";
+import deriveActivityLevel, { housingMap } from "../lib/configMaps";
+import { cleanURL, addProtocolToURL, dateDiff } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from "../images/twitter-logo.svg";
 import ContactMeButton from "./contactme-button/contactme-button";
@@ -11,6 +11,7 @@ import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import ActivityStatusDot from "./activity-status-dot";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -137,6 +138,14 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
       if (userName.length > 20) {
         userName = userName?.substring(0, 19) + "...";
       }
+      const lastUpdatedDate = (profile as HousingSearchProfile)
+        .last_updated_date;
+      let activityLevel: "low" | "med" | "high" = "low";
+      if (lastUpdatedDate) {
+        const { diffDays } = dateDiff(lastUpdatedDate);
+        activityLevel = deriveActivityLevel(diffDays);
+      }
+
       let twitterHandle = user?.twitter_handle || "";
       if (twitterHandle.length > 15) {
         twitterHandle = twitterHandle.substring(0, 14) + "...";
@@ -208,15 +217,20 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             </div>
           </div>
           <div className={styles.frameContainer}>
-            <a
-              href={`https://twitter.com/${user?.twitter_handle}`}
-              target="_blank"
-              className={styles.frameALink}
-            >
-              <div className={styles.frameA}>
-                <h4 className={styles.maxKrieger} id="twitter-name">
-                  {userName}
-                </h4>
+            <div className={styles.frameA}>
+              <h4 className={styles.maxKrieger} id="twitter-name">
+                {userName}
+                {lastUpdatedDate && activityLevel === "high" ? (
+                  <span className="ml-2">
+                    <ActivityStatusDot status={activityLevel} />
+                  </span>
+                ) : null}
+              </h4>
+              <a
+                href={`https://twitter.com/${user?.twitter_handle}`}
+                target="_blank"
+                className={styles.frameALink}
+              >
                 <div className={styles.nameAndHandleContainer}>
                   <div
                     className={`${styles.maxkriegers} ${styles.smallExtension} ${colorClass}`}
@@ -226,8 +240,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   <TwitterLogo fill={svgImage} className={styles.vectorIcon1} />
                 </div>
                 {/* <FollowedBy profile={profile} /> */}
-              </div>
-            </a>
+              </a>
+            </div>
             <div className={styles.lookingToLive} id="looking-for-text">
               <div className={styles.content}>
                 <span className={styles.wants}>About me: </span>

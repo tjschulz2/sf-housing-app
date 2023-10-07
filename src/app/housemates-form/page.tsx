@@ -146,17 +146,19 @@ const MyForm: NextPage = () => {
   const handleSubmit = async () => {
     try {
       const session = await getUserSession();
-      await addHousingData(
-        description,
-        housingType,
-        moveIn,
-        housemates,
-        link,
-        contactMethod,
-        session?.userID,
-        session?.twitterHandle,
-        phone
-      );
+      if (session?.userID) {
+        await addHousingData(
+          description,
+          housingType,
+          moveIn,
+          housemates,
+          link,
+          contactMethod,
+          session?.userID,
+          session?.twitterHandle,
+          phone
+        );
+      }
       router.push("/directory");
     } catch (error) {
       alert("You are not logged in");

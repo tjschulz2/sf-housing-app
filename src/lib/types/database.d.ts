@@ -1,69 +1,10 @@
-type User = {
-  id: number;
-  name: string;
-  username: string;
-};
-
-declare module "*.svg" {
-  const content: any;
-  export const ReactComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement>
-  >;
-  export default content;
-}
-
-type ReferralDetails = {
-  referralCreatedAt: string | null | undefined;
-  originatorID: string | undefined;
-  //recipientID: string | null | undefined;
-  referralID: number | undefined;
-  originatorName: any;
-  status: string;
-} | null;
-
-declare namespace NodeJS {
-  export interface ProcessEnv {
-    NEXT_PUBLIC_SUPABASE_CLIENT: string;
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
-    SUPABASE_JWT_SECRET: string;
-    REDIS_URL: string;
-    TWITTER_API_KEY: string;
-  }
-}
-
-type SearcherProfilesFilterType = {
-  leaseLength?: string;
-  housemateCount?: string;
-  movingTime?: string;
-};
-
-type HousingSearchProfile =
-  Database["public"]["Tables"]["housing_search_profiles"]["Row"] & {
-    user: {
-      name: string | null;
-      twitter_avatar_url: string | null;
-      twitter_handle: string | null;
-    } | null;
-  };
-
-type OrganizerProfile =
-  Database["public"]["Tables"]["organizer_profiles"]["Row"] & {
-    user: {
-      name: string | null;
-      twitter_avatar_url: string | null;
-      twitter_handle: string | null;
-    } | null;
-  };
-
-type CommunityProfile = Database["public"]["Tables"]["communities"]["Row"] & {
-  user: {
-    name: string | null;
-    twitter_avatar_url: string | null;
-    twitter_handle: string | null;
-  } | null;
-};
-
-type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 interface Database {
   public: {
@@ -138,23 +79,29 @@ interface Database {
       follow_intersections: {
         Row: {
           intersection_count: number | null;
-          last_updated: string | null;
+          last_updated: string;
           user_1_id: string;
           user_2_id: string;
         };
         Insert: {
           intersection_count?: number | null;
-          last_updated?: string | null;
+          last_updated?: string;
           user_1_id: string;
           user_2_id: string;
         };
         Update: {
           intersection_count?: number | null;
-          last_updated?: string | null;
+          last_updated?: string;
           user_1_id?: string;
           user_2_id?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "follow_intersections_user_1_id_fkey";
+            columns: ["user_1_id"];
+            referencedRelation: "users";
+            referencedColumns: ["user_id"];
+          },
           {
             foreignKeyName: "follow_intersections_user_2_id_fkey";
             columns: ["user_2_id"];
@@ -166,6 +113,7 @@ interface Database {
       housing_search_profiles: {
         Row: {
           created_at: string | null;
+          last_updated_date: string | null;
           link: string | null;
           pref_contact_method: string | null;
           pref_housemate_count: number | null;
@@ -173,10 +121,11 @@ interface Database {
           pref_housing_type: number | null;
           pref_move_in: number | null;
           profile_id: number;
-          user_id: string | null;
+          user_id: string;
         };
         Insert: {
           created_at?: string | null;
+          last_updated_date?: string | null;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_housemate_count?: number | null;
@@ -184,10 +133,11 @@ interface Database {
           pref_housing_type?: number | null;
           pref_move_in?: number | null;
           profile_id?: number;
-          user_id?: string | null;
+          user_id: string;
         };
         Update: {
           created_at?: string | null;
+          last_updated_date?: string | null;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_housemate_count?: number | null;
@@ -195,7 +145,7 @@ interface Database {
           pref_housing_type?: number | null;
           pref_move_in?: number | null;
           profile_id?: number;
-          user_id?: string | null;
+          user_id?: string;
         };
         Relationships: [
           {
@@ -208,7 +158,7 @@ interface Database {
       };
       organizer_profiles: {
         Row: {
-          created_at: string | null;
+          created_at: string;
           link: string | null;
           pref_contact_method: string | null;
           pref_house_details: string | null;
@@ -219,18 +169,18 @@ interface Database {
           user_id: string;
         };
         Insert: {
-          created_at?: string | null;
+          created_at?: string;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_house_details?: string | null;
           pref_housemate_count?: number | null;
           pref_housing_type?: number | null;
           pref_lease_start?: number | null;
-          profile_id?: number;
+          profile_id: number;
           user_id: string;
         };
         Update: {
-          created_at?: string | null;
+          created_at?: string;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_house_details?: string | null;
@@ -252,15 +202,15 @@ interface Database {
       referral_recipients: {
         Row: {
           recipient_id: string;
-          referral_id: number | null;
+          referral_id: number;
         };
         Insert: {
           recipient_id: string;
-          referral_id?: number | null;
+          referral_id?: number;
         };
         Update: {
           recipient_id?: string;
-          referral_id?: number | null;
+          referral_id?: number;
         };
         Relationships: [
           {
@@ -310,7 +260,7 @@ interface Database {
           created_at: string | null;
           email: string | null;
           follows_last_refresh: string | null;
-          is_super: boolean | null;
+          is_super: boolean;
           name: string | null;
           phone_number: string | null;
           twitter_avatar_url: string | null;
@@ -326,7 +276,7 @@ interface Database {
           created_at?: string | null;
           email?: string | null;
           follows_last_refresh?: string | null;
-          is_super?: boolean | null;
+          is_super?: boolean;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
@@ -342,7 +292,7 @@ interface Database {
           created_at?: string | null;
           email?: string | null;
           follows_last_refresh?: string | null;
-          is_super?: boolean | null;
+          is_super?: boolean;
           name?: string | null;
           phone_number?: string | null;
           twitter_avatar_url?: string | null;
@@ -358,7 +308,10 @@ interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      decrement_available_referrals: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
     };
     Enums: {
       [_ in never]: never;

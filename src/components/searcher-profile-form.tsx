@@ -79,8 +79,6 @@ export default function SearcherProfileForm({
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(form.getValues());
-    console.log({ data });
     setSubmitted(true);
     const session = await getUserSession();
     if (!session) {

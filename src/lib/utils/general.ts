@@ -29,6 +29,15 @@ export function getCurrentTimestamp() {
   return timestamp;
 }
 
+export const dateDiff = (compDate: string) => {
+  const parsedCompDate = new Date(Date.parse(compDate));
+  const now = new Date();
+  const diffInMS = now.getTime() - parsedCompDate.getTime();
+  const diffHours = Math.floor(diffInMS / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
+  return { diffHours, diffDays };
+};
+
 export function cleanURL(url: string) {
   return url.replace(/^(https?:\/\/)?(www\.)?/, "").replace(/\/$/, "");
 }

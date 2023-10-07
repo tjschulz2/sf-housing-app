@@ -92,21 +92,27 @@ function Directory() {
 
   const todayProfiles = searcherProfiles?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+      1
   );
   const thisWeekProfiles = searcherProfiles?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 7 &&
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 1
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+        7 &&
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+        1
   );
   const thisMonthProfiles = searcherProfiles?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 31 &&
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 7
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+        31 &&
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+        7
   );
   const olderProfiles = searcherProfiles?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+      31
   );
 
   function handleFilterChange(filterData: SearcherProfilesFilterType) {
