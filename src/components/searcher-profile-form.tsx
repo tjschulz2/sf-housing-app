@@ -79,7 +79,11 @@ export default function SearcherProfileForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     // @ts-ignore
-    defaultValues: userProfile?.data || { link: "", contact_phone: "" },
+    defaultValues: userProfile?.data || {
+      link: "",
+      contact_phone: "",
+      contact_email: "",
+    },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
