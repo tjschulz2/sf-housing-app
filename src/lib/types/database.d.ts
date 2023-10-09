@@ -112,6 +112,8 @@ interface Database {
       };
       housing_search_profiles: {
         Row: {
+          contact_email: string | null;
+          contact_phone: string | null;
           created_at: string | null;
           last_updated_date: string | null;
           link: string | null;
@@ -124,6 +126,8 @@ interface Database {
           user_id: string;
         };
         Insert: {
+          contact_email?: string | null;
+          contact_phone?: string | null;
           created_at?: string | null;
           last_updated_date?: string | null;
           link?: string | null;
@@ -136,6 +140,8 @@ interface Database {
           user_id: string;
         };
         Update: {
+          contact_email?: string | null;
+          contact_phone?: string | null;
           created_at?: string | null;
           last_updated_date?: string | null;
           link?: string | null;

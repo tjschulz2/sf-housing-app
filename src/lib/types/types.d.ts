@@ -12,6 +12,16 @@ declare module "*.svg" {
   export default content;
 }
 
+type CoreUserSessionData = {
+  accessToken: string;
+  userID: string;
+  twitterAvatarURL: any;
+  twitterEmail: any;
+  twitterName: string;
+  twitterHandle: string;
+  twitterID: any;
+};
+
 type ReferralDetails = {
   referralCreatedAt: string | null | undefined;
   originatorID: string | undefined;
