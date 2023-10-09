@@ -5,20 +5,22 @@ import deriveActivityLevel, { housingMap } from "../lib/configMaps";
 import { cleanURL, addProtocolToURL, dateDiff } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from "../images/twitter-logo.svg";
-import ContactMeButton from "./contactme-button/contactme-button";
+// import ContactMeButton from "./contactme-button/contactme-button";
 import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import ActivityStatusDot from "./activity-status-dot";
+import ContactMeButton from "./contact-me-button";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
   color: string; // Define color as a string type (or whatever type your color variable is)
+  curUserName?: string;
 };
 
-const ProfileCard = ({ profile, color }: ProfileCardProps) => {
+const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [referrer, setReferrer] = useState<{
     name: string | null;
@@ -182,7 +184,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             ) : null}
             <div className={styles.frameGroup}>
               {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
-              <Link
+              {/* <Link
                 href={`https://x.com/${profile.user?.twitter_handle}`}
                 target="_blank"
                 className="w-full"
@@ -193,7 +195,21 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 >
                   Contact me
                 </Button>
-              </Link>
+              </Link> */}
+              <ContactMeButton
+                phoneNum={
+                  "contact_phone" in profile && profile.contact_phone
+                    ? profile.contact_phone
+                    : null
+                }
+                email={
+                  "contact_email" in profile && profile.contact_email
+                    ? profile.contact_email
+                    : null
+                }
+                twitter={profile.user?.twitter_handle}
+                curUserName={curUserName}
+              />
               {profile.link ? (
                 <a
                   className={`${styles.vectorParent} ${colorClass}`}

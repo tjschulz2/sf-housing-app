@@ -42,6 +42,8 @@ const formSchema = z.object({
     required_error: "You need to select a housing type.",
   }),
   link: z.string(),
+  contact_phone: z.string().max(15, { message: "Phone number is too long" }),
+  contact_email: z.string().max(50, { message: "Email address is too long" }),
 });
 
 function preprocessFormData(data: UserHousingSearchProfile) {
@@ -52,6 +54,8 @@ function preprocessFormData(data: UserHousingSearchProfile) {
   for (const [k, v] of Object.entries(data)) {
     if (typeof v === "number") {
       parsed[k] = v.toString();
+    } else if (!v) {
+      parsed[k] = "";
     } else {
       parsed[k] = v;
     }
@@ -75,7 +79,11 @@ export default function SearcherProfileForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     // @ts-ignore
-    defaultValues: userProfile?.data || { link: "" },
+    defaultValues: userProfile?.data || {
+      link: "",
+      contact_phone: "",
+      contact_email: "",
+    },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
@@ -251,6 +259,34 @@ export default function SearcherProfileForm({
               <FormDescription>
                 Personal website, Instagram, etc.
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="contact_phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What&apos;s your phone number? (Optional)</FormLabel>
+              <FormControl>
+                <Input type="tel" placeholder="4151234567" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="contact_email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What&apos;s your email? (Optional)</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="me@example.com" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

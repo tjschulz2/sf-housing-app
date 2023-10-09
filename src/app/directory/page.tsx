@@ -10,6 +10,7 @@ import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
+import { getUserSession } from "@/lib/utils/auth";
 
 function Directory() {
   const {
@@ -19,11 +20,22 @@ function Directory() {
     setSearcherProfilesFilter,
     userHousingSearchProfile,
   } = useContext(ProfilesContext) as ProfilesContextType;
+  const [currentUserData, setCurrentUserData] = useState<CoreUserSessionData>();
   const allowDataPull = useRef(false);
   const allDataRetrieved = useRef(false);
   const [dataLoading, setDataLoading] = useState(true);
   const initialPullRequired = useRef(true);
   const observerTarget = useRef(null);
+
+  useEffect(() => {
+    async function pullSessionData() {
+      const userSession = await getUserSession();
+      if (userSession) {
+        setCurrentUserData(userSession);
+      }
+    }
+    pullSessionData();
+  }, []);
 
   const pullNextBatch = useCallback(async () => {
     if (!searcherProfiles?.length || allDataRetrieved.current) {
@@ -178,6 +190,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
+                curUserName={currentUserData?.twitterName}
               />
             ))}
           </div>
@@ -193,6 +206,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
+                curUserName={currentUserData?.twitterName}
               />
             ))}
           </div>
@@ -208,6 +222,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
+                curUserName={currentUserData?.twitterName}
               />
             ))}
           </div>
@@ -223,6 +238,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
+                curUserName={currentUserData?.twitterName}
               />
             ))}
           </div>

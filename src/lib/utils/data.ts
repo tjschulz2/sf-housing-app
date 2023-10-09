@@ -149,6 +149,8 @@ export async function saveUserHousingSearchProfile(profileData: {
     link: z.coerce.string(),
     user_id: z.coerce.string().uuid(),
     last_updated_date: z.coerce.string(),
+    contact_phone: z.coerce.string(),
+    contact_email: z.coerce.string(),
   });
 
   const { data, error } = await supabase
