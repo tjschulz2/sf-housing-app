@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getDataFromDirectory } from "../../lib/utils/process";
 import { getUserSession } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
+import UserProfileImage from "../user-profile-image";
 
 type User = {
   twitterAvatarUrl: string;
@@ -73,7 +74,7 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
       onClick={toggleDropdown}
     >
       <div className={styles.itemsContainer}>
-        <img src={higherResImageUrl} className={styles.avatar} alt="Profile" />
+        <UserProfileImage src={higherResImageUrl} size="medium" />
         <FiChevronDown className={styles.icon} />
       </div>
       {isOpen && (
