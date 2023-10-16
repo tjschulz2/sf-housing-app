@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import ActivityStatusDot from "./activity-status-dot";
 import ContactMeButton from "./contact-me-button";
+import UserProfileImage from "./user-profile-image";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
@@ -75,16 +76,12 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
             href={`https://twitter.com/${referrer.twitter_handle}`}
             className={styles.referrerContainer}
           >
-            <img
-              style={{
-                marginLeft: "4px",
-                marginRight: "4px",
-                borderRadius: "100px",
-                height: "25px",
-                width: "25px",
-              }}
-              src={referrer.twitter_avatar_url || ""}
-            ></img>
+            <span className="mx-1">
+              <UserProfileImage
+                size="small"
+                src={referrer.twitter_avatar_url}
+              />
+            </span>
             <div className={`${colorClass}`}>{referrer.name}</div>
           </a>
         </div>
@@ -175,27 +172,8 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
       return (
         <li className={styles.frameParent} id="profile-card-element">
           <div className={styles.image3Parent}>
-            {user?.twitter_avatar_url ? (
-              <img
-                className={styles.image3Icon}
-                alt=""
-                src={user.twitter_avatar_url}
-              />
-            ) : null}
+            <UserProfileImage size="large" src={user?.twitter_avatar_url} />
             <div className={styles.frameGroup}>
-              {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
-              {/* <Link
-                href={`https://x.com/${profile.user?.twitter_handle}`}
-                target="_blank"
-                className="w-full"
-              >
-                <Button
-                  variant="outline"
-                  className="rounded-3xl font-bold w-full text-md"
-                >
-                  Contact me
-                </Button>
-              </Link> */}
               <ContactMeButton
                 phoneNum={
                   "contact_phone" in profile && profile.contact_phone
