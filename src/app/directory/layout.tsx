@@ -83,9 +83,6 @@ export default function DirectoryLayout({
 
   async function refreshUserHousingSearchProfileData(userID: string) {
     const userSearchProfile = await getUserHousingSearchProfile(userID);
-    // if (userSearchProfile) {
-    //   setUserHousingSearchProfile(userSearchProfile);
-    // }
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
@@ -115,14 +112,6 @@ export default function DirectoryLayout({
           >
             <div className={styles.directoryContainer}>{children}</div>
           </ProfilesContext.Provider>
-
-          {/* <a
-        href="https://github.com/tjschulz2/sf-housing-app"
-        className="text-sm text-blue-400"
-      >
-          Want to see a new feature on DirectorySF? Submit a pull request!
-          DirectorySF is open-source.
-        </a> */}
         </div>
         <Footer />
       </div>

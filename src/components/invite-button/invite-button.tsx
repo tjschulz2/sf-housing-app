@@ -4,8 +4,127 @@ import Modal from "../modal/modal";
 import { supabase } from "../../lib/supabaseClient";
 import { getUserSession } from "../../lib/utils/auth";
 import styles from "./invite-button.module.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Copy, UserPlus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const referralBaseLink = "https://directorysf.com/?referralCode=";
+
+function ReferralLink() {
+  const [referralLink, setReferralLink] = useState("");
+  // const [userID, setUserID] = useState("");
+
+  useEffect(() => {
+    const genReferralLink = async () => {
+      const session = await getUserSession();
+      if (session && session.userID) {
+        // setUserID(session.userID);
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("user_id", session.userID);
+
+        if (error) {
+          console.error("Error fetching user:", error);
+          return;
+        }
+
+        if (data?.length > 0) {
+          const user = data[0];
+          if (user.is_super !== null) {
+            const { data: referralsData, error: referralsError } =
+              await supabase
+                .from("referrals")
+                .select("*")
+                .eq("originator_id", session.userID)
+                .eq("usage_limit", 500)
+                .not("usage_count", "gte", 500);
+
+            if (referralsError) {
+              console.error("Error fetching user:", referralsError);
+              return;
+            }
+
+            if (referralsData && referralsData.length > 0) {
+              const referralCode = referralsData[0].referral_id;
+              setReferralLink(`${referralBaseLink}${referralCode}`);
+            } else {
+              const referralCode = Math.floor(Math.random() * 1000000000000000);
+              setReferralLink(`${referralBaseLink}${referralCode}`);
+              const { error: insertError } = await supabase
+                .from("referrals")
+                .insert([
+                  {
+                    referral_id: referralCode,
+                    originator_id: session.userID,
+                    usage_limit: 500,
+                    usage_count: 0,
+                  },
+                ]);
+
+              if (insertError) throw insertError;
+            }
+          } else {
+            const referralCode = Math.floor(Math.random() * 1000000000000000);
+            setReferralLink(`${referralBaseLink}${referralCode}`);
+            const { error: insertError } = await supabase
+              .from("referrals")
+              .insert([
+                {
+                  referral_id: referralCode,
+                  originator_id: session.userID,
+                  usage_limit: 1,
+                  usage_count: 0,
+                },
+              ]);
+
+            if (insertError) throw insertError;
+          }
+        }
+      }
+    };
+
+    genReferralLink();
+  }, []);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      alert("Referral link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="grid flex-1 gap-2">
+        <Label htmlFor="link" className="sr-only">
+          Link
+        </Label>
+        <Input id="link" defaultValue={referralLink} readOnly />
+      </div>
+      <Button
+        type="submit"
+        size="sm"
+        className="px-3"
+        onClick={copyToClipboard}
+      >
+        <span className="sr-only">Copy</span>
+        <Copy className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
 
 const InviteButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +141,6 @@ const InviteButton = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const session = await getUserSession();
-
       if (session && session.userID) {
         setUserID(session.userID);
         const { data, error } = await supabase
@@ -111,6 +229,24 @@ const InviteButton = () => {
 
   return (
     <>
+      <Dialog>
+        <DialogTrigger>
+          <Button className="rounded-3xl p-6">
+            <UserPlus className="mr-2 h-4 w-4" /> Invite a friend
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite a friend</DialogTitle>
+            <DialogDescription>
+              Only refer people you know, trust, or think would be a good fit
+              for this directory.
+            </DialogDescription>
+          </DialogHeader>
+          <ReferralLink />
+        </DialogContent>
+      </Dialog>
+
       <a className={styles.inviteButton} onClick={openModal}>
         Invite a friend
       </a>
