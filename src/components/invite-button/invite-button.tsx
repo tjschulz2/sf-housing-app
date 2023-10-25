@@ -44,38 +44,35 @@ function ReferralLink({ link }: { link: string }) {
     }
   };
 
-  if (!link) {
-    return <Skeleton className="w-full h-[20px] rounded-full" />;
-  } else {
-    return (
-      <div className="flex items-center space-x-2">
+  return (
+    <div className="flex items-center space-x-2">
+      {link ? (
         <div className="grid flex-1 gap-2">
           <Label htmlFor="link" className="sr-only">
             Link
           </Label>
           <Input id="link" value={link} readOnly />
         </div>
-        <Button
-          type="submit"
-          size="sm"
-          className="px-3"
-          onClick={copyToClipboard}
-          disabled={copied}
-        >
-          <span className="sr-only">Copy</span>
-          {copied ? (
-            <Check className="h-4 w-4" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
-    );
-  }
+      ) : (
+        <Skeleton className="w-full h-[20px] rounded-full" />
+      )}
+      <Button
+        type="submit"
+        size="sm"
+        className="px-3"
+        onClick={copyToClipboard}
+        disabled={copied || !link}
+      >
+        <span className="sr-only">Copy</span>
+        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+      </Button>
+    </div>
+  );
 }
 
 const InviteButton = () => {
   const [referralLink, setReferralLink] = useState("");
+
   const genReferralLink = async () => {
     let newLink = "";
     const session = await getUserSession();
@@ -85,45 +82,28 @@ const InviteButton = () => {
         .select("*")
         .eq("user_id", session.userID);
 
-      if (error) {
+      if (error || !data?.length) {
         console.error("Error fetching user:", error);
         return;
       }
 
-      if (data?.length > 0) {
-        const user = data[0];
-        if (user.is_super) {
-          const { data: referralsData, error: referralsError } = await supabase
-            .from("referrals")
-            .select("*")
-            .eq("originator_id", session.userID)
-            .eq("usage_limit", 500)
-            .not("usage_count", "gte", 500);
+      const user = data[0];
+      if (user.is_super) {
+        const { data: referralsData, error: referralsError } = await supabase
+          .from("referrals")
+          .select("*")
+          .eq("originator_id", session.userID)
+          .eq("usage_limit", 500)
+          .not("usage_count", "gte", 500);
 
-          if (referralsError) {
-            console.error("Error fetching user:", referralsError);
-            return;
-          }
+        if (referralsError) {
+          console.error("Error fetching user:", referralsError);
+          return;
+        }
 
-          if (referralsData && referralsData.length > 0) {
-            const referralCode = referralsData[0].referral_id;
-            newLink = `${referralBaseLink}${referralCode}`;
-          } else {
-            const referralCode = Math.floor(Math.random() * 1000000000000000);
-            newLink = `${referralBaseLink}${referralCode}`;
-            const { error: insertError } = await supabase
-              .from("referrals")
-              .insert([
-                {
-                  referral_id: referralCode,
-                  originator_id: session.userID,
-                  usage_limit: 500,
-                  usage_count: 0,
-                },
-              ]);
-
-            if (insertError) throw insertError;
-          }
+        if (referralsData?.length > 0) {
+          const referralCode = referralsData[0].referral_id;
+          newLink = `${referralBaseLink}${referralCode}`;
         } else {
           const referralCode = Math.floor(Math.random() * 1000000000000000);
           newLink = `${referralBaseLink}${referralCode}`;
@@ -133,13 +113,26 @@ const InviteButton = () => {
               {
                 referral_id: referralCode,
                 originator_id: session.userID,
-                usage_limit: 1,
+                usage_limit: 500,
                 usage_count: 0,
               },
             ]);
 
           if (insertError) throw insertError;
         }
+      } else {
+        const referralCode = Math.floor(Math.random() * 1000000000000000);
+        newLink = `${referralBaseLink}${referralCode}`;
+        const { error: insertError } = await supabase.from("referrals").insert([
+          {
+            referral_id: referralCode,
+            originator_id: session.userID,
+            usage_limit: 1,
+            usage_count: 0,
+          },
+        ]);
+
+        if (insertError) throw insertError;
       }
     }
     return newLink;
@@ -168,8 +161,8 @@ const InviteButton = () => {
           <DialogHeader>
             <DialogTitle>Invite a friend</DialogTitle>
             <DialogDescription>
-              Only refer people you know, trust, or think would be a good fit
-              for this directory.
+              Only refer people you know, trust, and would be willing to live
+              with yourself.
             </DialogDescription>
           </DialogHeader>
           <ReferralLink link={referralLink} />
