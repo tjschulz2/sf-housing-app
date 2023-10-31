@@ -58,6 +58,29 @@ export async function handleSignIn() {
       }
 
       initialSignIn = true;
+    } else {
+      // if avatar or username has changed, since last sign-in, update accordingly
+
+      let highResCurrentUserImageUrl = currentUser.twitterAvatarURL.replace(
+        "_normal",
+        "_400x400"
+      );
+      if (
+        userData.twitter_avatar_url !== highResCurrentUserImageUrl ||
+        userData.name !== currentUser.twitterName
+      ) {
+        const { error } = await supabase
+          .from("users")
+          .update({
+            twitter_avatar_url: highResCurrentUserImageUrl,
+            name: currentUser.twitterName,
+          })
+          .eq("user_id", currentUser.userID);
+
+        if (error) {
+          console.error(error);
+        }
+      }
     }
 
     // await refreshTwitterFollowsIfNeeded(
