@@ -17,7 +17,7 @@ const UserProfileImage = ({
 
   const imgSizeClass = (() => {
     if (size === "large") {
-      return "w-36";
+      return "w-28 sm:w-36";
     } else if (size === "medium") {
       return "w-14";
     } else {

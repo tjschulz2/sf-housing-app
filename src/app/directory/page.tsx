@@ -12,6 +12,12 @@ import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import { getUserSession } from "@/lib/utils/auth";
 
+export function CardContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap gap-4 flex-col sm:flex-row">{children}</div>
+  );
+}
+
 function Directory() {
   const {
     searcherProfiles,
@@ -232,7 +238,7 @@ function Directory() {
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          <div className={styles.containerGrid}>
+          <CardContainer>
             {olderProfiles.map((profile) => (
               <ProfileCard
                 key={profile.user_id}
@@ -241,7 +247,7 @@ function Directory() {
                 curUserName={currentUserData?.twitterName}
               />
             ))}
-          </div>
+          </CardContainer>
         </>
       )}
 
