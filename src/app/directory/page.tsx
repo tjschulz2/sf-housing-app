@@ -1,6 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import ProfileCard from "../../components/profile-card";
+import SearcherProfileCard from "@/components/searcher-profile-card";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { getHousingSearchProfiles } from "../../lib/utils/data";
@@ -10,7 +11,7 @@ import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
-import { getUserSession } from "@/lib/utils/auth";
+// import { getUserSession } from "@/lib/utils/auth";
 
 export function CardContainer({ children }: { children: React.ReactNode }) {
   return (
@@ -25,23 +26,24 @@ function Directory() {
     searcherProfilesFilter,
     setSearcherProfilesFilter,
     userHousingSearchProfile,
+    userSession,
   } = useContext(ProfilesContext) as ProfilesContextType;
-  const [currentUserData, setCurrentUserData] = useState<CoreUserSessionData>();
+  // const [currentUserData, setCurrentUserData] = useState<CoreUserSessionData>();
   const allowDataPull = useRef(false);
   const allDataRetrieved = useRef(false);
   const [dataLoading, setDataLoading] = useState(true);
   const initialPullRequired = useRef(true);
   const observerTarget = useRef(null);
 
-  useEffect(() => {
-    async function pullSessionData() {
-      const userSession = await getUserSession();
-      if (userSession) {
-        setCurrentUserData(userSession);
-      }
-    }
-    pullSessionData();
-  }, []);
+  // useEffect(() => {
+  //   async function pullSessionData() {
+  //     const userSession = await getUserSession();
+  //     if (userSession) {
+  //       setCurrentUserData(userSession);
+  //     }
+  //   }
+  //   pullSessionData();
+  // }, []);
 
   const pullNextBatch = useCallback(async () => {
     if (!searcherProfiles?.length || allDataRetrieved.current) {
@@ -151,8 +153,11 @@ function Directory() {
     setSearcherProfiles([]);
     const newFilterState = { ...searcherProfilesFilter, ...filterData };
     setSearcherProfilesFilter(newFilterState);
-    return;
   }
+
+  // if (!currentUserData) {
+  //   return <LoadingSpinner overlay={true} />;
+  // }
 
   return (
     <>
@@ -196,7 +201,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
-                curUserName={currentUserData?.twitterName}
+                curUserName={userSession?.twitterName}
               />
             ))}
           </div>
@@ -212,7 +217,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
-                curUserName={currentUserData?.twitterName}
+                curUserName={userSession?.twitterName}
               />
             ))}
           </div>
@@ -228,7 +233,7 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
-                curUserName={currentUserData?.twitterName}
+                curUserName={userSession?.twitterName}
               />
             ))}
           </div>
@@ -240,11 +245,16 @@ function Directory() {
           <h2 className="text-2xl font-bold my-4">Older</h2>
           <CardContainer>
             {olderProfiles.map((profile) => (
-              <ProfileCard
+              // <ProfileCard
+              //   key={profile.user_id}
+              //   profile={profile}
+              //   color="blue"
+              //   curUserName={currentUserData?.twitterName}
+              // />
+              <SearcherProfileCard
                 key={profile.user_id}
                 profile={profile}
-                color="blue"
-                curUserName={currentUserData?.twitterName}
+                userSession={userSession}
               />
             ))}
           </CardContainer>

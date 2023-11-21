@@ -26,10 +26,7 @@ export type ProfilesContextType = {
   >;
   userHousingSearchProfile: UserHousingSearchProfile;
   refreshUserHousingSearchProfileData: (userID: string) => Promise<void>;
-};
-
-type User = {
-  twitterAvatarUrl: string;
+  userSession: CoreUserSessionData;
 };
 
 export type UserHousingSearchProfile =
@@ -43,7 +40,7 @@ export default function DirectoryLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<CoreUserSessionData | null>(null);
   const [userHousingSearchProfile, setUserHousingSearchProfile] =
     useState<UserHousingSearchProfile>(null);
   const router = useRouter();
@@ -74,7 +71,7 @@ export default function DirectoryLayout({
       await refreshUserHousingSearchProfileData(userSession.userID);
 
       const user = {
-        twitterAvatarUrl: userSession.twitterAvatarURL,
+        ...userSession,
       };
       setUser(user);
     }
@@ -95,7 +92,7 @@ export default function DirectoryLayout({
               <h1 className="text-3xl font-bold my-4">Directory</h1>
               <div className={styles.inviteSettingsContainer}>
                 <InviteButton />
-                {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
+                {user && <Dropdown userAvatarURL={user.twitterAvatarURL} />}
               </div>
             </div>
             <Navbar />
@@ -108,6 +105,7 @@ export default function DirectoryLayout({
               setSearcherProfilesFilter,
               userHousingSearchProfile,
               refreshUserHousingSearchProfileData,
+              userSession: user,
             }}
           >
             <div className={styles.directoryContainer}>{children}</div>
