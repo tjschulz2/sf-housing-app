@@ -56,7 +56,7 @@ export async function getHousingSearchProfiles(
     .from("housing_search_profiles")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url)
+      *, user:users(name, twitter_handle, twitter_avatar_url), referrer:
     `
     )
     .range(startIdx, startIdx + count - 1)

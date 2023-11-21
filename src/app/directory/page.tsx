@@ -13,7 +13,7 @@ import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 // import { getUserSession } from "@/lib/utils/auth";
 
-export function CardContainer({ children }: { children: React.ReactNode }) {
+function CardContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-wrap gap-4 flex-col sm:flex-row">{children}</div>
   );
