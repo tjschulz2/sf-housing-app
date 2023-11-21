@@ -11,5 +11,20 @@ export function CardTop({ children }: { children: React.ReactNode }) {
 }
 
 export function CardBottom({ children }: { children: React.ReactNode }) {
-  return <div className="flex-col">{children}</div>;
+  return <div className="flex flex-col gap-2">{children}</div>;
+}
+
+export function CardListSection({
+  children,
+  sectionTitle,
+}: {
+  children: React.ReactNode;
+  sectionTitle: string;
+}) {
+  return (
+    <div>
+      <h3 className="font-medium">{sectionTitle}</h3>
+      {children}
+    </div>
+  );
 }

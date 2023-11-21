@@ -243,7 +243,8 @@ function Directory() {
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          <CardContainer>
+          {/* <CardContainer> */}
+          <div className={styles.containerGrid}>
             {olderProfiles.map((profile) => (
               // <ProfileCard
               //   key={profile.user_id}
@@ -257,7 +258,8 @@ function Directory() {
                 userSession={userSession}
               />
             ))}
-          </CardContainer>
+            {/* </CardContainer> */}
+          </div>
         </>
       )}
 
