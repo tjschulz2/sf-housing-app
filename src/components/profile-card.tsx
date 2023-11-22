@@ -103,21 +103,14 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
   };
 
   useEffect(() => {
-    if (isCommunityProfile(profile) && profile.user_id) {
-      getImageLink(profile.user_id)
-        .then((url: string | Error) => {
-          if (typeof url === "string") {
-            setImageUrl(url);
-          }
-        })
-        .catch((error) => console.error("Error fetching image:", error));
-    }
     const fetchReferrer = async () => {
-      try {
-        const referrerData = await getReferrerName(profile.user_id ?? "");
-        if (referrerData) setReferrer(referrerData);
-      } catch (error) {
-        console.error(error);
+      if (profile.user_id) {
+        try {
+          const referrerData = await getReferrerName(profile.user_id);
+          if (referrerData) setReferrer(referrerData);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
@@ -304,22 +297,19 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
         }
       }
 
+      const communityImageURL = profile.image_url || user?.twitter_avatar_url;
+
       return (
         <li className={styles.frameParent} id="profile-card-element">
           <div className={styles.image3Parent}>
-            {imageUrl ? (
+            {communityImageURL ? (
               <img
                 className={styles.image3Icon}
-                alt=""
-                src={imageUrl || undefined}
-              />
-            ) : user?.twitter_avatar_url ? (
-              <img
-                className={styles.image3Icon}
-                alt=""
-                src={user.twitter_avatar_url}
+                alt="community image"
+                src={communityImageURL}
               />
             ) : null}
+
             <div className={styles.frameGroup}>
               {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
               <Link
