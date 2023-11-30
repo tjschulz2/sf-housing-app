@@ -8,6 +8,32 @@ import deriveActivityLevel, { housingMap } from "@/lib/configMaps";
 import { dateDiff } from "@/lib/utils/general";
 import ActivityStatusDot from "@/components/activity-status-dot";
 
+function ReferralBadge({
+  handle,
+  imageURL,
+  name,
+}: {
+  handle: string;
+  imageURL: string;
+  name: string;
+}) {
+  if (!handle || !imageURL || !name) {
+    return;
+  }
+
+  return (
+    <a
+      href={`https://x.com/${handle}`}
+      className="flex items-center no-underline"
+    >
+      <span className="mx-1">
+        <UserProfileImage size="small" src={imageURL} />
+      </span>
+      <span>{name}</span>
+    </a>
+  );
+}
+
 type PropsType = {
   profile: HousingSearchProfile;
   userSession: CoreUserSessionData;
@@ -84,17 +110,15 @@ export default function SearcherProfileCard(props: PropsType) {
           </span>
         </CardListSection>
         <CardListSection sectionTitle="Referred by">
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <a
-              href={`https://twitter.com/`}
-              className="flex items-center no-underline"
-            >
-              <span className="mx-1">
-                <UserProfileImage size="small" src={`https://twitter.com/`} />
-              </span>
-              <span>test</span>
-            </a>
-          </div>
+          {profile.user?.twitter_handle &&
+          profile.user?.name &&
+          profile.user?.twitter_avatar_url ? (
+            <ReferralBadge
+              handle={profile.user.twitter_handle}
+              name={profile.user.name}
+              imageURL={profile.user.twitter_avatar_url}
+            />
+          ) : null}
         </CardListSection>
       </CardBottom>
     </Card>

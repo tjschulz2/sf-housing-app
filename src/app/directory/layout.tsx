@@ -85,7 +85,8 @@ export default function DirectoryLayout({
 
   if (user) {
     return (
-      <div className={styles.container}>
+      // <div className={styles.container}>
+      <div className="p-4 md:p-12 max-w-screen-xl	mx-auto">
         <div>
           <div className={styles.topArea}>
             <div className={styles.directoryInviteSettings}>

@@ -11,13 +11,8 @@ import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
+import CardGrid from "@/components/card-grid";
 // import { getUserSession } from "@/lib/utils/auth";
-
-function CardContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex flex-wrap gap-4 flex-col sm:flex-row">{children}</div>
-  );
-}
 
 function Directory() {
   const {
@@ -197,11 +192,10 @@ function Directory() {
           <h2 className="text-2xl font-bold my-4">Today</h2>
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
-              <ProfileCard
+              <SearcherProfileCard
                 key={profile.user_id}
                 profile={profile}
-                color="blue"
-                curUserName={userSession?.twitterName}
+                userSession={userSession}
               />
             ))}
           </div>
@@ -243,22 +237,16 @@ function Directory() {
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          {/* <CardContainer> */}
           <div className={styles.containerGrid}>
+            {/* <CardGrid> */}
             {olderProfiles.map((profile) => (
-              // <ProfileCard
-              //   key={profile.user_id}
-              //   profile={profile}
-              //   color="blue"
-              //   curUserName={currentUserData?.twitterName}
-              // />
               <SearcherProfileCard
                 key={profile.user_id}
                 profile={profile}
                 userSession={userSession}
               />
             ))}
-            {/* </CardContainer> */}
+            {/* </CardGrid> */}
           </div>
         </>
       )}

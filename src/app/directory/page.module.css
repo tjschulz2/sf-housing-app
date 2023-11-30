@@ -81,18 +81,6 @@
 
 /* Grid stuff */
 
-.container {
-  margin: 0 auto;
-  padding: 20px 80px;
-  box-sizing: border-box;
-  max-width: 1625px;
-  padding-bottom: 80px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100svh;
-  justify-content: space-between;
-}
-
 .containerGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -101,30 +89,18 @@
 }
 
 @media (max-width: 1625px) {
-  .container {
-    max-width: 1400px;
-    padding: 20px 60px;
-  }
   .containerGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 1275px) {
-  .container {
-    max-width: 1000px;
-    padding: 20px 60px;
-  }
   .containerGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 885px) {
-  .container {
-    max-width: 650px;
-    padding: 60px 60px;
-  }
   .containerGrid {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -149,17 +125,7 @@
 }
 
 @media (max-width: 490px) {
-  .container {
-    padding: 16px 16px;
-    max-width: 490px;
-  }
   .containerGrid {
     grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media (max-width: 406px) {
-  .container {
-    max-width: 406px;
   }
 }

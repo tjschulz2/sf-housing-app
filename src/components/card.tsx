@@ -23,7 +23,7 @@ export function CardListSection({
 }) {
   return (
     <div>
-      <h3 className="font-medium">{sectionTitle}</h3>
+      <h3 className="font-medium mb-1">{sectionTitle}</h3>
       {children}
     </div>
   );
