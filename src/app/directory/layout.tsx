@@ -17,6 +17,7 @@ import Dropdown from "../../components/dropdown/dropdown";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
+import SpacesContextProvider from "@/contexts/spaces-context";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -44,7 +45,6 @@ export default function DirectoryLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
   const [userHousingSearchProfile, setUserHousingSearchProfile] =
     useState<UserHousingSearchProfile>(null);
   const router = useRouter();
@@ -133,7 +133,9 @@ export default function DirectoryLayout({
               refreshUserHousingSearchProfileData,
             }}
           >
-            <div className={styles.directoryContainer}>{children}</div>
+            <SpacesContextProvider>
+              <div className={styles.directoryContainer}>{children}</div>
+            </SpacesContextProvider>
           </ProfilesContext.Provider>
         </div>
         <Footer />

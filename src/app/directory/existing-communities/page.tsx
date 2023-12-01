@@ -7,9 +7,11 @@ import { getCommunities } from "../../../lib/utils/data";
 import Link from "next/link";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
+import { useSpacesContext } from "@/contexts/spaces-context";
 
-const Directory: NextPage = () => {
+const Directory = () => {
   const [profiles, setProfiles] = useState<CommunityProfile[]>();
+  const { userSpaceListing, pullUserSpaceListing } = useSpacesContext();
 
   useEffect(() => {
     async function pullProfiles() {
@@ -21,7 +23,6 @@ const Directory: NextPage = () => {
     pullProfiles();
   }, []);
 
-  const data = Array.from({ length: 20 }, (_, i) => i + 1);
   const todayProfiles = profiles?.filter(
     (profile) =>
       differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
@@ -43,18 +44,22 @@ const Directory: NextPage = () => {
 
   return (
     <>
-      <div className={styles.lookingHousematesContainer}>
-        <h2 className="text-xl font-bold mb-4">
-          Do you have a vacant room, sublet, or coliving house?
-        </h2>
-        <span className={styles.addInfoText}>
-          Add your information and we will add you to the Existing spaces
-          directory so you can be discovered by people looking for housing
-        </span>
-        <Link className={styles.addMeButton} href="/community-form">
-          Add my space
-        </Link>
-      </div>
+      {userSpaceListing ? (
+        <ActiveSpaceBanner />
+      ) : (
+        <div className={styles.lookingHousematesContainer}>
+          <h2 className="text-xl font-bold mb-4">
+            Do you have a vacant room, sublet, or coliving house?
+          </h2>
+          <span className={styles.addInfoText}>
+            Add your information and we will add you to the Existing spaces
+            directory so you can be discovered by people looking for housing
+          </span>
+          <Link className={styles.addMeButton} href="/community-form">
+            Add my space
+          </Link>
+        </div>
+      )}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>

@@ -15,10 +15,9 @@ import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-di
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function ActiveSpaceBanner({
-  refreshSpacesData,
-}: {
-  refreshSpacesData: () => void;
+export default function ActiveSpaceBanner({}: //   refreshSpacesData,
+{
+  //   refreshSpacesData: () => void;
 }) {
   const { toast } = useToast();
 
@@ -26,12 +25,12 @@ export default function ActiveSpaceBanner({
     <Card>
       <CardHeader>
         <CardTitle>
-          You have an active profile{" "}
+          You have an active listing{" "}
           <span className="ml-2 inline-flex">
             <ActivityStatusDot status="high" />
           </span>
         </CardTitle>
-        <CardDescription>You can manage your profile here</CardDescription>
+        <CardDescription>You can manage your space here</CardDescription>
       </CardHeader>
       <CardContent>
         <p>spacey spacey</p>
