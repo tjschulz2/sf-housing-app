@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { getCommunities } from "../../../lib/utils/data";
 import Link from "next/link";
 import { differenceInDays } from "date-fns";
+import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
 
 const Directory: NextPage = () => {
   const [profiles, setProfiles] = useState<CommunityProfile[]>();
