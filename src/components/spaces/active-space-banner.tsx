@@ -14,6 +14,7 @@ import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog
 import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { useToast } from "@/components/ui/use-toast";
+import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 
 export default function ActiveSpaceBanner({}: //   refreshSpacesData,
 {
@@ -32,26 +33,27 @@ export default function ActiveSpaceBanner({}: //   refreshSpacesData,
         </CardTitle>
         <CardDescription>You can manage your space here</CardDescription>
       </CardHeader>
-      <CardContent>
+      {/* <CardContent>
         <p>spacey spacey</p>
-      </CardContent>
+      </CardContent> */}
       <CardFooter>
         <div className="flex">
-          {/* <EditSearcherProfileDialog refreshProfileData={refreshProfileData}>
+          <EditSpaceListingDialog>
             <Button
               variant="secondary"
               className="rounded-3xl text-sm sm:text-md mr-4"
             >
               <Pencil size="16" className="mr-2" />
-              Edit profile
+              Edit listing
             </Button>
-          </EditSearcherProfileDialog>
-          <DeleteSearcherProfileDialog refreshProfileData={refreshProfileData}>
-            <Button className="rounded-3xl" variant="secondary">
-              <Trash size="16" className="mr-2" />
-              Delete profile
-            </Button>
-          </DeleteSearcherProfileDialog> */}
+          </EditSpaceListingDialog>
+          {/* </EditSearcherProfileDialog> */}
+          {/* <DeleteSearcherProfileDialog refreshProfileData={refreshProfileData}> */}
+          <Button className="rounded-3xl" variant="secondary">
+            <Trash size="16" className="mr-2" />
+            Delete listing
+          </Button>
+          {/* </DeleteSearcherProfileDialog> */}
         </div>
       </CardFooter>
     </Card>
