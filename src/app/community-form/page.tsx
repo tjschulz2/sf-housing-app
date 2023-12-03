@@ -315,7 +315,7 @@ const MyForm: NextPage = () => {
         setIsModalActive={setIsModalActive}
       />
       <form className={styles.form}>
-        <Link href="/directory/existing-communities">Back to directory</Link>
+        <Link href="/directory/spaces">Back to directory</Link>
         <h1>Add your space to the directory</h1>
         <div
           style={{ height: "1px", backgroundColor: "gray", width: "100%" }}
