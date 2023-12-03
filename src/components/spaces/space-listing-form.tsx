@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+
 import {
   Form,
   FormControl,
@@ -27,9 +28,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useSpacesContext } from "@/contexts/spaces-context";
-import { parse } from "path";
+
+function validateFile(file: File | null | undefined) {
+  const validTypes = ["image/jpeg", "image/png"];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  return !file || (validTypes.includes(file.type) && file.size <= maxSize);
+}
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -38,33 +44,74 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "Your space's description must be at least 5 characters.",
   }),
-  resident_count: z.number(),
+  resident_count: z.number().max(20000, {
+    message: "Number of residents is too large",
+  }),
   website_url: z.string().url().optional(),
+  image_url: z.string().url().optional(),
+  // new_image_file: z
+  //   // see if can make this work?
+  //   .preprocess((fileList) => fileList?.[0], z.instanceof(File))
+  //   .optional()
+  //   .refine((fileList) => validateFile(fileList?.[0]), {
+  //     message: "File must be either JPG or PNG, and under 5mb",
+  //   }),
+  // new_image_file: z
+  //   .instanceof(File)
+  //   .optional()
+  //   .refine((file) => validateFile(file), {
+  //     message: "File must be either JPG or PNG, and under 5mb",
+  //   }),
 });
 
 export default function SpaceListingForm() {
+  const [uploadImageRaw, setUploadImageRaw] = useState<File | null>(null);
+
+  const [uploadImageDataURL, setUploadImageDataURL] = useState<
+    string | ArrayBuffer | null
+  >(null);
   const { userSpaceListing } = useSpacesContext();
-  console.log(userSpaceListing);
-  const parsedSpaceData = formSchema.safeParse(userSpaceListing);
-  if (parsedSpaceData.success) {
-    console.log(parsedSpaceData.data);
-    console.log("-----------parse success");
-  } else {
-    console.log("-----------parse failed");
-  }
+  let parseResult = formSchema.safeParse(userSpaceListing);
+  let parsedSpaceData = parseResult.success ? parseResult.data : null;
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: parsedSpaceData.success ? parsedSpaceData.data : {},
+    defaultValues: parsedSpaceData ?? {},
   });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+    if (uploadImageDataURL && uploadImageRaw) {
+      // Validate the file here (e.g., file type, file size)
+      if (!validateFile(uploadImageRaw)) {
+        // Handle file validation error
+        console.error("File validation failed");
+        return;
+      }
+      if (values.image_url) {
+        // delete existing image from storage
+      }
+    }
     console.log(values);
   }
-  // ...
+
+  const handleImageSelection = useCallback(async (file: File | undefined) => {
+    if (file) {
+      // form.setValue("new_image_file", file);
+      if (!validateFile(file)) {
+        // form.setError("new_image_file", {
+        //   type: "custom",
+        //   message: "invalid YO",
+        // });
+      }
+      setUploadImageRaw(file);
+      // instead of settign raw image to state, validate file here and set image validity status to state. use this to disable button, show error, etc.
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => setUploadImageDataURL(reader.result);
+      reader.onerror = (error) => setUploadImageDataURL(null);
+    }
+  }, []);
 
   return (
     <Form {...form}>
@@ -119,12 +166,14 @@ export default function SpaceListingForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="sf">San Francisco</SelectItem>
-                    <SelectItem value="oakland">Oakland</SelectItem>
-                    <SelectItem value="berkeley">Berkeley</SelectItem>
-                    <SelectItem value="peninsula">Peninsula</SelectItem>
-                    <SelectItem value="southbay">South Bay</SelectItem>
-                    <SelectItem value="northbay">North Bay</SelectItem>
+                    {/* <SelectLabel>San Francisco</SelectLabel> */}
+                    <SelectItem value="1">San Francisco</SelectItem>
+                    <SelectItem value="7">Lower Haight</SelectItem>
+                    <SelectItem value="2">Berkeley</SelectItem>
+                    <SelectItem value="3">Oakland</SelectItem>
+                    <SelectItem value="4">Peninsula</SelectItem>
+                    <SelectItem value="5">South Bay</SelectItem>
+                    <SelectItem value="6">North Bay</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -160,20 +209,36 @@ export default function SpaceListingForm() {
           )}
         />
 
-        {/* <FormField
-          control={form.control}
-          name="fileName"
+        <FormField
+          // control={form.control}
+          name="new_image_file"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Image (optional)</FormLabel>
               <FormControl>
-                <Input type="file" {...field} />
+                <Input
+                  type="file"
+                  {...field}
+                  onChange={(e) => handleImageSelection(e.target.files?.[0])}
+                />
               </FormControl>
               <FormMessage />
-              <FormDescription>Upload a photo for your space</FormDescription>
+              <FormDescription>
+                {parsedSpaceData?.image_url
+                  ? "This will replace your existing image"
+                  : "Upload a photo for your space"}
+              </FormDescription>
             </FormItem>
           )}
-        /> */}
+        />
+        {uploadImageDataURL || parsedSpaceData?.image_url ? (
+          <img
+            className="rounded-full w-1/2"
+            src={uploadImageDataURL || parsedSpaceData.image_url}
+            alt="Space listing image"
+          ></img>
+        ) : null}
+        {/* <ErrorMessage errors={["error"]} name="new_image_file" /> */}
 
         <Button type="submit">Submit</Button>
       </form>
