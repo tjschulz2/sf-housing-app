@@ -29,7 +29,6 @@ export default function EditSpaceListingDialog({
   newListing?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const { userSpaceListing } = useSpacesContext();
   const { toast } = useToast();
 
   async function handleSuccessfulSubmission(success: boolean) {

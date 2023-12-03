@@ -28,6 +28,8 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useState } from "react";
+import { useSpacesContext } from "@/contexts/spaces-context";
+import { parse } from "path";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -36,17 +38,24 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "Your space's description must be at least 5 characters.",
   }),
-  residentCount: z.number(),
-  website: z.string().url().optional(),
+  resident_count: z.number(),
+  website_url: z.string().url().optional(),
 });
 
 export default function SpaceListingForm() {
+  const { userSpaceListing } = useSpacesContext();
+  console.log(userSpaceListing);
+  const parsedSpaceData = formSchema.safeParse(userSpaceListing);
+  if (parsedSpaceData.success) {
+    console.log(parsedSpaceData.data);
+    console.log("-----------parse success");
+  } else {
+    console.log("-----------parse failed");
+  }
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
+    defaultValues: parsedSpaceData.success ? parsedSpaceData.data : {},
   });
 
   // 2. Define a submit handler.
@@ -110,12 +119,12 @@ export default function SpaceListingForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>SF</SelectLabel>
                     <SelectItem value="sf">San Francisco</SelectItem>
                     <SelectItem value="oakland">Oakland</SelectItem>
                     <SelectItem value="berkeley">Berkeley</SelectItem>
                     <SelectItem value="peninsula">Peninsula</SelectItem>
                     <SelectItem value="southbay">South Bay</SelectItem>
+                    <SelectItem value="northbay">North Bay</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -126,7 +135,7 @@ export default function SpaceListingForm() {
 
         <FormField
           control={form.control}
-          name="residentCount"
+          name="resident_count"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Number of housemates</FormLabel>
@@ -139,7 +148,7 @@ export default function SpaceListingForm() {
         />
         <FormField
           control={form.control}
-          name="website"
+          name="website_url"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Website (optional)</FormLabel>
@@ -151,7 +160,7 @@ export default function SpaceListingForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="fileName"
           render={({ field }) => (
@@ -164,7 +173,7 @@ export default function SpaceListingForm() {
               <FormDescription>Upload a photo for your space</FormDescription>
             </FormItem>
           )}
-        />
+        /> */}
 
         <Button type="submit">Submit</Button>
       </form>
