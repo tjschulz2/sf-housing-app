@@ -4,7 +4,6 @@ import { getUserSpaceListing } from "@/lib/utils/data";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/auth-context";
 
-type SpaceListingType = Database["public"]["Tables"]["communities"]["Row"];
 type SpacesContextType = {
   userSpaceListing: SpaceListingType | null;
   pullUserSpaceListing: (userID: string) => Promise<void>;

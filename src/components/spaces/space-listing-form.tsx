@@ -30,6 +30,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useContext, useState } from "react";
 import { useSpacesContext } from "@/contexts/spaces-context";
+import {
+  deleteCommunityImage,
+  saveCommunityImage,
+  saveUserSpaceListing,
+} from "@/lib/utils/data";
+import { useAuthContext } from "@/contexts/auth-context";
+import { toast } from "@/components/ui/use-toast";
 
 function validateFile(file: File | null | undefined) {
   const validTypes = ["image/jpeg", "image/png"];
@@ -44,10 +51,13 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "Your space's description must be at least 5 characters.",
   }),
-  resident_count: z.number().max(20000, {
+  resident_count: z.coerce.number().max(20000, {
     message: "Number of residents is too large",
   }),
-  website_url: z.string().url().optional(),
+  location: z.coerce.number().min(0, {
+    message: "Please select a location",
+  }),
+  website_url: z.string().optional(),
   image_url: z.string().url().optional(),
   // new_image_file: z
   //   // see if can make this work?
@@ -64,15 +74,22 @@ const formSchema = z.object({
   //   }),
 });
 
-export default function SpaceListingForm() {
+export default function SpaceListingForm({
+  closeDialog,
+}: {
+  closeDialog: () => void;
+}) {
+  const { userSession } = useAuthContext();
   const [uploadImageRaw, setUploadImageRaw] = useState<File | null>(null);
 
-  const [uploadImageDataURL, setUploadImageDataURL] = useState<
-    string | ArrayBuffer | null
-  >(null);
+  const [uploadImageDataURL, setUploadImageDataURL] = useState<string | null>(
+    null
+  );
   const { userSpaceListing } = useSpacesContext();
-  let parseResult = formSchema.safeParse(userSpaceListing);
-  let parsedSpaceData = parseResult.success ? parseResult.data : null;
+  const [submitted, setSubmitted] = useState(false);
+
+  const parseResult = formSchema.safeParse(userSpaceListing);
+  const parsedSpaceData = parseResult.success ? parseResult.data : null;
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,18 +97,50 @@ export default function SpaceListingForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    if (uploadImageDataURL && uploadImageRaw) {
-      // Validate the file here (e.g., file type, file size)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    setSubmitted(true);
+    let listingData = { ...values };
+
+    if (!userSession?.userID) {
+      return;
+    }
+    if (uploadImageRaw) {
+      // User has uploaded a new image, process and update accordingly
       if (!validateFile(uploadImageRaw)) {
+        // Validate the file here (e.g., file type, file size)
         // Handle file validation error
         console.error("File validation failed");
         return;
       }
       if (values.image_url) {
-        // delete existing image from storage
+        // Delete existing image from storage
+        await deleteCommunityImage(userSession.userID);
       }
+      // Save current user-provided image
+      const imageSaveResult = await saveCommunityImage(
+        uploadImageRaw,
+        userSession.userID
+      );
+      console.log(imageSaveResult);
+      listingData = { ...listingData, image_url: imageSaveResult.publicURL };
     }
+
+    const listingSaveResult = await saveUserSpaceListing(
+      listingData,
+      userSession.userID
+    );
+    if (listingSaveResult.success) {
+      toast({
+        title: "Successfully updated space",
+      });
+    } else {
+      toast({
+        title: "Error: failed to update space",
+      });
+    }
+    closeDialog();
+
     console.log(values);
   }
 
@@ -108,7 +157,11 @@ export default function SpaceListingForm() {
       // instead of settign raw image to state, validate file here and set image validity status to state. use this to disable button, show error, etc.
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => setUploadImageDataURL(reader.result);
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          setUploadImageDataURL(reader.result);
+        }
+      };
       reader.onerror = (error) => setUploadImageDataURL(null);
     }
   }, []);
@@ -129,7 +182,7 @@ export default function SpaceListingForm() {
                 />
               </FormControl>
               <FormDescription>
-                If you haven't named your space, now's a great time!
+                If you haven&apos;t named your space, now&apos;s a great time!
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -143,7 +196,7 @@ export default function SpaceListingForm() {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  rows={5}
+                  rows={4}
                   placeholder="Tell us about the space"
                   {...field}
                 />
@@ -158,7 +211,8 @@ export default function SpaceListingForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Location</FormLabel>
-              <Select>
+              {/* <Select onValueChange={(val) => field.onChange(Number(val))}> */}
+              <Select onValueChange={(val) => field.onChange(Number(val))}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select location" />
@@ -234,13 +288,19 @@ export default function SpaceListingForm() {
         {uploadImageDataURL || parsedSpaceData?.image_url ? (
           <img
             className="rounded-full w-1/2"
-            src={uploadImageDataURL || parsedSpaceData.image_url}
+            src={uploadImageDataURL || parsedSpaceData?.image_url}
             alt="Space listing image"
           ></img>
         ) : null}
         {/* <ErrorMessage errors={["error"]} name="new_image_file" /> */}
 
-        <Button type="submit">Submit</Button>
+        <Button
+          disabled={(!form.formState.isDirty && !uploadImageRaw) || submitted}
+          type="submit"
+        >
+          {submitted ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          Submit
+        </Button>
       </form>
     </Form>
   );

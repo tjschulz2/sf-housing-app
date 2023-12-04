@@ -202,6 +202,62 @@ export async function getUserSpaceListing(userID: string) {
   }
 }
 
+export async function saveUserSpaceListing(
+  // spaceListingData: SpaceListingType,
+  // spaceListingData: Omit<
+  //   SpaceListingType,
+  //   "created_at | location | room_price_range | profile_id"
+  // >,
+  spaceListingData: Partial<SpaceListingType>,
+  userID: string
+) {
+  const existingSpaceData = await getUserSpaceListing(userID);
+  if (existingSpaceData) {
+    const { error } = await supabase
+      .from("communities")
+      .update(spaceListingData)
+      .eq("user_id", userID);
+    if (error) {
+      return { success: false, message: error };
+    }
+  } else {
+    const { error } = await supabase.from("countries").insert(spaceListingData);
+    if (error) {
+      return { success: false, message: error };
+    }
+  }
+  return { success: true };
+}
+
+export const saveCommunityImage = async (image: File, userID: string) => {
+  const { data, error } = await supabase.storage
+    .from("community_profile_pictures")
+    .upload(`${userID}/space.png`, image);
+
+  if (data) {
+    const {
+      data: { publicUrl },
+    } = supabase.storage
+      .from("community_profile_pictures")
+      .getPublicUrl(data.path);
+    return { status: "success", publicURL: publicUrl };
+  } else {
+    return { status: "error", error };
+  }
+};
+
+export const deleteCommunityImage = async (userID: string) => {
+  const { data, error } = await supabase.storage
+    .from("community_profile_pictures")
+    .remove([`${userID}/space.png`]);
+
+  if (data) {
+    return { status: "success", data };
+  } else {
+    return { status: "error", error };
+  }
+};
+
 // ----- Referrals -----
 
 // export async function genReferral(userID: string) {

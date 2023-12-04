@@ -72,3 +72,5 @@ type CommunityProfile = Database["public"]["Tables"]["communities"]["Row"] & {
     twitter_handle: string | null;
   } | null;
 };
+
+type SpaceListingType = Database["public"]["Tables"]["communities"]["Row"];

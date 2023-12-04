@@ -60,7 +60,7 @@ export default function EditSpaceListingDialog({
           </DialogDescription>
         </DialogHeader>
         {/* <SearcherProfileForm handleSuccess={handleSuccessfulSubmission} /> */}
-        <SpaceListingForm />
+        <SpaceListingForm closeDialog={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
