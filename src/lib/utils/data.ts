@@ -206,6 +206,7 @@ export async function saveUserSpaceListing(
   spaceListingData: Partial<SpaceListingType>,
   userID: string
 ) {
+  console.log("values to be submitted to db: ", spaceListingData);
   const existingSpaceData = await getUserSpaceListing(userID);
   if (existingSpaceData) {
     const { error } = await supabase

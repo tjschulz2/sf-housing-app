@@ -67,16 +67,31 @@ const formSchema = z.object({
     .min(0, {
       message: "Number of residents is too small",
     }),
+
   location: z.coerce.string().min(1, {
     message: "Must select a location.",
   }),
+
+  // location: z.preprocess(
+  //   (val) => (val ? String(val) : "1"),
+  //   z.string().min(1, {
+  //     message: "Must select a location.",
+  //   })
+  // ),
   room_price_range: z.coerce.string().min(1, {
     message: "Must select a price range.",
   }),
-  website_url: z.preprocess(
-    (val) => (val === null ? "" : val),
-    z.string().optional()
-  ),
+  website_url: z.preprocess((val) => (!val ? "" : val), z.string().optional()),
+  contact_phone: z.string().optional(),
+  contact_email: z.string().optional(),
+  // contact_email: z.preprocess(
+  //   (val) => (!val ? undefined : val),
+  //   z
+  //     .string()
+  //     .email()
+  //     .optional()
+  // ),
+  // contact_email: z.string().email().catch(""),
   image_url: z.preprocess(
     (val) => (val === null ? "" : val),
     z.string().optional()
@@ -105,10 +120,10 @@ export default function SpaceListingForm({
 }) {
   const { userSession } = useAuthContext();
   const [uploadImageRaw, setUploadImageRaw] = useState<File | null>(null);
-
   const [uploadImageDataURL, setUploadImageDataURL] = useState<string | null>(
     null
   );
+  const [validImageUpload, setValidImageUpload] = useState(true);
   const { userSpaceListing, pullUserSpaceListing, pullSpaceListings } =
     useSpacesContext();
   const [submitted, setSubmitted] = useState(false);
@@ -162,7 +177,7 @@ export default function SpaceListingForm({
       // Converting values back to number for DB save. They're used as string for client form manipulation.
       {
         ...listingData,
-        location: Number(listingData.location),
+        location: Number(listingData.location) || null,
         room_price_range: Number(listingData.room_price_range),
         // website_url: listingData.website_url ?? null,
       },
@@ -186,15 +201,13 @@ export default function SpaceListingForm({
 
   const handleImageSelection = useCallback(async (file: File | undefined) => {
     if (file) {
-      // form.setValue("new_image_file", file);
       if (!validateFile(file)) {
-        // form.setError("new_image_file", {
-        //   type: "custom",
-        //   message: "invalid YO",
-        // });
+        console.error("validation issue");
+        setValidImageUpload(false);
+        return;
       }
       setUploadImageRaw(file);
-      // instead of settign raw image to state, validate file here and set image validity status to state. use this to disable button, show error, etc.
+      // instead of setting raw image to state, validate file here and set image validity status to state. use this to disable button, show error, etc.
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -340,12 +353,18 @@ export default function SpaceListingForm({
               <FormMessage />
               <FormDescription>
                 {parsedSpaceData?.image_url
-                  ? "This will replace your existing image"
-                  : "Upload a photo for your space"}
+                  ? "This will replace your existing image."
+                  : "Upload a photo for your space."}
               </FormDescription>
             </FormItem>
           )}
         />
+        {!validImageUpload ? (
+          <p className="text-red-500 text-sm">
+            Invalid file type. Please upload an image of type PNG or JPG/JPEG,
+            under 10MB.
+          </p>
+        ) : null}
         {uploadImageDataURL || parsedSpaceData?.image_url ? (
           <img
             className="rounded-full w-1/3 mx-auto"
@@ -407,8 +426,40 @@ export default function SpaceListingForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="contact_phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contact phone number (optional)</FormLabel>
+              <FormControl>
+                <Input type="tel" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="contact_email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contact email (optional)</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button
-          disabled={(!form.formState.isDirty && !uploadImageRaw) || submitted}
+          disabled={
+            (!form.formState.isDirty && !uploadImageRaw) ||
+            submitted ||
+            !validImageUpload
+          }
           type="submit"
         >
           {submitted ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
