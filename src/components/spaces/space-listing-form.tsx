@@ -73,8 +73,16 @@ const formSchema = z.object({
   room_price_range: z.coerce.string().min(1, {
     message: "Must select a price range.",
   }),
-  website_url: z.string().nullable().optional(),
-  image_url: z.string().nullable().optional(),
+  website_url: z.preprocess(
+    (val) => (val === null ? "" : val),
+    z.string().optional()
+  ),
+  image_url: z.preprocess(
+    (val) => (val === null ? "" : val),
+    z.string().optional()
+  ),
+  // website_url: z.string().nullable().optional(),
+  // image_url: z.string().nullable().optional(),
   // new_image_file: z
   //   // see if can make this work?
   //   .preprocess((fileList) => fileList?.[0], z.instanceof(File))
@@ -142,8 +150,12 @@ export default function SpaceListingForm({
         uploadImageRaw,
         userSession.userID
       );
-      console.log(imageSaveResult);
-      listingData.image_url = imageSaveResult.publicURL;
+
+      if (imageSaveResult.success) {
+        listingData.image_url = `${
+          imageSaveResult.publicURL
+        }?timestamp=${Date.now()}`;
+      }
     }
 
     const listingSaveResult = await saveUserSpaceListing(

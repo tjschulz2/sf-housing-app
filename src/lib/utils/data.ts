@@ -253,9 +253,9 @@ export const saveCommunityImage = async (image: File, userID: string) => {
     } = supabase.storage
       .from("community_profile_pictures")
       .getPublicUrl(data.path);
-    return { status: "success", publicURL: publicUrl };
+    return { success: true, publicURL: publicUrl };
   } else {
-    return { status: "error", error };
+    return { success: false, error };
   }
 };
 
