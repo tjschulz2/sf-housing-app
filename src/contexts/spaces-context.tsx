@@ -1,12 +1,20 @@
 "use client";
 
-import { getUserSpaceListing } from "@/lib/utils/data";
-import { createContext, useContext, useEffect, useState } from "react";
+import { getCommunities, getUserSpaceListing } from "@/lib/utils/data";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuthContext } from "@/contexts/auth-context";
 
 type SpacesContextType = {
   userSpaceListing: SpaceListingType | null;
   pullUserSpaceListing: (userID: string) => Promise<void>;
+  spaceListings: SpaceListingWithUserData[] | null;
+  pullSpaceListings: () => Promise<void>;
 };
 
 const SpacesContext = createContext<SpacesContextType | null>(null);
@@ -18,24 +26,42 @@ export default function SpacesContextProvider({
 }) {
   const [userSpaceListing, setUserSpaceListing] =
     useState<SpaceListingType | null>(null);
+  const [spaceListings, setSpaceListings] = useState<
+    SpaceListingWithUserData[] | null
+  >(null);
 
   const { authLoading, userData } = useAuthContext();
 
-  async function pullUserSpaceListing(userID: string) {
-    const spaceListing = await getUserSpaceListing(userID);
-    if (spaceListing) {
-      setUserSpaceListing(spaceListing);
+  const pullUserSpaceListing = useCallback(
+    async (userID: string) => {
+      const spaceListing = await getUserSpaceListing(userID);
+      setUserSpaceListing(spaceListing || null);
+    },
+    [setUserSpaceListing]
+  );
+
+  const pullSpaceListings = useCallback(async () => {
+    const spaces = await getCommunities();
+    if (spaces) {
+      setSpaceListings(spaces);
     }
-  }
+  }, []);
 
   useEffect(() => {
     if (!authLoading && userData) {
       pullUserSpaceListing(userData.user_id);
     }
-  }, [authLoading, userData]);
+  }, [authLoading, pullUserSpaceListing, userData]);
 
   return (
-    <SpacesContext.Provider value={{ userSpaceListing, pullUserSpaceListing }}>
+    <SpacesContext.Provider
+      value={{
+        userSpaceListing,
+        pullUserSpaceListing,
+        spaceListings,
+        pullSpaceListings,
+      }}
+    >
       {children}
     </SpacesContext.Provider>
   );

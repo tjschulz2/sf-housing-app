@@ -8,36 +8,42 @@ import Link from "next/link";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
 import { useSpacesContext } from "@/contexts/spaces-context";
+import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 
 const Directory = () => {
   const [profiles, setProfiles] = useState<CommunityProfile[]>();
-  const { userSpaceListing, pullUserSpaceListing } = useSpacesContext();
+  const { userSpaceListing, pullSpaceListings, spaceListings } =
+    useSpacesContext();
+
+  // useEffect(() => {
+  //   async function pullProfiles() {
+  //     const profiles = await getCommunities();
+  //     if (profiles) {
+  //       setProfiles(profiles);
+  //     }
+  //   }
+  //   pullProfiles();
+  // }, []);
 
   useEffect(() => {
-    async function pullProfiles() {
-      const profiles = await getCommunities();
-      if (profiles) {
-        setProfiles(profiles);
-      }
-    }
-    pullProfiles();
-  }, []);
+    pullSpaceListings();
+  }, [pullSpaceListings]);
 
-  const todayProfiles = profiles?.filter(
+  const todayProfiles = spaceListings?.filter(
     (profile) =>
       differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
   );
-  const thisWeekProfiles = profiles?.filter(
+  const thisWeekProfiles = spaceListings?.filter(
     (profile) =>
       differenceInDays(new Date(), new Date(profile.created_at || "")) < 7 &&
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 1
   );
-  const thisMonthProfiles = profiles?.filter(
+  const thisMonthProfiles = spaceListings?.filter(
     (profile) =>
       differenceInDays(new Date(), new Date(profile.created_at || "")) < 31 &&
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 7
   );
-  const olderProfiles = profiles?.filter(
+  const olderProfiles = spaceListings?.filter(
     (profile) =>
       differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
   );
@@ -52,12 +58,14 @@ const Directory = () => {
             Do you have a vacant room, sublet, or coliving house?
           </h2>
           <span className={styles.addInfoText}>
-            Add your information and we will add you to the Existing spaces
-            directory so you can be discovered by people looking for housing
+            Add your space to be discovered by people looking for housing
           </span>
-          <Link className={styles.addMeButton} href="/community-form">
+          <EditSpaceListingDialog newListing={true}>
+            <button className={styles.addMeButton}> Add my space</button>
+          </EditSpaceListingDialog>
+          {/* <Link className={styles.addMeButton} href="/community-form">
             Add my space
-          </Link>
+          </Link> */}
         </div>
       )}
       {todayProfiles && todayProfiles.length > 0 && (

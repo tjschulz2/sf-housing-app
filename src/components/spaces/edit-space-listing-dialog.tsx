@@ -22,29 +22,12 @@ import SpaceListingForm from "./space-listing-form";
 export default function EditSpaceListingDialog({
   children,
   newListing = false,
-}: // refreshProfileData,
-{
+}: {
   children: ReactNode;
-  // refreshProfileData: () => void;
   newListing?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
-
-  async function handleSuccessfulSubmission(success: boolean) {
-    // const session = await getUserSession();
-    // if (!session) {
-    //   return;
-    // }
-    // toast({
-    //   title: "Successfully updated profile data",
-    // });
-
-    // refreshProfileData();
-    // await refreshUserHousingSearchProfileData?.(session.userID);
-    setOpen(false);
-  }
-
+  console.log("dialog render!");
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -59,7 +42,6 @@ export default function EditSpaceListingDialog({
               : "Make changes to your space here"}
           </DialogDescription>
         </DialogHeader>
-        {/* <SearcherProfileForm handleSuccess={handleSuccessfulSubmission} /> */}
         <SpaceListingForm closeDialog={() => setOpen(false)} />
       </DialogContent>
     </Dialog>

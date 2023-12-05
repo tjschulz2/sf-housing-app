@@ -44,6 +44,14 @@ function validateFile(file: File | null | undefined) {
   return !file || (validTypes.includes(file.type) && file.size <= maxSize);
 }
 
+const blankDefaultValues = {
+  name: "",
+  description: "",
+  resident_count: 0,
+  location: "",
+  room_price_range: "",
+};
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "The name of your space must be at least 2 characters.",
@@ -51,14 +59,22 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "Your space's description must be at least 5 characters.",
   }),
-  resident_count: z.coerce.number().max(20000, {
-    message: "Number of residents is too large",
+  resident_count: z.coerce
+    .number()
+    .max(20000, {
+      message: "Number of residents is too large",
+    })
+    .min(0, {
+      message: "Number of residents is too small",
+    }),
+  location: z.coerce.string().min(1, {
+    message: "Must select a location.",
   }),
-  location: z.coerce.number().min(0, {
-    message: "Please select a location",
+  room_price_range: z.coerce.string().min(1, {
+    message: "Must select a price range.",
   }),
-  website_url: z.string().optional(),
-  image_url: z.string().url().optional(),
+  website_url: z.string().nullable().optional(),
+  image_url: z.string().nullable().optional(),
   // new_image_file: z
   //   // see if can make this work?
   //   .preprocess((fileList) => fileList?.[0], z.instanceof(File))
@@ -85,20 +101,25 @@ export default function SpaceListingForm({
   const [uploadImageDataURL, setUploadImageDataURL] = useState<string | null>(
     null
   );
-  const { userSpaceListing } = useSpacesContext();
+  const { userSpaceListing, pullUserSpaceListing, pullSpaceListings } =
+    useSpacesContext();
   const [submitted, setSubmitted] = useState(false);
 
   const parseResult = formSchema.safeParse(userSpaceListing);
   const parsedSpaceData = parseResult.success ? parseResult.data : null;
-  // 1. Define your form.
+  if (!parseResult.success) {
+    console.log({ parseResult });
+  }
+  console.log({ userSpaceListing });
+  console.log({ parsedSpaceData });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: parsedSpaceData ?? {},
+    defaultValues: parsedSpaceData ?? blankDefaultValues,
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    console.log({ values });
     setSubmitted(true);
     let listingData = { ...values };
 
@@ -113,21 +134,26 @@ export default function SpaceListingForm({
         console.error("File validation failed");
         return;
       }
-      if (values.image_url) {
-        // Delete existing image from storage
-        await deleteCommunityImage(userSession.userID);
-      }
+      // if (values.image_url) {
+      //   await deleteCommunityImage(userSession.userID);
+      // }
       // Save current user-provided image
       const imageSaveResult = await saveCommunityImage(
         uploadImageRaw,
         userSession.userID
       );
       console.log(imageSaveResult);
-      listingData = { ...listingData, image_url: imageSaveResult.publicURL };
+      listingData.image_url = imageSaveResult.publicURL;
     }
 
     const listingSaveResult = await saveUserSpaceListing(
-      listingData,
+      // Converting values back to number for DB save. They're used as string for client form manipulation.
+      {
+        ...listingData,
+        location: Number(listingData.location),
+        room_price_range: Number(listingData.room_price_range),
+        // website_url: listingData.website_url ?? null,
+      },
       userSession.userID
     );
     if (listingSaveResult.success) {
@@ -139,6 +165,8 @@ export default function SpaceListingForm({
         title: "Error: failed to update space",
       });
     }
+    pullUserSpaceListing(userSession.userID);
+    pullSpaceListings();
     closeDialog();
 
     console.log(values);
@@ -211,31 +239,52 @@ export default function SpaceListingForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Location</FormLabel>
-              {/* <Select onValueChange={(val) => field.onChange(Number(val))}> */}
-              <Select onValueChange={(val) => field.onChange(Number(val))}>
-                <FormControl>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {/* <SelectLabel>San Francisco</SelectLabel> */}
-                    <SelectItem value="1">San Francisco</SelectItem>
-                    <SelectItem value="7">Lower Haight</SelectItem>
-                    <SelectItem value="2">Berkeley</SelectItem>
-                    <SelectItem value="3">Oakland</SelectItem>
-                    <SelectItem value="4">Peninsula</SelectItem>
-                    <SelectItem value="5">South Bay</SelectItem>
-                    <SelectItem value="6">North Bay</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>San Francisco</SelectLabel>
+                      <SelectItem value="1">Lower Haight</SelectItem>
+                      <SelectItem value="2">Hayes Valley</SelectItem>
+                      <SelectItem value="3">Alamo Square</SelectItem>
+                      <SelectItem value="4">Mission</SelectItem>
+                      <SelectItem value="5">SoMa</SelectItem>
+                      <SelectItem value="6">Pacific Heights</SelectItem>
+                      <SelectItem value="7">NoPa</SelectItem>
+                      <SelectItem value="8">San Francisco - Other</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>East Bay</SelectLabel>
+                      <SelectItem value="9">Berkeley</SelectItem>
+                      <SelectItem value="10">Oakland</SelectItem>
+                      <SelectItem value="11">East Bay - Other</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Peninsula</SelectLabel>
+                      <SelectItem value="12">Hillsborough</SelectItem>
+                      <SelectItem value="13">Menlo Park</SelectItem>
+                      <SelectItem value="14">Palo Alto</SelectItem>
+                      <SelectItem value="15">Peninsula - Other</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Other</SelectLabel>
+                      <SelectItem value="16">South Bay</SelectItem>
+                      <SelectItem value="17">North Bay</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="resident_count"
@@ -287,13 +336,65 @@ export default function SpaceListingForm({
         />
         {uploadImageDataURL || parsedSpaceData?.image_url ? (
           <img
-            className="rounded-full w-1/2"
+            className="rounded-full w-1/3 mx-auto"
             src={uploadImageDataURL || parsedSpaceData?.image_url}
             alt="Space listing image"
           ></img>
         ) : null}
-        {/* <ErrorMessage errors={["error"]} name="new_image_file" /> */}
-
+        <FormField
+          control={form.control}
+          name="room_price_range"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Room price</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-col space-y-1"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="2" />
+                    </FormControl>
+                    <FormLabel className="font-normal">{"< $1500"}</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="3" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      {"$1500 - $2000"}
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="4" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      {"$2001 - $2500"}
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="5" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      {"$2501 - $3000"}
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="6" />
+                    </FormControl>
+                    <FormLabel className="font-normal">{"> $2500"}</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
           disabled={(!form.formState.isDirty && !uploadImageRaw) || submitted}
           type="submit"

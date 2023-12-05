@@ -10,11 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
-import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { useToast } from "@/components/ui/use-toast";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
+import DeleteSpaceListingDialog from "@/components/spaces/delete-space-listing-dialog";
 
 export default function ActiveSpaceBanner({}: //   refreshSpacesData,
 {
@@ -47,13 +46,12 @@ export default function ActiveSpaceBanner({}: //   refreshSpacesData,
               Edit listing
             </Button>
           </EditSpaceListingDialog>
-          {/* </EditSearcherProfileDialog> */}
-          {/* <DeleteSearcherProfileDialog refreshProfileData={refreshProfileData}> */}
-          <Button className="rounded-3xl" variant="secondary">
-            <Trash size="16" className="mr-2" />
-            Delete listing
-          </Button>
-          {/* </DeleteSearcherProfileDialog> */}
+          <DeleteSpaceListingDialog>
+            <Button className="rounded-3xl" variant="secondary">
+              <Trash size="16" className="mr-2" />
+              Delete listing
+            </Button>
+          </DeleteSpaceListingDialog>
         </div>
       </CardFooter>
     </Card>

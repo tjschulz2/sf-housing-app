@@ -203,11 +203,6 @@ export async function getUserSpaceListing(userID: string) {
 }
 
 export async function saveUserSpaceListing(
-  // spaceListingData: SpaceListingType,
-  // spaceListingData: Omit<
-  //   SpaceListingType,
-  //   "created_at | location | room_price_range | profile_id"
-  // >,
   spaceListingData: Partial<SpaceListingType>,
   userID: string
 ) {
@@ -221,7 +216,9 @@ export async function saveUserSpaceListing(
       return { success: false, message: error };
     }
   } else {
-    const { error } = await supabase.from("countries").insert(spaceListingData);
+    const { error } = await supabase
+      .from("communities")
+      .insert({ ...spaceListingData, user_id: userID });
     if (error) {
       return { success: false, message: error };
     }
@@ -229,10 +226,26 @@ export async function saveUserSpaceListing(
   return { success: true };
 }
 
+export async function deleteSpaceListing(userID: string) {
+  const { error } = await supabase
+    .from("communities")
+    .delete()
+    .eq("user_id", userID);
+
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else {
+    return { success: true };
+  }
+}
+
 export const saveCommunityImage = async (image: File, userID: string) => {
   const { data, error } = await supabase.storage
     .from("community_profile_pictures")
-    .upload(`${userID}/space.png`, image);
+    .upload(`${userID}/space.png`, image, {
+      upsert: true,
+    });
 
   if (data) {
     const {

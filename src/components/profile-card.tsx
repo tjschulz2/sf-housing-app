@@ -357,9 +357,9 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
                   alt=""
                   src="/threepeople.svg"
                 />
-                <p className={styles.sanFrancisco} id="location">
-                  {profile.resident_count
-                    ? housingMap.housemates[profile.resident_count]
+                <p className={styles.sanFrancisco}>
+                  {typeof profile.resident_count === "number"
+                    ? `${profile.resident_count.toString()} roommates`
                     : null}
                 </p>
               </div>
