@@ -158,6 +158,9 @@ const MyForm: NextPage = () => {
     // This is the code that will be executed when the "Yes" button is clicked
     try {
       const session = await getUserSession();
+      if (!session?.userID) {
+        return;
+      }
       const twitterImageUrl = session?.twitterAvatarURL;
       let higherResImageUrl = twitterImageUrl.replace("_normal", "_400x400");
       if (!selectedImage) {
@@ -169,7 +172,7 @@ const MyForm: NextPage = () => {
           link,
           higherResImageUrl,
           contactMethod,
-          session?.userID,
+          session.userID,
           session?.twitterHandle,
           phone,
           location
