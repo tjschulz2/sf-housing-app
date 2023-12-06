@@ -101,13 +101,15 @@ export async function getOrganizerProfiles(
   }
 }
 
-export async function getCommunities(startIdx: number = 0, count: number = 25) {
-  const { data, error } = await supabase.from("communities").select(
-    `
+export async function getCommunities() {
+  const { data, error } = await supabase
+    .from("communities")
+    .select(
+      `
       *, user:users(name, twitter_handle, twitter_avatar_url)
     `
-  );
-  // .range(startIdx, startIdx + count);
+    )
+    .order("last_updated_date", { ascending: false });
 
   if (error) {
     console.error(error);

@@ -11,19 +11,8 @@ import { useSpacesContext } from "@/contexts/spaces-context";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 
 const Directory = () => {
-  const [profiles, setProfiles] = useState<CommunityProfile[]>();
   const { userSpaceListing, pullSpaceListings, spaceListings } =
     useSpacesContext();
-
-  // useEffect(() => {
-  //   async function pullProfiles() {
-  //     const profiles = await getCommunities();
-  //     if (profiles) {
-  //       setProfiles(profiles);
-  //     }
-  //   }
-  //   pullProfiles();
-  // }, []);
 
   useEffect(() => {
     pullSpaceListings();
@@ -31,21 +20,27 @@ const Directory = () => {
 
   const todayProfiles = spaceListings?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 1
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+      1
   );
   const thisWeekProfiles = spaceListings?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 7 &&
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 1
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+        7 &&
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+        1
   );
   const thisMonthProfiles = spaceListings?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) < 31 &&
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 7
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
+        31 &&
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+        7
   );
   const olderProfiles = spaceListings?.filter(
     (profile) =>
-      differenceInDays(new Date(), new Date(profile.created_at || "")) >= 31
+      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
+      31
   );
 
   return (
