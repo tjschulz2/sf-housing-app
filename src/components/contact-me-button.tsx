@@ -7,6 +7,7 @@ import { LucideIcon, Mail, MessageCircle, Twitter } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
+import { useAuthContext } from "@/contexts/auth-context";
 
 function LinkButton({
   link,
@@ -36,20 +37,19 @@ export default function ContactMeButton({
   phoneNum,
   email,
   twitter,
-  curUserName,
 }: {
   phoneNum?: string | null;
   email?: string | null;
   twitter?: string | null;
-  curUserName?: string;
 }) {
-  const userFirstName = curUserName ? curUserName.split(" ")[0] : "__";
+  const { userData } = useAuthContext();
+  const userFirstName = userData?.name ? userData.name.split(" ")[0] : "____";
   const textMessage = encodeURIComponent(
     `👋 Hey, this is ${userFirstName}!\nI saw your profile on DirectorySF, and wanted to reach out`
   );
   const phoneLink = phoneNum ? `sms:${phoneNum}&body=${textMessage}` : null;
   const emailLink = email ? `mailto:${email}` : null;
-  const twitterLink = `https://x.com/${twitter}`;
+  const twitterLink = twitter ? `https://x.com/${twitter}` : null;
 
   return (
     <Popover>

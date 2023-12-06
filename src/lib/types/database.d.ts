@@ -11,48 +11,58 @@ interface Database {
     Tables: {
       communities: {
         Row: {
+          contact_email: string | null;
+          contact_phone: string | null;
           created_at: string | null;
           description: string | null;
           image_url: string | null;
+          last_updated_date: string | null;
           location: number | null;
           name: string | null;
           pref_contact_method: string | null;
           profile_id: number;
           resident_count: number | null;
           room_price_range: number | null;
-          user_id: string | null;
+          user_id: string;
           website_url: string | null;
         };
         Insert: {
+          contact_email?: string | null;
+          contact_phone?: string | null;
           created_at?: string | null;
           description?: string | null;
           image_url?: string | null;
+          last_updated_date?: string | null;
           location?: number | null;
           name?: string | null;
           pref_contact_method?: string | null;
           profile_id?: number;
           resident_count?: number | null;
           room_price_range?: number | null;
-          user_id?: string | null;
+          user_id: string;
           website_url?: string | null;
         };
         Update: {
+          contact_email?: string | null;
+          contact_phone?: string | null;
           created_at?: string | null;
           description?: string | null;
           image_url?: string | null;
+          last_updated_date?: string | null;
           location?: number | null;
           name?: string | null;
           pref_contact_method?: string | null;
           profile_id?: number;
           resident_count?: number | null;
           room_price_range?: number | null;
-          user_id?: string | null;
+          user_id?: string;
           website_url?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: "communities_user_id_fkey";
             columns: ["user_id"];
+            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -99,12 +109,14 @@ interface Database {
           {
             foreignKeyName: "follow_intersections_user_1_id_fkey";
             columns: ["user_1_id"];
+            isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           },
           {
             foreignKeyName: "follow_intersections_user_2_id_fkey";
             columns: ["user_2_id"];
+            isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -157,6 +169,7 @@ interface Database {
           {
             foreignKeyName: "housing_search_profiles_user_id_fkey";
             columns: ["user_id"];
+            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -200,6 +213,7 @@ interface Database {
           {
             foreignKeyName: "organizer_profiles_user_id_fkey";
             columns: ["user_id"];
+            isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -222,6 +236,7 @@ interface Database {
           {
             foreignKeyName: "referral_recipients_referral_id_fkey";
             columns: ["referral_id"];
+            isOneToOne: false;
             referencedRelation: "referrals";
             referencedColumns: ["referral_id"];
           }
@@ -253,6 +268,7 @@ interface Database {
           {
             foreignKeyName: "referrals_originator_id_fkey";
             columns: ["originator_id"];
+            isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -327,3 +343,83 @@ interface Database {
     };
   };
 }
+
+type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : never;
+
+type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : never;
+
+type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : never;
+
+type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never;

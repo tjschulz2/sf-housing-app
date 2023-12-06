@@ -5,7 +5,6 @@ import deriveActivityLevel, { housingMap } from "../lib/configMaps";
 import { cleanURL, addProtocolToURL, dateDiff } from "../lib/utils/general";
 import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from "../images/twitter-logo.svg";
-// import ContactMeButton from "./contactme-button/contactme-button";
 import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
 import { getReferrerName } from "../lib/utils/data";
@@ -179,7 +178,6 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
                     : null
                 }
                 twitter={profile.user?.twitter_handle}
-                curUserName={curUserName}
               />
               {profile.link ? (
                 <a
@@ -311,19 +309,11 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
             ) : null}
 
             <div className={styles.frameGroup}>
-              {/* <ContactMeButton contactMethod={contactMethod} color={color} /> */}
-              <Link
-                href={`https://x.com/${profile.user?.twitter_handle}`}
-                target="_blank"
-                className="w-full"
-              >
-                <Button
-                  variant="outline"
-                  className="rounded-3xl font-bold w-full text-md"
-                >
-                  Contact me
-                </Button>
-              </Link>
+              <ContactMeButton
+                phoneNum={profile.contact_phone}
+                email={profile.contact_email}
+                twitter={profile.user?.twitter_handle}
+              />
 
               {profile.website_url ? (
                 <a
@@ -357,9 +347,9 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
                   alt=""
                   src="/threepeople.svg"
                 />
-                <p className={styles.sanFrancisco} id="location">
-                  {profile.resident_count
-                    ? housingMap.housemates[profile.resident_count]
+                <p className={styles.sanFrancisco}>
+                  {typeof profile.resident_count === "number"
+                    ? `${profile.resident_count.toString()} housemates`
                     : null}
                 </p>
               </div>

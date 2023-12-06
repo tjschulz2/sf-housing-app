@@ -152,7 +152,7 @@ const InviteButton = () => {
   return (
     <>
       <Dialog onOpenChange={handleDialogOpen}>
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button className="rounded-3xl p-6">
             <UserPlus className="mr-2 h-4 w-4" /> Invite a friend
           </Button>

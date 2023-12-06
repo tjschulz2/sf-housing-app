@@ -5,6 +5,7 @@ import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 import { Suspense } from "react";
 import Script from "next/script";
 const GTM_ID = "GTM-KBH5Q942";
+import AuthContextProvider from "@/contexts/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
@@ -53,8 +54,10 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Suspense fallback={<LoadingSpinner />}>
-          {children}
-          <Toaster />
+          <AuthContextProvider>
+            {children}
+            <Toaster />
+          </AuthContextProvider>
         </Suspense>
       </body>
       <Script id="google-tag-manager" strategy="afterInteractive">

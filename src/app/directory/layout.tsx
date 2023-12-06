@@ -16,6 +16,8 @@ import { getUserData, getUserHousingSearchProfile } from "../../lib/utils/data";
 import Dropdown from "../../components/dropdown/dropdown";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
+import { useAuthContext } from "@/contexts/auth-context";
+import SpacesContextProvider from "@/contexts/spaces-context";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -43,7 +45,6 @@ export default function DirectoryLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
   const [userHousingSearchProfile, setUserHousingSearchProfile] =
     useState<UserHousingSearchProfile>(null);
   const router = useRouter();
@@ -53,40 +54,62 @@ export default function DirectoryLayout({
   const [searcherProfilesFilter, setSearcherProfilesFilter] =
     useState<SearcherProfilesFilterType>({});
 
+  const { userData, userSession, authLoading } = useAuthContext();
+
   useEffect(() => {
-    async function pullUserData() {
-      const userSession = await getUserSession();
-      if (!userSession) {
-        router.replace("/");
-        return;
-      }
+    async function handleAuthCheck() {
+      if (!authLoading) {
+        if (!userSession) {
+          router.replace("/");
+          return;
+        }
 
-      const userData = await getUserData(userSession.userID);
-      if (!userData) {
-        await signout();
-        router.replace("/");
-        return;
-      }
-      if (!userData.contact_email) {
-        router.push("/email-signup");
-      }
+        if (!userData) {
+          await signout();
+          router.replace("/");
+          return;
+        }
 
-      await refreshUserHousingSearchProfileData(userSession.userID);
-
-      const user = {
-        twitterAvatarUrl: userSession.twitterAvatarURL,
-      };
-      setUser(user);
+        await refreshUserHousingSearchProfileData(userSession.userID);
+      }
     }
-    pullUserData();
-  }, [router]);
+    handleAuthCheck();
+  }, [authLoading, router, userData, userSession]);
+
+  // useEffect(() => {
+  //   async function pullUserData() {
+  //     const userSession = await getUserSession();
+  //     if (!userSession) {
+  //       router.replace("/");
+  //       return;
+  //     }
+
+  //     const userData = await getUserData(userSession.userID);
+  //     if (!userData) {
+  //       await signout();
+  //       router.replace("/");
+  //       return;
+  //     }
+  //     if (!userData.contact_email) {
+  //       router.push("/email-signup");
+  //     }
+
+  //     await refreshUserHousingSearchProfileData(userSession.userID);
+
+  //     const user = {
+  //       twitterAvatarUrl: userSession.twitterAvatarURL,
+  //     };
+  //     setUser(user);
+  //   }
+  //   pullUserData();
+  // }, [router]);
 
   async function refreshUserHousingSearchProfileData(userID: string) {
     const userSearchProfile = await getUserHousingSearchProfile(userID);
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
-  if (user) {
+  if (userSession && userData) {
     return (
       <div className={styles.container}>
         <div>
@@ -95,7 +118,7 @@ export default function DirectoryLayout({
               <h1 className="text-3xl font-bold my-4">Directory</h1>
               <div className={styles.inviteSettingsContainer}>
                 <InviteButton />
-                {user && <Dropdown userAvatarURL={user.twitterAvatarUrl} />}
+                <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
               </div>
             </div>
             <Navbar />
@@ -110,7 +133,9 @@ export default function DirectoryLayout({
               refreshUserHousingSearchProfileData,
             }}
           >
-            <div className={styles.directoryContainer}>{children}</div>
+            <SpacesContextProvider>
+              <div className={styles.directoryContainer}>{children}</div>
+            </SpacesContextProvider>
           </ProfilesContext.Provider>
         </div>
         <Footer />

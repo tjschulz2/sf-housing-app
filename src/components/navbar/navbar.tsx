@@ -14,7 +14,7 @@ const navConfig = [
     title: "Starting a new house",
   },
   {
-    path: "/directory/existing-communities",
+    path: "/directory/spaces",
     title: "Existing spaces",
   },
 ];
