@@ -219,7 +219,11 @@ export async function saveUserSpaceListing(
   } else {
     const { error } = await supabase
       .from("communities")
-      .insert({ ...spaceListingData, user_id: userID });
+      .insert({
+        ...spaceListingData,
+        user_id: userID,
+        last_updated_date: getCurrentTimestamp(),
+      });
     if (error) {
       return { success: false, message: error };
     }

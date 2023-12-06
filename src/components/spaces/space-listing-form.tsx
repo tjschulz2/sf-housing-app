@@ -395,7 +395,7 @@ export default function SpaceListingForm({
                       <RadioGroupItem value="3" />
                     </FormControl>
                     <FormLabel className="font-normal">
-                      {"$1500 - $2000"}
+                      {"$1500 - $1999"}
                     </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -403,7 +403,7 @@ export default function SpaceListingForm({
                       <RadioGroupItem value="4" />
                     </FormControl>
                     <FormLabel className="font-normal">
-                      {"$2001 - $2500"}
+                      {"$2000 - $2499"}
                     </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -411,14 +411,14 @@ export default function SpaceListingForm({
                       <RadioGroupItem value="5" />
                     </FormControl>
                     <FormLabel className="font-normal">
-                      {"$2501 - $3000"}
+                      {"$2500 - $3000"}
                     </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="6" />
                     </FormControl>
-                    <FormLabel className="font-normal">{"> $2500"}</FormLabel>
+                    <FormLabel className="font-normal">{"> $3000"}</FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>

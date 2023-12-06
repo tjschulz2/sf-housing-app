@@ -16,6 +16,7 @@ interface Database {
           created_at: string | null;
           description: string | null;
           image_url: string | null;
+          last_updated_date: string | null;
           location: number | null;
           name: string | null;
           pref_contact_method: string | null;
@@ -31,6 +32,7 @@ interface Database {
           created_at?: string | null;
           description?: string | null;
           image_url?: string | null;
+          last_updated_date?: string | null;
           location?: number | null;
           name?: string | null;
           pref_contact_method?: string | null;
@@ -46,6 +48,7 @@ interface Database {
           created_at?: string | null;
           description?: string | null;
           image_url?: string | null;
+          last_updated_date?: string | null;
           location?: number | null;
           name?: string | null;
           pref_contact_method?: string | null;
