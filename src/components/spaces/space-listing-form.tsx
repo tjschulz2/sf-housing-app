@@ -82,8 +82,14 @@ const formSchema = z.object({
     message: "Must select a price range.",
   }),
   website_url: z.preprocess((val) => (!val ? "" : val), z.string().optional()),
-  contact_phone: z.string().optional(),
-  contact_email: z.string().optional(),
+  contact_phone: z.preprocess(
+    (val) => (!val ? "" : val),
+    z.string().optional()
+  ),
+  contact_email: z.preprocess(
+    (val) => (!val ? "" : val),
+    z.string().optional()
+  ),
   // contact_email: z.preprocess(
   //   (val) => (!val ? undefined : val),
   //   z
@@ -331,55 +337,6 @@ export default function SpaceListingForm({
         />
         <FormField
           control={form.control}
-          name="website_url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Website (optional)</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          // control={form.control}
-          name="new_image_file"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image (optional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  {...field}
-                  onChange={(e) => handleImageSelection(e.target.files?.[0])}
-                />
-              </FormControl>
-              <FormMessage />
-              <FormDescription>
-                {parsedSpaceData?.image_url
-                  ? "This will replace your existing image."
-                  : "Upload a photo for your space."}
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        {!validImageUpload ? (
-          <p className="text-red-500 text-sm">
-            Invalid file type. Please upload an image of type PNG or JPG/JPEG,
-            under 10MB.
-          </p>
-        ) : null}
-        {uploadImageDataURL || parsedSpaceData?.image_url ? (
-          <img
-            className="rounded-full w-1/3 mx-auto"
-            src={uploadImageDataURL || parsedSpaceData?.image_url}
-            alt="Space listing image"
-          ></img>
-        ) : null}
-        <FormField
-          control={form.control}
           name="room_price_range"
           render={({ field }) => (
             <FormItem>
@@ -432,6 +389,56 @@ export default function SpaceListingForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="website_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Website (optional)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          // control={form.control}
+          name="new_image_file"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image (optional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  {...field}
+                  onChange={(e) => handleImageSelection(e.target.files?.[0])}
+                />
+              </FormControl>
+              <FormMessage />
+              <FormDescription>
+                {parsedSpaceData?.image_url
+                  ? "This will replace your existing image."
+                  : "Upload a photo for your space."}
+              </FormDescription>
+            </FormItem>
+          )}
+        />
+        {!validImageUpload ? (
+          <p className="text-red-500 text-sm">
+            Invalid file type. Please upload an image of type PNG or JPG/JPEG,
+            under 10MB.
+          </p>
+        ) : null}
+        {uploadImageDataURL || parsedSpaceData?.image_url ? (
+          <img
+            className="rounded-full w-1/3 mx-auto"
+            src={uploadImageDataURL || parsedSpaceData?.image_url}
+            alt="Space listing image"
+          ></img>
+        ) : null}
 
         <FormField
           control={form.control}
