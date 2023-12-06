@@ -206,24 +206,21 @@ export async function saveUserSpaceListing(
   spaceListingData: Partial<SpaceListingType>,
   userID: string
 ) {
-  console.log("values to be submitted to db: ", spaceListingData);
   const existingSpaceData = await getUserSpaceListing(userID);
   if (existingSpaceData) {
     const { error } = await supabase
       .from("communities")
-      .update(spaceListingData)
+      .update({ ...spaceListingData, last_updated_date: getCurrentTimestamp() })
       .eq("user_id", userID);
     if (error) {
       return { success: false, message: error };
     }
   } else {
-    const { error } = await supabase
-      .from("communities")
-      .insert({
-        ...spaceListingData,
-        user_id: userID,
-        last_updated_date: getCurrentTimestamp(),
-      });
+    const { error } = await supabase.from("communities").insert({
+      ...spaceListingData,
+      user_id: userID,
+      last_updated_date: getCurrentTimestamp(),
+    });
     if (error) {
       return { success: false, message: error };
     }

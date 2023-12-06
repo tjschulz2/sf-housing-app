@@ -349,7 +349,7 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
                 />
                 <p className={styles.sanFrancisco}>
                   {typeof profile.resident_count === "number"
-                    ? `${profile.resident_count.toString()} roommates`
+                    ? `${profile.resident_count.toString()} housemates`
                     : null}
                 </p>
               </div>

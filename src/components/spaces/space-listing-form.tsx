@@ -200,23 +200,29 @@ export default function SpaceListingForm({
   }
 
   const handleImageSelection = useCallback(async (file: File | undefined) => {
-    if (file) {
-      if (!validateFile(file)) {
-        console.error("validation issue");
-        setValidImageUpload(false);
-        return;
-      }
-      setUploadImageRaw(file);
-      // instead of setting raw image to state, validate file here and set image validity status to state. use this to disable button, show error, etc.
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setUploadImageDataURL(reader.result);
-        }
-      };
-      reader.onerror = (error) => setUploadImageDataURL(null);
+    if (!file) {
+      return;
     }
+
+    if (!validateFile(file)) {
+      console.error("Failed to validate image upload");
+      setValidImageUpload(false);
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setUploadImageDataURL(reader.result);
+        setValidImageUpload(true);
+        setUploadImageRaw(file);
+      }
+    };
+    reader.onerror = (error) => {
+      setUploadImageDataURL(null);
+      setValidImageUpload(false);
+      console.error(error);
+    };
   }, []);
 
   return (

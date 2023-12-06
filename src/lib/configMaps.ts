@@ -10,8 +10,8 @@ export const housingMap: Record<string, Record<number, string>> = {
   roomPrice: {
     1: "Less than $1000",
     2: "< $1500",
-    3: "$1500 - $2000",
-    4: "$2000 - $2500",
+    3: "$1500 - $1999",
+    4: "$2000 - $2499",
     5: "$2500 - $3000",
     6: "> $3000",
   },
