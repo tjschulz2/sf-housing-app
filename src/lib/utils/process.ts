@@ -424,7 +424,7 @@ export const addCommunityData = async (
   link: string,
   imageLink: string,
   contactMethod: string,
-  userID: string | undefined,
+  userID: string,
   twitterHandle: string | null,
   phone: string,
   location: string

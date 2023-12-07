@@ -101,13 +101,15 @@ export async function getOrganizerProfiles(
   }
 }
 
-export async function getCommunities(startIdx: number = 0, count: number = 25) {
-  const { data, error } = await supabase.from("communities").select(
-    `
+export async function getCommunities() {
+  const { data, error } = await supabase
+    .from("communities")
+    .select(
+      `
       *, user:users(name, twitter_handle, twitter_avatar_url)
     `
-  );
-  // .range(startIdx, startIdx + count);
+    )
+    .order("last_updated_date", { ascending: false });
 
   if (error) {
     console.error(error);
@@ -187,6 +189,91 @@ export async function deleteUserHousingSearchProfile(userID: string) {
     return { status: "success" };
   }
 }
+
+export async function getUserSpaceListing(userID: string) {
+  const { data, error } = await supabase
+    .from("communities")
+    .select("*")
+    .eq("user_id", userID)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
+export async function saveUserSpaceListing(
+  spaceListingData: Partial<SpaceListingType>,
+  userID: string
+) {
+  const existingSpaceData = await getUserSpaceListing(userID);
+  if (existingSpaceData) {
+    const { error } = await supabase
+      .from("communities")
+      .update({ ...spaceListingData, last_updated_date: getCurrentTimestamp() })
+      .eq("user_id", userID);
+    if (error) {
+      return { success: false, message: error };
+    }
+  } else {
+    const { error } = await supabase.from("communities").insert({
+      ...spaceListingData,
+      user_id: userID,
+      last_updated_date: getCurrentTimestamp(),
+    });
+    if (error) {
+      return { success: false, message: error };
+    }
+  }
+  return { success: true };
+}
+
+export async function deleteSpaceListing(userID: string) {
+  const { error } = await supabase
+    .from("communities")
+    .delete()
+    .eq("user_id", userID);
+
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else {
+    return { success: true };
+  }
+}
+
+export const saveCommunityImage = async (image: File, userID: string) => {
+  const { data, error } = await supabase.storage
+    .from("community_profile_pictures")
+    .upload(`${userID}/space.png`, image, {
+      upsert: true,
+    });
+
+  if (data) {
+    const {
+      data: { publicUrl },
+    } = supabase.storage
+      .from("community_profile_pictures")
+      .getPublicUrl(data.path);
+    return { success: true, publicURL: publicUrl };
+  } else {
+    return { success: false, error };
+  }
+};
+
+export const deleteCommunityImage = async (userID: string) => {
+  const { data, error } = await supabase.storage
+    .from("community_profile_pictures")
+    .remove([`${userID}/space.png`]);
+
+  if (data) {
+    return { status: "success", data };
+  } else {
+    return { status: "error", error };
+  }
+};
 
 // ----- Referrals -----
 

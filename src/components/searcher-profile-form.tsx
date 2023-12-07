@@ -119,6 +119,7 @@ export default function SearcherProfileForm({
                 <Textarea
                   placeholder="What are you working on? What is important to you? What type of environment do you want to live in?"
                   className="resize-none"
+                  rows={4}
                   {...field}
                 />
               </FormControl>
