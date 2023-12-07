@@ -13,20 +13,23 @@ import Link from "next/link";
 import ActivityStatusDot from "./activity-status-dot";
 import ContactMeButton from "./contact-me-button";
 import UserProfileImage from "./user-profile-image";
+import { useAuthContext } from "@/contexts/auth-context";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
   color: string; // Define color as a string type (or whatever type your color variable is)
-  curUserName?: string;
 };
 
-const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
+const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [referrer, setReferrer] = useState<{
     name: string | null;
     twitter_handle: string | null;
     twitter_avatar_url: string | null;
   }>({ name: null, twitter_handle: null, twitter_avatar_url: null });
+
+  const { userSession } = useAuthContext();
+  const curUserName = userSession?.twitterName;
 
   const { user } = profile;
   let colorClass: any;

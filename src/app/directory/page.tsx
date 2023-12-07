@@ -12,7 +12,6 @@ import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import CardGrid from "@/components/card-grid";
-// import { getUserSession } from "@/lib/utils/auth";
 
 function Directory() {
   const {
@@ -21,7 +20,6 @@ function Directory() {
     searcherProfilesFilter,
     setSearcherProfilesFilter,
     userHousingSearchProfile,
-    userSession,
   } = useContext(ProfilesContext) as ProfilesContextType;
   // const [currentUserData, setCurrentUserData] = useState<CoreUserSessionData>();
   const allowDataPull = useRef(false);
@@ -192,11 +190,7 @@ function Directory() {
           <h2 className="text-2xl font-bold my-4">Today</h2>
           <div className={styles.containerGrid}>
             {todayProfiles.map((profile) => (
-              <SearcherProfileCard
-                key={profile.user_id}
-                profile={profile}
-                userSession={userSession}
-              />
+              <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
           </div>
         </>
@@ -211,7 +205,6 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
-                curUserName={userSession?.twitterName}
               />
             ))}
           </div>
@@ -227,7 +220,6 @@ function Directory() {
                 key={profile.user_id}
                 profile={profile}
                 color="blue"
-                curUserName={userSession?.twitterName}
               />
             ))}
           </div>
@@ -240,11 +232,7 @@ function Directory() {
           <div className={styles.containerGrid}>
             {/* <CardGrid> */}
             {olderProfiles.map((profile) => (
-              <SearcherProfileCard
-                key={profile.user_id}
-                profile={profile}
-                userSession={userSession}
-              />
+              <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
             {/* </CardGrid> */}
           </div>

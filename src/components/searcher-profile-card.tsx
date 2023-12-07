@@ -7,6 +7,7 @@ import SeeMoreButton from "@/components/see-more-button/see-more-button";
 import deriveActivityLevel, { housingMap } from "@/lib/configMaps";
 import { dateDiff } from "@/lib/utils/general";
 import ActivityStatusDot from "@/components/activity-status-dot";
+import { useAuthContext } from "@/contexts/auth-context";
 
 function ReferralBadge({
   handle,
@@ -36,11 +37,11 @@ function ReferralBadge({
 
 type PropsType = {
   profile: HousingSearchProfile;
-  userSession: CoreUserSessionData;
 };
 
 export default function SearcherProfileCard(props: PropsType) {
-  const { profile, userSession } = props;
+  const { userSession } = useAuthContext();
+  const { profile } = props;
 
   let bio = profile.pref_housemate_details ?? "";
   if (bio.length > 45) {
@@ -80,7 +81,6 @@ export default function SearcherProfileCard(props: PropsType) {
             phoneNum={profile.contact_phone}
             email={profile.contact_email}
             twitter={profile.user?.twitter_handle}
-            curUserName={userSession.twitterName}
           />
         </div>
       </CardTop>

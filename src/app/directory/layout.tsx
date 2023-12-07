@@ -28,7 +28,6 @@ export type ProfilesContextType = {
   >;
   userHousingSearchProfile: UserHousingSearchProfile;
   refreshUserHousingSearchProfileData: (userID: string) => Promise<void>;
-  userSession: CoreUserSessionData;
 };
 
 export type UserHousingSearchProfile =
@@ -129,7 +128,6 @@ export default function DirectoryLayout({
               setSearcherProfilesFilter,
               userHousingSearchProfile,
               refreshUserHousingSearchProfileData,
-              userSession: user,
             }}
           >
             <SpacesContextProvider>
