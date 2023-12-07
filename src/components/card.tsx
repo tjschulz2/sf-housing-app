@@ -17,13 +17,15 @@ export function CardBottom({ children }: { children: React.ReactNode }) {
 export function CardListSection({
   children,
   sectionTitle,
+  className,
 }: {
   children: React.ReactNode;
   sectionTitle: string;
+  className?: string;
 }) {
   return (
-    <div>
-      <h3 className="font-medium mb-1">{sectionTitle}</h3>
+    <div className={`${className}`}>
+      <span className="font-medium mr-1">{sectionTitle}</span>
       {children}
     </div>
   );

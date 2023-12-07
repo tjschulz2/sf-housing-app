@@ -59,7 +59,7 @@ export default function SearcherProfileCard(props: PropsType) {
       <CardTop>
         <UserProfileImage size="large" src={profile.user?.twitter_avatar_url} />
         <div className="flex flex-col items-center">
-          <span className="font-semibold">
+          <span className="font-semibold max-w-[12rem] truncate">
             {profile.user?.name}{" "}
             {activityLevel === "high" ? (
               <span className="ml-2">
@@ -71,7 +71,7 @@ export default function SearcherProfileCard(props: PropsType) {
             href={`https://x.com/${profile.user?.twitter_handle}`}
             className="flex items-center"
           >
-            <span className="text-blue-500 hover:text-blue-400  py-2">
+            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-[12rem] truncate">
               @{profile.user?.twitter_handle}
             </span>
             <TwitterLogo className="ml-1" fill="#3191e7" />
@@ -86,10 +86,12 @@ export default function SearcherProfileCard(props: PropsType) {
       </CardTop>
       <CardBottom>
         <CardListSection sectionTitle="About">
-          <span className="text-neutral-600">{bio}</span>
-          {bio.length > 45 ? (
-            <SeeMoreButton color={"blue"} seeMoreText={bio ?? ""} />
-          ) : null}
+          <span className="text-neutral-600">
+            {bio}{" "}
+            {bio.length > 45 ? (
+              <SeeMoreButton color={"blue"} seeMoreText={bio ?? ""} />
+            ) : null}
+          </span>
         </CardListSection>
         <CardListSection sectionTitle="Preference">
           <span className="text-neutral-600">
@@ -109,7 +111,10 @@ export default function SearcherProfileCard(props: PropsType) {
               : null}
           </span>
         </CardListSection>
-        <CardListSection sectionTitle="Referred by">
+        <CardListSection
+          sectionTitle="Referred by"
+          className="flex items-center"
+        >
           {profile.user?.twitter_handle &&
           profile.user?.name &&
           profile.user?.twitter_avatar_url ? (

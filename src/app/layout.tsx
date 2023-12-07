@@ -17,6 +17,9 @@ const siteImage = "/sfd.png";
 const siteURL = "https://www.directorysf.com/";
 
 export const metadata: Metadata = {
+  metadataBase: process.env.VERCEL_URL
+    ? new URL(`https://${process.env.VERCEL_URL}`)
+    : new URL(`http://localhost:${process.env.PORT || 3000}`),
   title: siteTitle,
   description: siteDescription,
   authors: [
