@@ -53,6 +53,10 @@ export default function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <meta
+          name="viewport"
+          content="minimum-scale=1, width=device-width, initial-scale=1, maximum-scale=1"
+        />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={inter.className}>

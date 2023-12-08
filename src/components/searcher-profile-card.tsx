@@ -30,7 +30,7 @@ function ReferralBadge({
       <span className="mx-1">
         <UserProfileImage size="small" src={imageURL} />
       </span>
-      <span>{name}</span>
+      <span className="text-blue-500 hover:text-blue-400">{name}</span>
     </a>
   );
 }
