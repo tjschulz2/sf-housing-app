@@ -1,13 +1,22 @@
-import { Card, CardTop, CardBottom, CardListSection } from "@/components/card";
+import {
+  Card,
+  CardTop,
+  CardBottom,
+  CardListSection,
+} from "@/components/cards/card";
 import UserProfileImage from "@/components/user-profile-image";
 import ContactMeButton from "@/components/contact-me-button";
 import TwitterLogo from "@/images/twitter-logo.svg";
 import Link from "next/link";
 import SeeMoreButton from "@/components/see-more-button/see-more-button";
 import deriveActivityLevel, { housingMap } from "@/lib/configMaps";
-import { dateDiff } from "@/lib/utils/general";
+import { addProtocolToURL, cleanURL, dateDiff } from "@/lib/utils/general";
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { useAuthContext } from "@/contexts/auth-context";
+import { ExternalLink } from "lucide-react";
+import CardBioSection from "./card-bio-section";
+
+const BIO_MAX_VIEW_LENGTH = 110;
 
 function ReferralBadge({
   handle,
@@ -43,10 +52,11 @@ export default function SearcherProfileCard(props: PropsType) {
   const { userSession } = useAuthContext();
   const { profile } = props;
 
-  let bio = profile.pref_housemate_details ?? "";
-  if (bio.length > 45) {
-    bio = bio.substring(0, 43) + "...";
-  }
+  const bio = profile.pref_housemate_details ?? "";
+  const bioSample =
+    bio.length > BIO_MAX_VIEW_LENGTH
+      ? bio.substring(0, BIO_MAX_VIEW_LENGTH - 2) + "..."
+      : bio;
 
   let activityLevel;
   if (profile.last_updated_date) {
@@ -59,14 +69,17 @@ export default function SearcherProfileCard(props: PropsType) {
       <CardTop>
         <UserProfileImage size="large" src={profile.user?.twitter_avatar_url} />
         <div className="flex flex-col items-center">
-          <span className="font-semibold max-w-[12rem] truncate">
-            {profile.user?.name}{" "}
+          <div>
+            <span className="font-semibold max-w-[12rem] truncate">
+              {profile.user?.name}{" "}
+            </span>
             {activityLevel === "high" ? (
               <span className="ml-2">
                 <ActivityStatusDot status={activityLevel} />
               </span>
             ) : null}
-          </span>
+          </div>
+
           <Link
             href={`https://x.com/${profile.user?.twitter_handle}`}
             className="flex items-center"
@@ -76,7 +89,6 @@ export default function SearcherProfileCard(props: PropsType) {
             </span>
             <TwitterLogo className="ml-1" fill="#3191e7" />
           </Link>
-
           <ContactMeButton
             phoneNum={profile.contact_phone}
             email={profile.contact_email}
@@ -85,14 +97,8 @@ export default function SearcherProfileCard(props: PropsType) {
         </div>
       </CardTop>
       <CardBottom>
-        <CardListSection sectionTitle="About">
-          <span className="text-neutral-600">
-            {bio}{" "}
-            {bio.length > 45 ? (
-              <SeeMoreButton color={"blue"} seeMoreText={bio ?? ""} />
-            ) : null}
-          </span>
-        </CardListSection>
+        <CardBioSection bio={bio} link={profile.link} />
+
         <CardListSection sectionTitle="Preference">
           <span className="text-neutral-600">
             {" "}

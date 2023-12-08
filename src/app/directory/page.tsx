@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import ProfileCard from "../../components/profile-card";
-import SearcherProfileCard from "@/components/searcher-profile-card";
+import SearcherProfileCard from "@/components/cards/searcher-profile-card";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { getHousingSearchProfiles } from "../../lib/utils/data";
@@ -11,7 +11,7 @@ import FilterBar from "../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
-import CardGrid from "@/components/card-grid";
+import CardGrid from "@/components/cards/card-grid";
 
 function Directory() {
   const {

@@ -1,6 +1,6 @@
 export function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="p-6 border-2 border-neutral-200 rounded-lg flex flex-col gap-4">
+    <div className="p-6 border-2 border-neutral-300 rounded-lg flex flex-col gap-4">
       {children}
     </div>
   );
@@ -24,7 +24,7 @@ export function CardListSection({
   className?: string;
 }) {
   return (
-    <div className={`${className}`}>
+    <div className={`${className ?? ""}`}>
       <span className="font-medium mr-1">{sectionTitle}</span>
       {children}
     </div>

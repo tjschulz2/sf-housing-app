@@ -41,7 +41,7 @@ const formSchema = z.object({
   pref_housemate_count: z.enum(["1", "2", "3", "4"], {
     required_error: "You need to select a housing type.",
   }),
-  link: z.string(),
+  link: z.string().optional(),
   contact_phone: z.string().max(15, { message: "Phone number is too long" }),
   contact_email: z.string().max(50, { message: "Email address is too long" }),
 });
@@ -253,7 +253,7 @@ export default function SearcherProfileForm({
           name="link"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What&apos;s a link that best describes you?</FormLabel>
+              <FormLabel>Link that best describes you (optional)</FormLabel>
               <FormControl>
                 <Input placeholder="gwern.net" {...field} />
               </FormControl>
@@ -270,7 +270,7 @@ export default function SearcherProfileForm({
           name="contact_phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What&apos;s your phone number? (Optional)</FormLabel>
+              <FormLabel>Phone number (Optional)</FormLabel>
               <FormControl>
                 <Input type="tel" placeholder="4151234567" {...field} />
               </FormControl>
@@ -284,7 +284,7 @@ export default function SearcherProfileForm({
           name="contact_email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What&apos;s your email? (Optional)</FormLabel>
+              <FormLabel>Email (Optional)</FormLabel>
               <FormControl>
                 <Input type="email" placeholder="me@example.com" {...field} />
               </FormControl>
@@ -292,39 +292,6 @@ export default function SearcherProfileForm({
             </FormItem>
           )}
         />
-
-        {/* <FormField
-          control={form.control}
-          name="pref_contact_method"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>
-                How would you like to be contacted by others?
-              </FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="1" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Email</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="2" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Twitter DMs</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
 
         <Button disabled={!form.formState.isDirty || submitted} type="submit">
           {submitted ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
