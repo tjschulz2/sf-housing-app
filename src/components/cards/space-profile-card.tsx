@@ -18,13 +18,13 @@ import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 
 type PropsType = {
-  profile: HousingSearchProfile;
+  profile: SpaceListingWithUserData;
 };
 
-export default function SearcherProfileCard(props: PropsType) {
+export default function SpaceProfileCard(props: PropsType) {
   const { profile } = props;
 
-  const bio = profile.pref_housemate_details ?? "";
+  const bio = profile.description ?? "";
 
   let activityLevel;
   if (profile.last_updated_date) {
@@ -39,7 +39,7 @@ export default function SearcherProfileCard(props: PropsType) {
         <div className="flex flex-col items-center max-w-[60%]">
           <div>
             <span className="font-semibold max-w-[12rem] truncate">
-              {profile.user?.name}{" "}
+              {profile.name}{" "}
             </span>
             {activityLevel === "high" ? (
               <span className="ml-2">
@@ -65,24 +65,13 @@ export default function SearcherProfileCard(props: PropsType) {
         </div>
       </CardTop>
       <CardBottom>
-        <CardBioSection bio={bio} link={profile.link} />
+        <CardBioSection bio={bio} link={profile.website_url} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
-            <CardListSection sectionTitle="Preference">
+            <CardListSection sectionTitle="Room price">
               <span className="text-neutral-600">
-                {" "}
-                {profile.pref_housing_type
-                  ? housingMap.housingType[profile.pref_housing_type] + ", "
-                  : null}{" "}
-                {profile.pref_housemate_count
-                  ? housingMap.housemates[profile.pref_housemate_count]
-                  : null}
-              </span>
-            </CardListSection>
-            <CardListSection sectionTitle="Moving">
-              <span className="text-neutral-600">
-                {profile.pref_move_in
-                  ? housingMap.moveIn[profile.pref_move_in]
+                {profile.room_price_range
+                  ? housingMap.roomPrice[profile.room_price_range]
                   : null}
               </span>
             </CardListSection>

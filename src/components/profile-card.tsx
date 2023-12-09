@@ -14,6 +14,7 @@ import ActivityStatusDot from "./activity-status-dot";
 import ContactMeButton from "./contact-me-button";
 import UserProfileImage from "./user-profile-image";
 import { useAuthContext } from "@/contexts/auth-context";
+import { MapPin, Users } from "lucide-react";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
