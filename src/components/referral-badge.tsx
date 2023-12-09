@@ -39,5 +39,7 @@ export default function ReferralBadge({ userID }: { userID: string }) {
         </span>
       </a>
     );
+  } else {
+    return <span className="text-neutral-600">DirectorySF </span>;
   }
 }
