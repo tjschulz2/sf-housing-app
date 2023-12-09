@@ -7,7 +7,9 @@ export function Card({ children }: { children: React.ReactNode }) {
 }
 
 export function CardTop({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center justify-between">{children}</div>;
+  return (
+    <div className="flex items-center justify-between gap-2">{children}</div>
+  );
 }
 
 export function CardBottom({ children }: { children: React.ReactNode }) {

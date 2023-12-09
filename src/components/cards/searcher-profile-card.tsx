@@ -82,9 +82,9 @@ export default function SearcherProfileCard(props: PropsType) {
 
           <Link
             href={`https://x.com/${profile.user?.twitter_handle}`}
-            className="flex items-center max-w-full"
+            className="flex items-center w-full"
           >
-            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-[85%] truncate">
+            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-full truncate">
               @{profile.user?.twitter_handle}
             </span>
             <TwitterLogo className="ml-1" fill="#3191e7" />
