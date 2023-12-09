@@ -97,6 +97,7 @@ export default function SearcherProfileForm({
     const saveResult = await saveUserHousingSearchProfile({
       ...data,
       user_id: session.userID,
+      link: data.link ?? "",
     });
 
     if (saveResult) {
