@@ -79,7 +79,7 @@ export default function SpaceProfileCard(props: PropsType) {
               sectionTitle="Referred by"
               className="flex items-center"
             >
-              {profile.user?.twitter_handle &&
+              {/* {profile.user?.twitter_handle &&
               profile.user?.name &&
               profile.user?.twitter_avatar_url ? (
                 <ReferralBadge
@@ -87,7 +87,7 @@ export default function SpaceProfileCard(props: PropsType) {
                   name={profile.user.name}
                   imageURL={profile.user.twitter_avatar_url}
                 />
-              ) : null}
+              ) : null} */}
             </CardListSection>
           </div>
         </div>
