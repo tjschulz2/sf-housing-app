@@ -254,7 +254,7 @@ export default function SearcherProfileForm({
           name="link"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Link that best describes you (optional)</FormLabel>
+              <FormLabel>Link that best describes you (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="gwern.net" {...field} />
               </FormControl>

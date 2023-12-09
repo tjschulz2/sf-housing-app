@@ -353,7 +353,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 />
                 <p className={styles.sanFrancisco}>
                   {typeof profile.resident_count === "number"
-                    ? `${profile.resident_count.toString()} housemates`
+                    ? `${profile.resident_count.toString()}`
                     : null}
                 </p>
               </div>
@@ -386,7 +386,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
             <div className={styles.lookingToLive} id="looking-for-text">
               <div className={styles.content}>
                 <span className={styles.wants}>About us: </span>
-                {communityDescription}
+                {communityDescription}{" "}
                 <SeeMoreButton
                   color={color}
                   seeMoreText={profile.description ?? ""}
