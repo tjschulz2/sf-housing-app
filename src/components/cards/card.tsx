@@ -13,7 +13,7 @@ export function CardTop({ children }: { children: React.ReactNode }) {
 }
 
 export function CardBottom({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-2">{children}</div>;
+  return <div className="flex flex-col grow gap-2">{children}</div>;
 }
 
 export function CardListSection({

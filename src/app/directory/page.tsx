@@ -3,7 +3,14 @@ import styles from "./page.module.css";
 import ProfileCard from "../../components/profile-card";
 import SearcherProfileCard from "@/components/cards/searcher-profile-card";
 import Link from "next/link";
-import { useEffect, useState, useContext, useRef, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { getHousingSearchProfiles } from "../../lib/utils/data";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "./layout";
@@ -103,30 +110,53 @@ function Directory() {
     }
   }, [setSearcherProfiles, searcherProfilesFilter]);
 
-  const todayProfiles = searcherProfiles?.filter(
-    (profile) =>
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
-      1
-  );
-  const thisWeekProfiles = searcherProfiles?.filter(
-    (profile) =>
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
-        7 &&
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
-        1
-  );
-  const thisMonthProfiles = searcherProfiles?.filter(
-    (profile) =>
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) <
-        31 &&
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
-        7
-  );
-  const olderProfiles = searcherProfiles?.filter(
-    (profile) =>
-      differenceInDays(new Date(), new Date(profile.last_updated_date || "")) >=
-      31
-  );
+  const todayProfiles = useMemo(() => {
+    return searcherProfiles?.filter(
+      (profile) =>
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) < 1
+    );
+  }, [searcherProfiles]);
+
+  const thisWeekProfiles = useMemo(() => {
+    return searcherProfiles?.filter(
+      (profile) =>
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) < 7 &&
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) >= 1
+    );
+  }, [searcherProfiles]);
+
+  const thisMonthProfiles = useMemo(() => {
+    return searcherProfiles?.filter(
+      (profile) =>
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) < 31 &&
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) >= 7
+    );
+  }, [searcherProfiles]);
+
+  const olderProfiles = useMemo(() => {
+    return searcherProfiles?.filter(
+      (profile) =>
+        differenceInDays(
+          new Date(),
+          new Date(profile.last_updated_date || "")
+        ) >= 31
+    );
+  }, [searcherProfiles]);
 
   function handleFilterChange(filterData: SearcherProfilesFilterType) {
     for (const [filterKey, filterVal] of Object.entries(filterData)) {
@@ -185,6 +215,7 @@ function Directory() {
       {!dataLoading && !searcherProfiles?.length ? (
         <p className="m-auto p-4 italic text-neutral-600">No data</p>
       ) : null}
+
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
@@ -199,43 +230,33 @@ function Directory() {
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Week</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {thisWeekProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="blue"
-              />
+              <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Month</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {thisMonthProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="blue"
-              />
+              <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          {/* <div className={styles.containerGrid}> */}
           <CardGrid>
             {olderProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
           </CardGrid>
-          {/* </div> */}
         </>
       )}
 

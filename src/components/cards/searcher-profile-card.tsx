@@ -98,39 +98,42 @@ export default function SearcherProfileCard(props: PropsType) {
       </CardTop>
       <CardBottom>
         <CardBioSection bio={bio} link={profile.link} />
-
-        <CardListSection sectionTitle="Preference">
-          <span className="text-neutral-600">
-            {" "}
-            {profile.pref_housing_type
-              ? housingMap.housingType[profile.pref_housing_type] + ", "
-              : null}{" "}
-            {profile.pref_housemate_count
-              ? housingMap.housemates[profile.pref_housemate_count]
-              : null}
-          </span>
-        </CardListSection>
-        <CardListSection sectionTitle="Moving">
-          <span className="text-neutral-600">
-            {profile.pref_move_in
-              ? housingMap.moveIn[profile.pref_move_in]
-              : null}
-          </span>
-        </CardListSection>
-        <CardListSection
-          sectionTitle="Referred by"
-          className="flex items-center"
-        >
-          {profile.user?.twitter_handle &&
-          profile.user?.name &&
-          profile.user?.twitter_avatar_url ? (
-            <ReferralBadge
-              handle={profile.user.twitter_handle}
-              name={profile.user.name}
-              imageURL={profile.user.twitter_avatar_url}
-            />
-          ) : null}
-        </CardListSection>
+        <div className="flex flex-col grow justify-center">
+          <div className="flex flex-col gap-2">
+            <CardListSection sectionTitle="Preference">
+              <span className="text-neutral-600">
+                {" "}
+                {profile.pref_housing_type
+                  ? housingMap.housingType[profile.pref_housing_type] + ", "
+                  : null}{" "}
+                {profile.pref_housemate_count
+                  ? housingMap.housemates[profile.pref_housemate_count]
+                  : null}
+              </span>
+            </CardListSection>
+            <CardListSection sectionTitle="Moving">
+              <span className="text-neutral-600">
+                {profile.pref_move_in
+                  ? housingMap.moveIn[profile.pref_move_in]
+                  : null}
+              </span>
+            </CardListSection>
+            <CardListSection
+              sectionTitle="Referred by"
+              className="flex items-center"
+            >
+              {profile.user?.twitter_handle &&
+              profile.user?.name &&
+              profile.user?.twitter_avatar_url ? (
+                <ReferralBadge
+                  handle={profile.user.twitter_handle}
+                  name={profile.user.name}
+                  imageURL={profile.user.twitter_avatar_url}
+                />
+              ) : null}
+            </CardListSection>
+          </div>
+        </div>
       </CardBottom>
     </Card>
   );
