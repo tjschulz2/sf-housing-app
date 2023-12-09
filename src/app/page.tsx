@@ -54,11 +54,7 @@ const Home: NextPage = () => {
           }
           return;
         }
-        if (signInResult.message === "initial sign in") {
-          router.replace("/email-signup");
-        } else {
-          router.replace("/directory");
-        }
+        router.replace("/directory");
       }
     }
     handlePageLoad();

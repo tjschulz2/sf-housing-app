@@ -13,20 +13,24 @@ import Link from "next/link";
 import ActivityStatusDot from "./activity-status-dot";
 import ContactMeButton from "./contact-me-button";
 import UserProfileImage from "./user-profile-image";
+import { useAuthContext } from "@/contexts/auth-context";
+import { MapPin, Users } from "lucide-react";
 
 type ProfileCardProps = {
   profile: HousingSearchProfile | OrganizerProfile | CommunityProfile;
   color: string; // Define color as a string type (or whatever type your color variable is)
-  curUserName?: string;
 };
 
-const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
+const ProfileCard = ({ profile, color }: ProfileCardProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [referrer, setReferrer] = useState<{
     name: string | null;
     twitter_handle: string | null;
     twitter_avatar_url: string | null;
   }>({ name: null, twitter_handle: null, twitter_avatar_url: null });
+
+  const { userSession } = useAuthContext();
+  const curUserName = userSession?.twitterName;
 
   const { user } = profile;
   let colorClass: any;
@@ -349,7 +353,7 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
                 />
                 <p className={styles.sanFrancisco}>
                   {typeof profile.resident_count === "number"
-                    ? `${profile.resident_count.toString()} housemates`
+                    ? `${profile.resident_count.toString()}`
                     : null}
                 </p>
               </div>
@@ -382,7 +386,7 @@ const ProfileCard = ({ profile, color, curUserName }: ProfileCardProps) => {
             <div className={styles.lookingToLive} id="looking-for-text">
               <div className={styles.content}>
                 <span className={styles.wants}>About us: </span>
-                {communityDescription}
+                {communityDescription}{" "}
                 <SeeMoreButton
                   color={color}
                   seeMoreText={profile.description ?? ""}

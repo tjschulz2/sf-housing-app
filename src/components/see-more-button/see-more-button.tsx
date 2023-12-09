@@ -66,7 +66,7 @@ export default function SeeMoreButton({
 
   return (
     <Dialog>
-      <DialogTrigger className="ml-1 text-sky-600 hover:text-sky-700">
+      <DialogTrigger className="text-sky-600 hover:text-sky-700">
         See More
       </DialogTrigger>
       <DialogContent className="max-h-[600px] md:max-h-[750px] overflow-y-auto">
