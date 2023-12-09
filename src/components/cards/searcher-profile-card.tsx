@@ -90,11 +90,7 @@ export default function SearcherProfileCard(props: PropsType) {
               sectionTitle="Referred by"
               className="flex items-center"
             >
-              {profile.user?.twitter_handle &&
-              profile.user?.name &&
-              profile.user?.twitter_avatar_url ? (
-                <ReferralBadge userID={profile.user_id} />
-              ) : null}
+              <ReferralBadge userID={profile.user_id} />
             </CardListSection>
           </div>
         </div>
