@@ -188,11 +188,11 @@ function Directory() {
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {todayProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
@@ -229,13 +229,13 @@ function Directory() {
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          <div className={styles.containerGrid}>
-            {/* <CardGrid> */}
+          {/* <div className={styles.containerGrid}> */}
+          <CardGrid>
             {olderProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
             ))}
-            {/* </CardGrid> */}
-          </div>
+          </CardGrid>
+          {/* </div> */}
         </>
       )}
 

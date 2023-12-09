@@ -1,6 +1,6 @@
 export function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="p-6 border-2 border-neutral-300 rounded-lg flex flex-col gap-4">
+    <div className="p-6 border-2 border-neutral-300 rounded-2xl flex flex-col gap-4">
       {children}
     </div>
   );

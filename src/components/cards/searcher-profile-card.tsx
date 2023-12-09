@@ -68,7 +68,7 @@ export default function SearcherProfileCard(props: PropsType) {
     <Card>
       <CardTop>
         <UserProfileImage size="large" src={profile.user?.twitter_avatar_url} />
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center max-w-[60%]">
           <div>
             <span className="font-semibold max-w-[12rem] truncate">
               {profile.user?.name}{" "}
@@ -82,9 +82,9 @@ export default function SearcherProfileCard(props: PropsType) {
 
           <Link
             href={`https://x.com/${profile.user?.twitter_handle}`}
-            className="flex items-center"
+            className="flex items-center max-w-full"
           >
-            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-[12rem] truncate">
+            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-[85%] truncate">
               @{profile.user?.twitter_handle}
             </span>
             <TwitterLogo className="ml-1" fill="#3191e7" />
