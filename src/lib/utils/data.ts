@@ -118,6 +118,20 @@ export async function getCommunities() {
   }
 }
 
+export async function getSpaceDetails(id: number) {
+  const { data, error } = await supabase
+    .from("communities")
+    .select("*")
+    .eq("profile_id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
 export async function getUserHousingSearchProfile(userID: string) {
   const { data, error } = await supabase
     .from("housing_search_profiles")
