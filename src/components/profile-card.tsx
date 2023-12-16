@@ -394,7 +394,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               </div>
             </div>
             <p className={styles.wants1YearLeaseContainer} id="wants-text">
-              <span className={styles.wants}>Montly rent:</span>
+              <span className={styles.wants}>Monthly rent:</span>
               <span>
                 {" "}
                 {profile.room_price_range
