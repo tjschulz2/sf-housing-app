@@ -41,7 +41,7 @@ export default function SpaceProfileCard(props: PropsType) {
         />
         <div className="flex flex-col gap-4 items-center max-w-[60%]">
           <div>
-            <span className="font-semibold max-w-[12rem] truncate">
+            <span className="font-semibold max-w-[12rem] text-balance">
               {profile.name}{" "}
             </span>
             {activityLevel === "high" ? (
