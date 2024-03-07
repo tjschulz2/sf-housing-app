@@ -30,6 +30,7 @@ export default function ReferralBadge({ userID }: { userID: string }) {
       <a
         href={`https://x.com/${referrer.twitter_handle}`}
         className="flex items-center no-underline"
+        target="_blank"
       >
         <span className="mx-1">
           <UserProfileImage size="small" src={referrer.twitter_avatar_url} />

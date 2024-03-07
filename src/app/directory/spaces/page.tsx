@@ -1,14 +1,13 @@
 "use client";
 import styles from "./page.module.css";
-import { NextPage } from "next";
 import ProfileCard from "../../../components/profile-card";
 import React, { useState, useEffect } from "react";
-import { getCommunities } from "../../../lib/utils/data";
-import Link from "next/link";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
 import { useSpacesContext } from "@/contexts/spaces-context";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
+import SpaceProfileCard from "@/components/cards/space-profile-card";
+import CardGrid from "@/components/cards/card-grid";
 
 const Directory = () => {
   const { userSpaceListing, pullSpaceListings, spaceListings } =
@@ -58,68 +57,49 @@ const Directory = () => {
           <EditSpaceListingDialog newListing={true}>
             <button className={styles.addMeButton}> Add my space</button>
           </EditSpaceListingDialog>
-          {/* <Link className={styles.addMeButton} href="/community-form">
-            Add my space
-          </Link> */}
         </div>
       )}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {todayProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="green"
-              />
+              <SpaceProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Week</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {thisWeekProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="green"
-              />
+              <SpaceProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Month</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {thisMonthProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="green"
-              />
+              <SpaceProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          <div className={styles.containerGrid}>
+          <CardGrid>
             {olderProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="green"
-              />
+              <SpaceProfileCard key={profile.user_id} profile={profile} />
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
     </>
