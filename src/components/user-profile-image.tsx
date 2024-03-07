@@ -17,11 +17,11 @@ const UserProfileImage = ({
 
   const imgSizeClass = (() => {
     if (size === "large") {
-      return "w-28 lg:w-36";
+      return "w-28 h-28 lg:w-36 lg:h-36";
     } else if (size === "medium") {
-      return "w-14";
+      return "w-14 h-14";
     } else {
-      return "w-6";
+      return "w-6 h-6";
     }
   })();
 
