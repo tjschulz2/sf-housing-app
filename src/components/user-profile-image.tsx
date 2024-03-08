@@ -5,9 +5,11 @@ const defaultAvatar = "/images/default-avatar.jpeg";
 const UserProfileImage = ({
   src,
   size,
+  className,
 }: {
   src?: string | null;
   size: "small" | "medium" | "large";
+  className?: string;
 }) => {
   const [error, setError] = useState(false);
 
@@ -27,7 +29,7 @@ const UserProfileImage = ({
 
   return (
     <img
-      className={`rounded-full ${imgSizeClass}`}
+      className={`rounded-full ${imgSizeClass} ${className}`}
       alt="User profile image"
       onError={() => {
         setError(true);

@@ -38,6 +38,7 @@ export default function SpaceProfileCard(props: PropsType) {
         <UserProfileImage
           size="large"
           src={profile.image_url || profile.user?.twitter_avatar_url}
+          className="shrink-0"
         />
         <div className="flex flex-col gap-4 items-center max-w-[60%]">
           <div className="w-full flex justify-center">
