@@ -40,8 +40,8 @@ export default function SpaceProfileCard(props: PropsType) {
           src={profile.image_url || profile.user?.twitter_avatar_url}
         />
         <div className="flex flex-col gap-4 items-center max-w-[60%]">
-          <div>
-            <span className="font-semibold max-w-[12rem] text-balance">
+          <div className="w-full flex justify-center">
+            <span className="font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
               {profile.name}{" "}
             </span>
             {activityLevel === "high" ? (
