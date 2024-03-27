@@ -13,6 +13,7 @@ export default function CardBioSection({
 }) {
   const bioRef = useRef<HTMLParagraphElement>(null); // Create a ref for the bio paragraph
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const validatedURL = link ? addProtocolToURL(link) : "";
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -38,14 +39,14 @@ export default function CardBioSection({
           {isOverflowing ? (
             <SeeMoreButton color={"blue"} seeMoreText={bio ?? ""} />
           ) : null}
-          {link ? (
+          {validatedURL ? (
             <Link
-              href={addProtocolToURL(link)}
+              href={validatedURL}
               className="flex items-center"
               target="_blank"
             >
               <span className="text-neutral-500 hover:text-blue-400 max-w-[10rem] truncate">
-                {cleanURL(link)}
+                {cleanURL(validatedURL)}
               </span>
               <ExternalLink className="h-4 w-4 ml-1 text-neutral-500" />
             </Link>

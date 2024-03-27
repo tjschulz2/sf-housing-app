@@ -50,7 +50,6 @@ export async function getHousingSearchProfiles(
   count: number = 25,
   filters: SearcherProfilesFilterType = {}
 ) {
-  console.log("startIdx: ", startIdx, " count: ", count);
   const { leaseLength, housemateCount, movingTime } = filters;
   let query = supabase
     .from("housing_search_profiles")

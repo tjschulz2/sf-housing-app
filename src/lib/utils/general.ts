@@ -30,8 +30,16 @@ export function cleanURL(url: string) {
 }
 
 export function addProtocolToURL(url: string) {
-  if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    return "http://" + url;
+  try {
+    let newURL = url.trim();
+    if (!newURL) {
+      return "";
+    }
+    if (!newURL.startsWith("http://") && !newURL.startsWith("https://")) {
+      newURL = "http://" + newURL;
+    }
+    return new URL(newURL).toString();
+  } catch {
+    return "";
   }
-  return url;
 }
