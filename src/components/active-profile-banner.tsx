@@ -32,13 +32,11 @@ export default function ActiveProfileBanner({
   const { userHousingSearchProfile, refreshUserHousingSearchProfileData } =
     useContext(ProfilesContext) as ProfilesContextType;
 
-  let recentlyConfirmed;
-  let daysSinceConfirmed;
-  if (userHousingSearchProfile?.last_updated_date) {
-    const { diffDays } = dateDiff(userHousingSearchProfile.last_updated_date);
-    daysSinceConfirmed = diffDays;
-    recentlyConfirmed = diffDays < 1;
-  }
+  const daysSinceConfirmed = userHousingSearchProfile?.last_updated_date
+    ? dateDiff(userHousingSearchProfile.last_updated_date).diffDays
+    : null;
+  const recentlyConfirmed =
+    daysSinceConfirmed !== null ? daysSinceConfirmed < 1 : false;
 
   async function handleConfirm() {
     setConfirmationPending(true);

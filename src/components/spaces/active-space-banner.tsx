@@ -19,6 +19,7 @@ import { useAuthContext } from "@/contexts/auth-context";
 import { useSpacesContext } from "@/contexts/spaces-context";
 import { useState } from "react";
 import { confirmSpaceListingActive } from "@/lib/utils/data";
+import deriveActivityLevel from "@/lib/configMaps";
 
 export default function ActiveSpaceBanner() {
   const [confirmationPending, setConfirmationPending] = useState(false);
@@ -27,13 +28,11 @@ export default function ActiveSpaceBanner() {
   const { userSpaceListing, pullSpaceListings, pullUserSpaceListing } =
     useSpacesContext();
 
-  let recentlyConfirmed;
-  let daysSinceConfirmed;
-  if (userSpaceListing?.last_updated_date) {
-    const { diffDays } = dateDiff(userSpaceListing.last_updated_date);
-    daysSinceConfirmed = diffDays;
-    recentlyConfirmed = diffDays < 1;
-  }
+  const daysSinceConfirmed = userSpaceListing?.last_updated_date
+    ? dateDiff(userSpaceListing.last_updated_date).diffDays
+    : null;
+  const recentlyConfirmed =
+    daysSinceConfirmed !== null ? daysSinceConfirmed < 1 : false;
 
   async function handleConfirm() {
     try {
@@ -67,7 +66,9 @@ export default function ActiveSpaceBanner() {
         <CardTitle>
           You have an active listing{" "}
           <span className="ml-2 inline-flex">
-            <ActivityStatusDot status="high" />
+            <ActivityStatusDot
+              status={deriveActivityLevel(daysSinceConfirmed || 0)}
+            />
           </span>
         </CardTitle>
         <CardDescription>You can manage your space here</CardDescription>
