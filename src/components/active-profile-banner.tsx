@@ -72,7 +72,6 @@ export default function ActiveProfileBanner({
           <span className="ml-2 inline-flex">
             <ActivityStatusDot
               status={deriveActivityLevel(daysSinceConfirmed || 0)}
-              // showTooltip={false}
             />
           </span>
         </CardTitle>
@@ -87,12 +86,12 @@ export default function ActiveProfileBanner({
           {confirmationPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : null}
-          {recentlyConfirmed ? "You're all set!" : "Confirm still looking"}
+          Confirm still looking{" "}
         </Button>
 
         <p className="text-sm mt-2 text-neutral-500 dark:text-neutral-400">
           {recentlyConfirmed
-            ? `Maintain your active status by re-confirming periodically`
+            ? `You're all set! Maintain your active status by re-confirming periodically`
             : `You last confirmed ${daysSinceConfirmed} days ago`}
         </p>
       </CardContent>

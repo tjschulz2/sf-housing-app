@@ -203,6 +203,13 @@ export async function getUserSpaceListing(userID: string) {
   }
 }
 
+export async function confirmSpaceListingActive(user_id: string) {
+  return await supabase
+    .from("communities")
+    .update({ last_updated_date: getCurrentTimestamp() })
+    .eq("user_id", user_id);
+}
+
 export async function saveUserSpaceListing(
   spaceListingData: Partial<SpaceListingType>,
   userID: string

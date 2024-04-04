@@ -137,10 +137,8 @@ export default function SpaceListingForm({
   const parseResult = formSchema.safeParse(userSpaceListing);
   const parsedSpaceData = parseResult.success ? parseResult.data : null;
   if (!parseResult.success) {
-    console.log({ parseResult });
+    console.error({ parseResult });
   }
-  console.log({ userSpaceListing });
-  console.log({ parsedSpaceData });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
