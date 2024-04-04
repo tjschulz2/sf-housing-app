@@ -38,10 +38,10 @@ export const housingMap: Record<string, Record<number, string>> = {
 
 // Accepts the number of days since last confirmation, returns derived activity level
 export default function deriveActivityLevel(daysSinceConf: number) {
-  if (daysSinceConf <= 10) {
+  if (daysSinceConf <= 7) {
     return "high";
   }
-  if (daysSinceConf <= 20) {
+  if (daysSinceConf <= 14) {
     return "med";
   } else {
     return "low";

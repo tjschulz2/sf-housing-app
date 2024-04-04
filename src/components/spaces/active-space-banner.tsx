@@ -14,12 +14,51 @@ import ActivityStatusDot from "@/components/activity-status-dot";
 import { useToast } from "@/components/ui/use-toast";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 import DeleteSpaceListingDialog from "@/components/spaces/delete-space-listing-dialog";
+import { dateDiff } from "@/lib/utils/general";
+import { useAuthContext } from "@/contexts/auth-context";
+import { useSpacesContext } from "@/contexts/spaces-context";
+import { useState } from "react";
+import { confirmSpaceListingActive } from "@/lib/utils/data";
+import deriveActivityLevel from "@/lib/configMaps";
 
-export default function ActiveSpaceBanner({}: //   refreshSpacesData,
-{
-  //   refreshSpacesData: () => void;
-}) {
+export default function ActiveSpaceBanner() {
+  const [confirmationPending, setConfirmationPending] = useState(false);
   const { toast } = useToast();
+  const { userSession } = useAuthContext();
+  const { userSpaceListing, pullSpaceListings, pullUserSpaceListing } =
+    useSpacesContext();
+
+  const daysSinceConfirmed = userSpaceListing?.last_updated_date
+    ? dateDiff(userSpaceListing.last_updated_date).diffDays
+    : null;
+  const recentlyConfirmed =
+    daysSinceConfirmed !== null ? daysSinceConfirmed < 1 : false;
+
+  async function handleConfirm() {
+    try {
+      setConfirmationPending(true);
+      if (!userSession?.userID) {
+        return;
+      }
+      const { error } = await confirmSpaceListingActive(userSession.userID);
+      setConfirmationPending(false);
+      if (error) {
+        throw new Error("Failed to confirm status");
+      } else {
+        await pullUserSpaceListing(userSession.userID);
+        await pullSpaceListings();
+
+        toast({
+          title: "Successfully confirmed search status",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Failed to confirm status",
+      });
+    }
+  }
 
   return (
     <Card>
@@ -27,14 +66,31 @@ export default function ActiveSpaceBanner({}: //   refreshSpacesData,
         <CardTitle>
           You have an active listing{" "}
           <span className="ml-2 inline-flex">
-            <ActivityStatusDot status="high" />
+            <ActivityStatusDot
+              status={deriveActivityLevel(daysSinceConfirmed || 0)}
+            />
           </span>
         </CardTitle>
         <CardDescription>You can manage your space here</CardDescription>
       </CardHeader>
-      {/* <CardContent>
-        <p>spacey spacey</p>
-      </CardContent> */}
+      <CardContent>
+        <Button
+          disabled={recentlyConfirmed}
+          className="rounded-3xl"
+          onClick={handleConfirm}
+        >
+          {confirmationPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          Confirm availability
+        </Button>
+
+        <p className="text-sm mt-2 text-neutral-500 dark:text-neutral-400">
+          {recentlyConfirmed
+            ? `You're all set! Maintain your active status by re-confirming periodically`
+            : `You last confirmed ${daysSinceConfirmed} days ago`}
+        </p>
+      </CardContent>
       <CardFooter>
         <div className="flex">
           <EditSpaceListingDialog>

@@ -16,13 +16,13 @@ export default function ActivityStatusDot({
   let tooltipContent = "";
   if (status === "high") {
     colorClass = "bg-green-600";
-    tooltipContent = "Recently confirmed actively looking";
+    tooltipContent = "Confirmed within the last week";
   } else if (status === "med") {
     colorClass = "bg-yellow-400";
-    tooltipContent = "Last confirmed looking a few weeks ago";
+    tooltipContent = "Confirmed within the last two weeks";
   } else {
     colorClass = "bg-red-500";
-    tooltipContent = "Hasn't recently confirmed as looking";
+    tooltipContent = "Last confirmed over two weeks ago";
   }
 
   if (showTooltip) {
