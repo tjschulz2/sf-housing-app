@@ -117,11 +117,11 @@ export async function getCommunities() {
   }
 }
 
-export async function getSpaceDetails(id: number) {
+export async function getSpaceDetails(spaceSlug: string) {
   const { data, error } = await supabase
     .from("communities")
     .select("*")
-    .eq("profile_id", id)
+    .eq("space_slug", spaceSlug)
     .maybeSingle();
 
   if (error) {
