@@ -26,11 +26,9 @@ export default function SearcherProfileCard(props: PropsType) {
 
   const bio = profile.pref_housemate_details ?? "";
 
-  let activityLevel;
-  if (profile.last_updated_date) {
-    const { diffDays } = dateDiff(profile.last_updated_date);
-    activityLevel = deriveActivityLevel(diffDays);
-  }
+  const daysSinceConfirmation = profile.last_updated_date
+    ? dateDiff(profile.last_updated_date).diffDays
+    : null;
 
   return (
     <Card>
@@ -41,9 +39,11 @@ export default function SearcherProfileCard(props: PropsType) {
             <span className="font-semibold max-w-[12rem] truncate">
               {profile.user?.name}{" "}
             </span>
-            {activityLevel === "high" ? (
+            {daysSinceConfirmation !== null ? (
               <span className="ml-2">
-                <ActivityStatusDot status={activityLevel} />
+                <ActivityStatusDot
+                  status={deriveActivityLevel(daysSinceConfirmation)}
+                />
               </span>
             ) : null}
           </div>

@@ -50,7 +50,6 @@ export async function getHousingSearchProfiles(
   count: number = 25,
   filters: SearcherProfilesFilterType = {}
 ) {
-  console.log("startIdx: ", startIdx, " count: ", count);
   const { leaseLength, housemateCount, movingTime } = filters;
   let query = supabase
     .from("housing_search_profiles")
@@ -216,6 +215,13 @@ export async function getUserSpaceListing(userID: string) {
   } else {
     return data;
   }
+}
+
+export async function confirmSpaceListingActive(user_id: string) {
+  return await supabase
+    .from("communities")
+    .update({ last_updated_date: getCurrentTimestamp() })
+    .eq("user_id", user_id);
 }
 
 export async function saveUserSpaceListing(

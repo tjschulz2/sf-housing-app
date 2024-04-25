@@ -27,7 +27,6 @@ export default function EditSpaceListingDialog({
   newListing?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  console.log("dialog render!");
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>

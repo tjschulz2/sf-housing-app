@@ -35,10 +35,14 @@ export default function SpaceProfileCard(props: PropsType) {
   return (
     <Card>
       <CardTop>
-        <UserProfileImage size="large" src={profile.user?.twitter_avatar_url} />
-        <div className="flex flex-col items-center max-w-[60%]">
-          <div>
-            <span className="font-semibold max-w-[12rem] truncate">
+        <UserProfileImage
+          size="large"
+          src={profile.image_url || profile.user?.twitter_avatar_url}
+          className="shrink-0"
+        />
+        <div className="flex flex-col gap-4 items-center max-w-[60%]">
+          <div className="w-full flex justify-center">
+            <span className="font-semibold text-ellipsis overflow-hidden text-pretty text-center">
               {profile.name}{" "}
             </span>
             {activityLevel === "high" ? (
@@ -48,15 +52,33 @@ export default function SpaceProfileCard(props: PropsType) {
             ) : null}
           </div>
 
-          <Link
+          {/* <Link
             href={`https://x.com/${profile.user?.twitter_handle}`}
             className="flex items-center justify-center w-full"
           >
-            <span className="text-blue-500 hover:text-blue-400 py-2 max-w-full truncate">
+            <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
               @{profile.user?.twitter_handle}
             </span>
             <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
-          </Link>
+          </Link> */}
+
+          <div className="flex gap-4">
+            <div className="flex">
+              <img className="mr-1" src="/location.svg" />
+              <p id="location" className="text-sm md:text-md truncate">
+                {housingMap.location[profile.location || 0]}
+              </p>
+            </div>
+            <div className="flex">
+              <img className="mr-1" src="/threepeople.svg" />
+              <p className="text-sm md:text-md">
+                {typeof profile.resident_count === "number"
+                  ? `${profile.resident_count.toString()}`
+                  : null}
+              </p>
+            </div>
+          </div>
+
           <ContactMeButton
             phoneNum={profile.contact_phone}
             email={profile.contact_email}
@@ -64,6 +86,17 @@ export default function SpaceProfileCard(props: PropsType) {
           />
         </div>
       </CardTop>
+      <div className="w-fit">
+        <Link
+          href={`https://x.com/${profile.user?.twitter_handle}`}
+          className="flex items-center justify-center w-full"
+        >
+          <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
+            @{profile.user?.twitter_handle}
+          </span>
+          <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+        </Link>
+      </div>
       <CardBottom>
         <CardBioSection bio={bio} link={profile.website_url} />
         <div className="flex flex-col grow justify-center">
@@ -79,15 +112,7 @@ export default function SpaceProfileCard(props: PropsType) {
               sectionTitle="Referred by"
               className="flex items-center"
             >
-              {/* {profile.user?.twitter_handle &&
-              profile.user?.name &&
-              profile.user?.twitter_avatar_url ? (
-                <ReferralBadge
-                  handle={profile.user.twitter_handle}
-                  name={profile.user.name}
-                  imageURL={profile.user.twitter_avatar_url}
-                />
-              ) : null} */}
+              <ReferralBadge userID={profile.user_id} />
             </CardListSection>
           </div>
         </div>

@@ -23,14 +23,14 @@ export const housingMap: Record<string, Record<number, string>> = {
     5: "SoMa",
     6: "Pacific Heights",
     7: "NoPa",
-    8: "San Francisco - Other",
+    8: "SF - Other",
     9: "Berkeley",
     10: "Oakland",
-    11: "East Bay - Other",
+    11: "East Bay",
     12: "Hillsborough",
     13: "Menlo Park",
     14: "Palo Alto",
-    15: "Peninsula - Other",
+    15: "Peninsula",
     16: "South Bay",
     17: "North Bay",
   },
@@ -38,10 +38,10 @@ export const housingMap: Record<string, Record<number, string>> = {
 
 // Accepts the number of days since last confirmation, returns derived activity level
 export default function deriveActivityLevel(daysSinceConf: number) {
-  if (daysSinceConf <= 10) {
+  if (daysSinceConf <= 7) {
     return "high";
   }
-  if (daysSinceConf <= 20) {
+  if (daysSinceConf <= 14) {
     return "med";
   } else {
     return "low";
