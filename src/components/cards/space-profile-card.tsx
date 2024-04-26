@@ -16,6 +16,13 @@ import { useAuthContext } from "@/contexts/auth-context";
 import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
+import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type PropsType = {
   profile: SpaceListingWithUserData;
@@ -79,11 +86,27 @@ export default function SpaceProfileCard(props: PropsType) {
             </div>
           </div>
 
-          <ContactMeButton
-            phoneNum={profile.contact_phone}
-            email={profile.contact_email}
-            twitter={profile.user?.twitter_handle}
-          />
+          <div className="flex gap-2">
+            <ContactMeButton
+              phoneNum={profile.contact_phone}
+              email={profile.contact_email}
+              twitter={profile.user?.twitter_handle}
+            />
+            <TooltipProvider delayDuration={250}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href={`/s/${profile.space_slug}`} target="_blank">
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Full, linkable page for this listing
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </CardTop>
       <div className="w-fit">
@@ -91,6 +114,11 @@ export default function SpaceProfileCard(props: PropsType) {
           href={`https://x.com/${profile.user?.twitter_handle}`}
           className="flex items-center justify-center w-full"
         >
+          {/* <UserProfileImage
+            size="small"
+            src={profile.user?.twitter_avatar_url}
+          /> */}
+
           <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
             @{profile.user?.twitter_handle}
           </span>

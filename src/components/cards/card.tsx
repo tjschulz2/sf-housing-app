@@ -1,6 +1,14 @@
-export function Card({ children }: { children: React.ReactNode }) {
+export function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="p-6 border-2 border-neutral-300 rounded-2xl flex flex-col gap-4">
+    <div
+      className={`p-6 border-2 border-neutral-300 rounded-2xl flex flex-col gap-4 ${className}`}
+    >
       {children}
     </div>
   );
