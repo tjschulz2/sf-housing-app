@@ -59,7 +59,7 @@ export async function handleSignIn() {
 
       initialSignIn = true;
     } else {
-      // if avatar or username has changed, since last sign-in, update accordingly
+      // if avatar, username, or handle have changed since last sign-in, update accordingly
 
       let highResCurrentUserImageUrl = currentUser.twitterAvatarURL.replace(
         "_normal",
@@ -67,13 +67,15 @@ export async function handleSignIn() {
       );
       if (
         userData.twitter_avatar_url !== highResCurrentUserImageUrl ||
-        userData.name !== currentUser.twitterName
+        userData.name !== currentUser.twitterName ||
+        userData.twitter_handle !== currentUser.twitterHandle
       ) {
         const { error } = await supabase
           .from("users")
           .update({
             twitter_avatar_url: highResCurrentUserImageUrl,
             name: currentUser.twitterName,
+            twitter_handle: currentUser.twitterHandle,
           })
           .eq("user_id", currentUser.userID);
 
