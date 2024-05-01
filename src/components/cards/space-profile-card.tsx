@@ -96,7 +96,12 @@ export default function SpaceProfileCard(props: PropsType) {
               <Tooltip>
                 <TooltipTrigger>
                   <Button variant="ghost" size="icon" asChild>
-                    <Link href={`/s/${profile.space_slug}`} target="_blank">
+                    <Link
+                      href={`/s/${
+                        profile.custom_space_slug || profile.space_slug
+                      }`}
+                      target="_blank"
+                    >
                       <ExternalLink className="h-4 w-4" />
                     </Link>
                   </Button>

@@ -14,6 +14,7 @@ type Database = {
           contact_email: string | null;
           contact_phone: string | null;
           created_at: string | null;
+          custom_space_slug: string | null;
           description: string | null;
           image_url: string | null;
           last_updated_date: string | null;
@@ -31,6 +32,7 @@ type Database = {
           contact_email?: string | null;
           contact_phone?: string | null;
           created_at?: string | null;
+          custom_space_slug?: string | null;
           description?: string | null;
           image_url?: string | null;
           last_updated_date?: string | null;
@@ -48,6 +50,7 @@ type Database = {
           contact_email?: string | null;
           contact_phone?: string | null;
           created_at?: string | null;
+          custom_space_slug?: string | null;
           description?: string | null;
           image_url?: string | null;
           last_updated_date?: string | null;

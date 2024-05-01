@@ -1,7 +1,7 @@
 import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
 import { getUserSession } from "./auth";
-import { getCurrentTimestamp } from "./general";
+import { getCurrentTimestamp, isValidUUID } from "./general";
 import { z } from "zod";
 
 // ----- Users & Profiles -----
@@ -118,16 +118,31 @@ export async function getCommunities() {
 }
 
 export async function getSpaceDetails(spaceSlug: string) {
-  const { data, error } = await supabase
-    .from("communities")
-    .select("*")
-    .eq("space_slug", spaceSlug)
-    .maybeSingle();
+  if (isValidUUID(spaceSlug)) {
+    // if valid UUID, using default slug
+    const { data, error } = await supabase
+      .from("communities")
+      .select("*")
+      .eq("space_slug", spaceSlug)
+      .maybeSingle();
 
-  if (error) {
-    console.error(error);
+    if (error) {
+      console.error(error);
+    } else {
+      return data;
+    }
   } else {
-    return data;
+    const { data, error } = await supabase
+      .from("communities")
+      .select("*")
+      .eq("custom_space_slug", spaceSlug)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+    } else {
+      return data;
+    }
   }
 }
 
