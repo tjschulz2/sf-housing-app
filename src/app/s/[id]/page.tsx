@@ -19,10 +19,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     return <p>404</p>;
   }
   return (
-    <div className="p-6 flex flex-col lg:flex-row gap-8">
+    <div className="p-6 flex flex-col lg:flex-row gap-8 lg:items-start">
       {spaceDetails.image_url ? (
         <img
-          className="rounded-xl w-full lg:max-w-md h-fit lg:sticky lg:top-6"
+          className="rounded-xl w-full lg:max-w-md h-auto lg:sticky lg:top-6"
           src={spaceDetails.image_url}
         />
       ) : null}
