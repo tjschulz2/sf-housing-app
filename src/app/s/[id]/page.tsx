@@ -22,11 +22,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     <div className="p-6 flex flex-col lg:flex-row gap-8">
       {spaceDetails.image_url ? (
         <img
-          className="rounded-xl w-full lg:max-w-md h-fit"
+          className="rounded-xl w-full lg:max-w-md h-fit lg:sticky lg:top-6"
           src={spaceDetails.image_url}
         />
       ) : null}
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 grow">
         <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-center">
           {spaceDetails.name}
         </h1>
