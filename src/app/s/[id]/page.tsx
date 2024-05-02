@@ -2,15 +2,39 @@ export const dynamic = "force-dynamic";
 
 import { getSpaceDetails, getUserData } from "@/lib/utils/data";
 import UserProfileImage from "@/components/user-profile-image";
-import { Suspense } from "react";
 import Link from "next/link";
 import TwitterLogo from "@/images/twitter-logo.svg";
 import { housingMap } from "@/lib/configMaps";
 import { ExternalLink, Mail } from "lucide-react";
 import ContactMeButton from "@/components/contact-me-button";
 import CardBioSection from "@/components/cards/card-bio-section";
-import { CircleDollarSign } from "lucide-react";
+import { CircleDollarSign, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
+import { addProtocolToURL } from "@/lib/utils/general";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const spaceDetails = await getSpaceDetails(params.id);
+  const metaTitle = spaceDetails?.name || "";
+  const metaImage = spaceDetails?.image_url || "";
+
+  return {
+    title: metaTitle,
+    openGraph: {
+      title: metaTitle,
+      images: metaImage,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      images: metaImage,
+    },
+  };
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
   const spaceDetails = await getSpaceDetails(params.id);
@@ -52,8 +76,15 @@ export default async function Page({ params }: { params: { id: string } }) {
         <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-2 whitespace-pre-line break-words">
           <p>{spaceDetails.description}</p>
           {spaceDetails.website_url ? (
-            <a className="text-blue-400" href={spaceDetails.website_url}>
-              {spaceDetails.website_url}
+            <a
+              className="text-blue-400 hover:text-blue-300 self-start"
+              href={addProtocolToURL(spaceDetails.website_url)}
+              target="_blank"
+            >
+              <div className="flex gap-1 items-center">
+                <LinkIcon className="h-4 w-4" />
+                {spaceDetails.website_url}
+              </div>
             </a>
           ) : null}
         </div>
