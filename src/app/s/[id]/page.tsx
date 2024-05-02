@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     return <p>404</p>;
   }
   return (
-    <div className="p-6 flex flex-col lg:flex-row gap-8 lg:items-start">
+    <div className="p-6 flex flex-col lg:flex-row gap-8 lg:items-start drop-shadow-xl">
       {spaceDetails.image_url ? (
         <img
           className="rounded-xl w-full lg:max-w-md h-auto lg:sticky lg:top-6"
@@ -27,31 +27,29 @@ export default async function Page({ params }: { params: { id: string } }) {
         />
       ) : null}
       <div className="flex flex-col gap-8 grow">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-center">
+        <h1 className="text-3xl font-bold tracking-wide text-center">
           {spaceDetails.name}
         </h1>
 
         <div className="flex justify-evenly">
           {spaceDetails.location ? (
-            <div className="flex gap-1 items-center">
+            <div className="flex gap-1 items-center border-dashed border-2 border-slate-200 rounded-2xl p-2">
               <img src="/location.svg" />
               <p id="location">{housingMap.location[spaceDetails.location]}</p>
             </div>
           ) : null}
 
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-1 items-center border-dashed border-2 border-slate-200 rounded-2xl p-2">
             <img src="/threepeople.svg" />
             <p>{spaceDetails.resident_count}</p>
           </div>
 
           {/* {spaceDetails.room_price_range ? (
-            <p>
-              {housingMap.roomPrice[spaceDetails.room_price_range]}
-            </p>
+            <p>{housingMap.roomPrice[spaceDetails.room_price_range]}</p>
           ) : null} */}
         </div>
 
-        <div className="bg-neutral-200 p-4 rounded-xl flex flex-col gap-2 whitespace-pre-line">
+        <div className="bg-slate-100 p-4 rounded-xl flex flex-col gap-2 whitespace-pre-line break-words">
           <p>{spaceDetails.description}</p>
           {spaceDetails.website_url ? (
             <a className="text-blue-400" href={spaceDetails.website_url}>
@@ -84,7 +82,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
               </Link>
             </div>
-            {spaceDetails.contact_email ? (
+            {/* {spaceDetails.contact_email ? (
               <Link
                 target="_blank"
                 href={`mailto:${spaceDetails.contact_email}`}
@@ -93,7 +91,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   <Mail className="h-4 w-4" />
                 </Button>
               </Link>
-            ) : null}{" "}
+            ) : null}{" "} */}
           </div>
         </div>
       </div>
