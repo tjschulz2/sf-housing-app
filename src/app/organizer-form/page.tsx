@@ -99,21 +99,14 @@ const MyForm: NextPage = () => {
 
   const handleLinkClick = async (e: React.MouseEvent) => {
     const session = await getUserSession();
-    // Create some logic that checks if an upload is already in the directory
-    setIsLoading(true);
-    const isDataPresentAlready = await isInDirectoryAlready(session!.userID);
-    setIsLoading(false);
-    if (isDataPresentAlready && isFormValid) {
-      setIsModalActive(true);
+    if (!session) return;
+    if (!isFormValid) {
+      e.preventDefault();
     } else {
-      if (!isFormValid) {
-        e.preventDefault();
-      } else {
-        e.preventDefault();
-        setIsLoading(true);
-        await handleSubmit();
-        setIsLoading(false);
-      }
+      e.preventDefault();
+      setIsLoading(true);
+      await handleSubmit();
+      setIsLoading(false);
     }
   };
 
@@ -134,7 +127,6 @@ const MyForm: NextPage = () => {
       router.push("/directory");
     } catch (error) {
       alert("You are not logged in");
-      // Optionally show an error message to the user
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import ProfileCard from "../../../components/profile-card";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
 import { useSpacesContext } from "@/contexts/spaces-context";
@@ -10,12 +10,34 @@ import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
 
 const Directory = () => {
-  const { userSpaceListing, pullSpaceListings, spaceListings } =
+  const { userSpaceListing, pullNextSpaceListingBatch, spaceListings } =
     useSpacesContext();
+  const allowDataPull = useRef(true);
+  const observerTarget = useRef(null);
 
   useEffect(() => {
-    pullSpaceListings();
-  }, [pullSpaceListings]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && allowDataPull.current) {
+          pullNextSpaceListingBatch();
+          allowDataPull.current = false;
+        } else {
+          allowDataPull.current = true;
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget, pullNextSpaceListingBatch]);
 
   const todayProfiles = spaceListings?.filter(
     (profile) =>
@@ -102,6 +124,7 @@ const Directory = () => {
           </CardGrid>
         </>
       )}
+      <div ref={observerTarget}></div>
     </>
   );
 };
