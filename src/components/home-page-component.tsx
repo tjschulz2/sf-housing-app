@@ -124,30 +124,46 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   };
 
   return (
-    <section className={styles.frameParent}>
-      <div className={styles.frameWrapper}>
-        <div className={styles.ellipseParent}>
-          <img className={styles.frameChild} alt="" src="/ellipse-51@3x.jpg" />
-          <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
-          <img className={styles.frameInner} alt="" src="/ellipse-52@3x.jpg" />
-          <img className={styles.ellipseIcon} alt="" src="/ellipse-53@3x.jpg" />
+    // <section className={styles.frameParent}>
+    <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
+      <div className=" max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 ">
+        <div className={styles.frameWrapper}>
+          <div className={styles.ellipseParent}>
+            <img
+              className={styles.frameChild}
+              alt=""
+              src="/ellipse-51@3x.jpg"
+            />
+            <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
+            <img
+              className={styles.frameInner}
+              alt=""
+              src="/ellipse-52@3x.jpg"
+            />
+            <img
+              className={styles.ellipseIcon}
+              alt=""
+              src="/ellipse-53@3x.jpg"
+            />
+          </div>
         </div>
-      </div>
-      <h1 className={styles.findHousemates}>
-        Find sublets, housemates, and coliving communities in the SF tech scene
-      </h1>
-      <p className={styles.thisIsAn}>
-        The SF housing directory of people you probably know
-      </p>
-      {renderContent()}
-      <div className={styles.membersBox}>
-        <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{numberOfUsers}</span> members
-          of DirectorySF
-        </div>
-        <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
-          listings posted this month 🔥
+        <h1 className={styles.findHousemates}>
+          Find sublets, housemates, and coliving communities in the SF tech
+          scene
+        </h1>
+        <p className={styles.thisIsAn}>
+          The SF housing directory of people you probably know
+        </p>
+        {renderContent()}
+        <div className={styles.membersBox}>
+          <div className={styles.generalWords}>
+            <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
+            members of DirectorySF
+          </div>
+          <div className={styles.generalWords}>
+            <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
+            listings posted this month 🔥
+          </div>
         </div>
       </div>
     </section>
