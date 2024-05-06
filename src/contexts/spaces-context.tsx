@@ -13,8 +13,9 @@ import { useAuthContext } from "@/contexts/auth-context";
 type SpacesContextType = {
   userSpaceListing: SpaceListingType | null;
   pullUserSpaceListing: (userID: string) => Promise<void>;
-  spaceListings: SpaceListingWithUserData[] | null;
+  spaceListings: SpaceListingWithUserData[] | [];
   pullSpaceListings: () => Promise<void>;
+  pullNextSpaceListingBatch: () => Promise<void>;
 };
 
 const SpacesContext = createContext<SpacesContextType | null>(null);
@@ -27,8 +28,8 @@ export default function SpacesContextProvider({
   const [userSpaceListing, setUserSpaceListing] =
     useState<SpaceListingType | null>(null);
   const [spaceListings, setSpaceListings] = useState<
-    SpaceListingWithUserData[] | null
-  >(null);
+    SpaceListingWithUserData[] | []
+  >([]);
 
   const { authLoading, userData } = useAuthContext();
 
@@ -47,6 +48,14 @@ export default function SpacesContextProvider({
     }
   }, []);
 
+  const pullNextSpaceListingBatch = async () => {
+    console.log(spaceListings.length);
+    const spaces = await getCommunities(spaceListings.length, 1);
+    if (spaces) {
+      setSpaceListings((prevSpaces) => [...prevSpaces, ...spaces]);
+    }
+  };
+
   useEffect(() => {
     if (!authLoading && userData) {
       pullUserSpaceListing(userData.user_id);
@@ -60,6 +69,7 @@ export default function SpacesContextProvider({
         pullUserSpaceListing,
         spaceListings,
         pullSpaceListings,
+        pullNextSpaceListingBatch,
       }}
     >
       {children}

@@ -100,7 +100,7 @@ export async function getOrganizerProfiles(
   }
 }
 
-export async function getCommunities() {
+export async function getCommunities(start: number = 0, count: number = 100) {
   const { data, error } = await supabase
     .from("communities")
     .select(
@@ -108,7 +108,8 @@ export async function getCommunities() {
       *, user:users(name, twitter_handle, twitter_avatar_url)
     `
     )
-    .order("last_updated_date", { ascending: false });
+    .order("last_updated_date", { ascending: false })
+    .range(start, start + count - 1);
 
   if (error) {
     console.error(error);

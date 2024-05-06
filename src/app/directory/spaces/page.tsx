@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import ProfileCard from "../../../components/profile-card";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";
 import { useSpacesContext } from "@/contexts/spaces-context";
@@ -10,12 +10,67 @@ import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
 
 const Directory = () => {
-  const { userSpaceListing, pullSpaceListings, spaceListings } =
-    useSpacesContext();
+  const {
+    userSpaceListing,
+    pullSpaceListings,
+    pullNextSpaceListingBatch,
+    spaceListings,
+  } = useSpacesContext();
+  const allowDataPull = useRef(false);
+  const observerTarget = useRef(null);
 
   useEffect(() => {
     pullSpaceListings();
   }, [pullSpaceListings]);
+
+  // const pullNextBatch = useCallback(async () => {
+  //   if (!spaceListings?.length || allDataRetrieved.current) {
+  //     console.log("skipping pull");
+  //     return;
+  //   }
+  //   const additionalProfiles = await getHousingSearchProfiles(
+  //     searcherProfiles.length,
+  //     10,
+  //     searcherProfilesFilter
+  //   );
+
+  //   if (additionalProfiles?.length) {
+  //     setSearcherProfiles((prevProfiles) => [
+  //       ...prevProfiles,
+  //       ...additionalProfiles,
+  //     ]);
+  //   } else {
+  //     allDataRetrieved.current = true;
+  //   }
+  // }, [searcherProfiles, searcherProfilesFilter, setSearcherProfiles]);
+
+  const pullNextBatch = useCallback(() => {
+    console.log("pulling");
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && allowDataPull.current) {
+          pullNextSpaceListingBatch();
+          allowDataPull.current = false;
+        } else {
+          allowDataPull.current = true;
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget, pullNextBatch, pullNextSpaceListingBatch]);
 
   const todayProfiles = spaceListings?.filter(
     (profile) =>
@@ -102,6 +157,7 @@ const Directory = () => {
           </CardGrid>
         </>
       )}
+      <div ref={observerTarget}></div>
     </>
   );
 };
