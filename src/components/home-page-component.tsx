@@ -125,8 +125,10 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
 
   return (
     // <section className={styles.frameParent}>
-    <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
-      <div className=" max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 ">
+
+    // <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
+    <div className="h-dvh w-full dark:bg-black bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
+      <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 ">
         <div className={styles.frameWrapper}>
           <div className={styles.ellipseParent}>
             <img
@@ -166,7 +168,8 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           </div>
         </div>
       </div>
-    </section>
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+    </div>
   );
 };
 
