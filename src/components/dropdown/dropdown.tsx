@@ -41,22 +41,7 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
   const handleSubmit = async () => {
     const session = await getUserSession();
     const directoryData = await getDataFromDirectory(session!.userID);
-
-    if (directoryData?.directoryType === "communities") {
-      router.push(
-        `/community-form?data=${encodeURIComponent(
-          JSON.stringify(directoryData)
-        )}`
-      );
-    }
-    // else if (directoryData?.directoryType === "housing_search_profiles") {
-    //   router.push(
-    //     `/housemates-form?data=${encodeURIComponent(
-    //       JSON.stringify(directoryData)
-    //     )}`
-    //   );
-    // }
-    else if (directoryData?.directoryType === "organizer_profiles") {
+    if (directoryData?.directoryType === "organizer_profiles") {
       router.push(
         `/organizer-form?data=${encodeURIComponent(
           JSON.stringify(directoryData)

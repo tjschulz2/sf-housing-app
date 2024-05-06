@@ -48,13 +48,12 @@ export default function SpacesContextProvider({
     }
   }, []);
 
-  const pullNextSpaceListingBatch = async () => {
-    console.log(spaceListings.length);
-    const spaces = await getCommunities(spaceListings.length, 1);
+  const pullNextSpaceListingBatch = useCallback(async () => {
+    const spaces = await getCommunities(spaceListings.length, 10);
     if (spaces) {
       setSpaceListings((prevSpaces) => [...prevSpaces, ...spaces]);
     }
-  };
+  }, [spaceListings.length]);
 
   useEffect(() => {
     if (!authLoading && userData) {

@@ -10,43 +10,10 @@ import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
 
 const Directory = () => {
-  const {
-    userSpaceListing,
-    pullSpaceListings,
-    pullNextSpaceListingBatch,
-    spaceListings,
-  } = useSpacesContext();
-  const allowDataPull = useRef(false);
+  const { userSpaceListing, pullNextSpaceListingBatch, spaceListings } =
+    useSpacesContext();
+  const allowDataPull = useRef(true);
   const observerTarget = useRef(null);
-
-  useEffect(() => {
-    pullSpaceListings();
-  }, [pullSpaceListings]);
-
-  // const pullNextBatch = useCallback(async () => {
-  //   if (!spaceListings?.length || allDataRetrieved.current) {
-  //     console.log("skipping pull");
-  //     return;
-  //   }
-  //   const additionalProfiles = await getHousingSearchProfiles(
-  //     searcherProfiles.length,
-  //     10,
-  //     searcherProfilesFilter
-  //   );
-
-  //   if (additionalProfiles?.length) {
-  //     setSearcherProfiles((prevProfiles) => [
-  //       ...prevProfiles,
-  //       ...additionalProfiles,
-  //     ]);
-  //   } else {
-  //     allDataRetrieved.current = true;
-  //   }
-  // }, [searcherProfiles, searcherProfilesFilter, setSearcherProfiles]);
-
-  const pullNextBatch = useCallback(() => {
-    console.log("pulling");
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -70,7 +37,7 @@ const Directory = () => {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [observerTarget, pullNextBatch, pullNextSpaceListingBatch]);
+  }, [observerTarget, pullNextSpaceListingBatch]);
 
   const todayProfiles = spaceListings?.filter(
     (profile) =>

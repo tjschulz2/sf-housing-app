@@ -362,18 +362,21 @@ export const addOrganizerData = async (
   // Insert data into the database
   const { error: insertError } = await supabase
     .from("organizer_profiles")
-    .insert([
-      {
-        profile_id: profileId,
-        pref_house_details: description,
-        pref_housing_type: housingTypeNum,
-        link: link,
-        pref_lease_start: moveInNum,
-        pref_housemate_count: housematesNum,
-        pref_contact_method: actualContactMethod,
-        user_id: userID,
-      },
-    ]);
+    .upsert(
+      [
+        {
+          profile_id: profileId,
+          pref_house_details: description,
+          pref_housing_type: housingTypeNum,
+          link: link,
+          pref_lease_start: moveInNum,
+          pref_housemate_count: housematesNum,
+          pref_contact_method: actualContactMethod,
+          user_id: userID,
+        },
+      ],
+      { onConflict: "user_id" }
+    );
 
   if (insertError) {
     throw new Error(`Failed to insert data: ${insertError.message}`);
