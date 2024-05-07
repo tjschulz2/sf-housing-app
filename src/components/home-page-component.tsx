@@ -105,7 +105,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             className={styles.signInSmall}
             onClick={signInWithTwitter}
           >
-            Already have an account? Sign in
+            Have an account? Sign in
           </Link>
         </div>
       );
@@ -116,7 +116,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     // <section className={styles.frameParent}>
 
     // <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
-    <div className="h-dvh w-full dark:bg-black bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
+    <div className="h-dvh w-full bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
       <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 drop-shadow-xl">
         <div className={styles.frameWrapper}>
           <div className={styles.ellipseParent}>
@@ -147,7 +147,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
         </p>
         {renderContent()}
         {/* <div className={styles.membersBox}> */}
-        <div className="flex gap-6 bg-slate-50 border-neutral-200 p-4 px-6 rounded-full mt-8">
+        <div className="flex text-sm gap-6 bg-slate-50 border-neutral-200 p-4 px-6 rounded-full mt-8">
           <div>
             <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
             members of DirectorySF
@@ -158,6 +158,25 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           </div>
         </div>
       </div>
+      {/* <p className="text-neutral-500 mt-6">
+        Questions? DM{" "}
+        <a
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://twitter.com/neallseth"
+        >
+          Neall
+        </a>{" "}
+        or{" "}
+        <a
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://twitter.com/thomasschulzz"
+        >
+          Tom
+        </a>
+      </p> */}
+
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
     </div>
   );

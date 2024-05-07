@@ -42,7 +42,7 @@ const Directory: NextPage = () => {
 
   return (
     <>
-      <div className={styles.lookingHousematesContainer}>
+      <div className="flex flex-col p-6 border-[1px] bg-purple-50 rounded-xl">
         <h2 className="text-xl font-bold mb-4">
           🏘️ Want to start a new house?
         </h2>

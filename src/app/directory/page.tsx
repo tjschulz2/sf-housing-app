@@ -189,7 +189,7 @@ function Directory() {
         {userHousingSearchProfile ? (
           <ActiveProfileBanner refreshProfileData={refreshProfileData} />
         ) : (
-          <div className={styles.lookingHousematesContainer}>
+          <div className="flex flex-col p-6 border-[1px] bg-blue-50 rounded-xl">
             <h2 className="text-xl font-bold mb-4">
               👋 Are you looking for housing?
             </h2>
