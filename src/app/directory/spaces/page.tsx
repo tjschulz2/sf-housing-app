@@ -8,6 +8,7 @@ import { useSpacesContext } from "@/contexts/spaces-context";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
+import { Button } from "@/components/ui/button";
 
 const Directory = () => {
   const { userSpaceListing, pullNextSpaceListingBatch, spaceListings } =
@@ -69,15 +70,18 @@ const Directory = () => {
       {userSpaceListing ? (
         <ActiveSpaceBanner />
       ) : (
-        <div className={styles.lookingHousematesContainer}>
+        <div className="flex flex-col p-6 border-[1px] bg-green-50 rounded-xl">
           <h2 className="text-xl font-bold mb-4">
-            Do you have a vacant room, sublet, or coliving house?
+            🏡 Have a co-living space, sublet, or vacant room?
           </h2>
           <span className={styles.addInfoText}>
             Add your space to be discovered by people looking for housing
           </span>
           <EditSpaceListingDialog newListing={true}>
-            <button className={styles.addMeButton}> Add my space</button>
+            {/* <button className={styles.addMeButton}> Add my space</button> */}
+            <Button className="rounded-3xl p-6 bg-green-700 hover:bg-green-600 w-fit">
+              Add my space
+            </Button>
           </EditSpaceListingDialog>
         </div>
       )}
