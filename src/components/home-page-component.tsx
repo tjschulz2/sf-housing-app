@@ -24,17 +24,27 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   const [totalWeeklyProfiles, setTotalWeeklyProfiles] = useState(0);
 
   useEffect(() => {
-    const fetchNumberOfUsers = async () => {
-      let { data, error, count } = await supabase
+    const pullMemberCount = async () => {
+      let { error, count } = await supabase
         .from("users")
         .select("user_id", { count: "exact" });
 
-      if (!error && data) {
+      if (!error) {
         setNumberOfUsers(count ?? 0);
       }
     };
 
-    fetchNumberOfUsers();
+    const pullMonthlyListingCount = async () => {
+      let { data, error } = await supabase.rpc("this_month_listing_count");
+      if (error) {
+        console.error(error);
+      } else if (data) {
+        setTotalWeeklyProfiles(data);
+      }
+    };
+
+    pullMemberCount();
+    pullMonthlyListingCount();
   }, []);
 
   useEffect(() => {
