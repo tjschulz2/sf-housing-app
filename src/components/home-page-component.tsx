@@ -12,6 +12,7 @@ import Link from "next/link";
 import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
 import { differenceInDays } from "date-fns";
+import { MovingBorderButton } from "./ui/moving-border-button";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -45,35 +46,6 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
 
     pullMemberCount();
     pullMonthlyListingCount();
-  }, []);
-
-  useEffect(() => {
-    const countThisWeekProfiles = (profiles: any) =>
-      profiles.filter(
-        (profile: any) =>
-          differenceInDays(new Date(), new Date(profile.created_at || "")) < 30
-      ).length;
-
-    const fetchProfiles = async () => {
-      const profilePromises = [
-        getHousingSearchProfiles(),
-        getOrganizerProfiles(),
-        getCommunities(),
-      ];
-      const [searcherProfiles, organizerProfiles, communityProfiles] =
-        await Promise.all(profilePromises);
-      // const searcherProfiles = await getHousingSearchProfiles();
-      // const organizerProfiles = await getOrganizerProfiles();
-      // const communityProfiles = await getCommunities();
-      const total =
-        countThisWeekProfiles(searcherProfiles) +
-        countThisWeekProfiles(organizerProfiles) +
-        countThisWeekProfiles(communityProfiles);
-
-      setTotalWeeklyProfiles(total);
-    };
-
-    fetchProfiles();
   }, []);
 
   const renderContent = () => {
@@ -120,6 +92,13 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             className={styles.applyWrapper}
           >
             <div className={styles.apply}>Apply</div>
+            {/* <MovingBorderButton
+              duration={3500}
+              borderRadius="1.75rem"
+              className="bg-black text-white"
+            >
+              Apply
+            </MovingBorderButton> */}
           </Link>
           <Link
             href=""
@@ -138,7 +117,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
 
     // <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
     <div className="h-dvh w-full dark:bg-black bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
-      <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 ">
+      <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 drop-shadow-xl">
         <div className={styles.frameWrapper}>
           <div className={styles.ellipseParent}>
             <img
@@ -167,12 +146,13 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           The SF housing directory of people you probably know
         </p>
         {renderContent()}
-        <div className={styles.membersBox}>
-          <div className={styles.generalWords}>
+        {/* <div className={styles.membersBox}> */}
+        <div className="flex gap-6 bg-slate-50 border-neutral-200 p-4 px-6 rounded-full mt-8">
+          <div>
             <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
             members of DirectorySF
           </div>
-          <div className={styles.generalWords}>
+          <div>
             <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
             listings this month 🔥
           </div>

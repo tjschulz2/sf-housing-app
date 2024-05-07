@@ -112,7 +112,7 @@ export default function DirectoryLayout({
         <div>
           <div className={styles.topArea}>
             <div className={styles.directoryInviteSettings}>
-              <h1 className="text-3xl font-bold my-4">Directory</h1>
+              <h1 className="text-3xl font-bold my-4">DirectorySF</h1>
               <div className={styles.inviteSettingsContainer}>
                 <InviteButton />
                 <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
