@@ -174,7 +174,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           </div>
           <div className={styles.generalWords}>
             <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
-            listings posted this month 🔥
+            listings this month 🔥
           </div>
         </div>
       </div>
