@@ -8,11 +8,16 @@ import { useSpacesContext } from "@/contexts/spaces-context";
 import EditSpaceListingDialog from "@/components/spaces/edit-space-listing-dialog";
 import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
+import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { Button } from "@/components/ui/button";
 
 const Directory = () => {
-  const { userSpaceListing, pullNextSpaceListingBatch, spaceListings } =
-    useSpacesContext();
+  const {
+    userSpaceListing,
+    pullNextSpaceListingBatch,
+    spaceListings,
+    allSpaceListingsRetrieved,
+  } = useSpacesContext();
   const allowDataPull = useRef(true);
   const observerTarget = useRef(null);
 
@@ -128,7 +133,9 @@ const Directory = () => {
           </CardGrid>
         </>
       )}
-      <div ref={observerTarget}></div>
+      <div ref={observerTarget}>
+        {!allSpaceListingsRetrieved ? <LoadingSpinner overlay={false} /> : null}
+      </div>
     </>
   );
 };

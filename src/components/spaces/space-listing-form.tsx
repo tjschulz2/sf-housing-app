@@ -130,7 +130,7 @@ export default function SpaceListingForm({
     null
   );
   const [validImageUpload, setValidImageUpload] = useState(true);
-  const { userSpaceListing, pullUserSpaceListing, pullSpaceListings } =
+  const { userSpaceListing, pullUserSpaceListing, refreshSpaceListings } =
     useSpacesContext();
   const [submitted, setSubmitted] = useState(false);
 
@@ -197,7 +197,7 @@ export default function SpaceListingForm({
       });
     }
     pullUserSpaceListing(userSession.userID);
-    pullSpaceListings();
+    refreshSpaceListings();
     closeDialog();
 
     console.log(values);

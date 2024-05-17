@@ -25,7 +25,7 @@ export default function ActiveSpaceBanner() {
   const [confirmationPending, setConfirmationPending] = useState(false);
   const { toast } = useToast();
   const { userSession } = useAuthContext();
-  const { userSpaceListing, pullSpaceListings, pullUserSpaceListing } =
+  const { userSpaceListing, refreshSpaceListings, pullUserSpaceListing } =
     useSpacesContext();
 
   const daysSinceConfirmed = userSpaceListing?.last_updated_date
@@ -46,7 +46,7 @@ export default function ActiveSpaceBanner() {
         throw new Error("Failed to confirm status");
       } else {
         await pullUserSpaceListing(userSession.userID);
-        await pullSpaceListings();
+        await refreshSpaceListings();
 
         toast({
           title: "Successfully confirmed search status",
