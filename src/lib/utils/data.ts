@@ -100,7 +100,7 @@ export async function getOrganizerProfiles(
   }
 }
 
-export async function getCommunities(start: number = 0, count: number = 100) {
+export async function getCommunities(start: number = 0, count: number = 10) {
   const { data, error } = await supabase
     .from("communities")
     .select(

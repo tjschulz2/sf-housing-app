@@ -14,8 +14,9 @@ type SpacesContextType = {
   userSpaceListing: SpaceListingType | null;
   pullUserSpaceListing: (userID: string) => Promise<void>;
   spaceListings: SpaceListingWithUserData[] | [];
-  pullSpaceListings: () => Promise<void>;
+  refreshSpaceListings: () => Promise<void>;
   pullNextSpaceListingBatch: () => Promise<void>;
+  allSpaceListingsRetrieved: Boolean;
 };
 
 const SpacesContext = createContext<SpacesContextType | null>(null);
@@ -30,6 +31,8 @@ export default function SpacesContextProvider({
   const [spaceListings, setSpaceListings] = useState<
     SpaceListingWithUserData[] | []
   >([]);
+  const [allSpaceListingsRetrieved, setAllSpaceListingsRetrieved] =
+    useState(false);
 
   const { authLoading, userData } = useAuthContext();
 
@@ -41,19 +44,26 @@ export default function SpacesContextProvider({
     [setUserSpaceListing]
   );
 
-  const pullSpaceListings = useCallback(async () => {
+  const refreshSpaceListings = useCallback(async () => {
     const spaces = await getCommunities();
     if (spaces) {
       setSpaceListings(spaces);
     }
   }, []);
 
-  const pullNextSpaceListingBatch = useCallback(async () => {
-    const spaces = await getCommunities(spaceListings.length, 10);
-    if (spaces) {
-      setSpaceListings((prevSpaces) => [...prevSpaces, ...spaces]);
-    }
-  }, [spaceListings.length]);
+  const pullNextSpaceListingBatch = useCallback(
+    async (batchSize: number = 10) => {
+      const spaces = await getCommunities(spaceListings.length, batchSize);
+      if (!spaces?.length) return;
+      else {
+        setSpaceListings((prevSpaces) => [...prevSpaces, ...spaces]);
+        if (spaces.length < batchSize) {
+          setAllSpaceListingsRetrieved(true);
+        }
+      }
+    },
+    [spaceListings.length]
+  );
 
   useEffect(() => {
     if (!authLoading && userData) {
@@ -67,8 +77,9 @@ export default function SpacesContextProvider({
         userSpaceListing,
         pullUserSpaceListing,
         spaceListings,
-        pullSpaceListings,
+        refreshSpaceListings,
         pullNextSpaceListingBatch,
+        allSpaceListingsRetrieved,
       }}
     >
       {children}

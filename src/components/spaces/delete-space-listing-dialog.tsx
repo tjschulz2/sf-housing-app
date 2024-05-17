@@ -27,7 +27,7 @@ export default function DeleteSpaceListingDialog({
 }) {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { pullSpaceListings, pullUserSpaceListing } = useSpacesContext();
+  const { refreshSpaceListings, pullUserSpaceListing } = useSpacesContext();
   const { userSession } = useAuthContext();
 
   const { toast } = useToast();
@@ -42,7 +42,7 @@ export default function DeleteSpaceListingDialog({
       toast({
         title: "Successfully deleted space",
       });
-      pullSpaceListings();
+      refreshSpaceListings();
       pullUserSpaceListing(userSession.userID);
     } else {
       toast({
