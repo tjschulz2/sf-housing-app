@@ -19,6 +19,7 @@ import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import CardGrid from "@/components/cards/card-grid";
+import { Button } from "@/components/ui/button";
 
 function Directory() {
   const {
@@ -188,19 +189,20 @@ function Directory() {
         {userHousingSearchProfile ? (
           <ActiveProfileBanner refreshProfileData={refreshProfileData} />
         ) : (
-          <div className={styles.lookingHousematesContainer}>
+          <div className="flex flex-col p-6 border-[1px] bg-blue-50 rounded-xl">
             <h2 className="text-xl font-bold mb-4">
               👋 Are you looking for housing?
             </h2>
             <span className={styles.addInfoText}>
-              Add your information here to be discovered by communities and
-              organizers
+              Create a profile to be discovered by communities and organizers
             </span>
             <EditSearcherProfileDialog
               newProfile={true}
               refreshProfileData={refreshProfileData}
             >
-              <button className={styles.addMeButton}>Add me</button>
+              <Button className="rounded-3xl p-6 bg-blue-700 hover:bg-blue-600 w-fit">
+                Add me
+              </Button>
             </EditSearcherProfileDialog>
           </div>
         )}

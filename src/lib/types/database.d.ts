@@ -184,6 +184,7 @@ type Database = {
       organizer_profiles: {
         Row: {
           created_at: string;
+          last_updated_date: string | null;
           link: string | null;
           pref_contact_method: string | null;
           pref_house_details: string | null;
@@ -195,6 +196,7 @@ type Database = {
         };
         Insert: {
           created_at?: string;
+          last_updated_date?: string | null;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_house_details?: string | null;
@@ -206,6 +208,7 @@ type Database = {
         };
         Update: {
           created_at?: string;
+          last_updated_date?: string | null;
           link?: string | null;
           pref_contact_method?: string | null;
           pref_house_details?: string | null;
@@ -219,7 +222,7 @@ type Database = {
           {
             foreignKeyName: "organizer_profiles_user_id_fkey";
             columns: ["user_id"];
-            isOneToOne: false;
+            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
           }
@@ -337,6 +340,10 @@ type Database = {
     };
     Functions: {
       decrement_available_referrals: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+      this_month_listing_count: {
         Args: Record<PropertyKey, never>;
         Returns: number;
       };

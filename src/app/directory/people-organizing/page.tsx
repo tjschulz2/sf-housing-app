@@ -6,6 +6,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { getOrganizerProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 const Directory: NextPage = () => {
   const [profiles, setProfiles] = useState<OrganizerProfile[]>();
@@ -41,17 +42,20 @@ const Directory: NextPage = () => {
 
   return (
     <>
-      <div className={styles.lookingHousematesContainer}>
+      <div className="flex flex-col p-6 border-[1px] bg-purple-50 rounded-xl">
         <h2 className="text-xl font-bold mb-4">
-          Do you want to start a new house?
+          🏘️ Want to start a new house?
         </h2>
         <span className={styles.addInfoText}>
-          Add your information and we will add you to the Starting a new house
-          directory so you can be discovered by people looking for housemates.
+          Create a listing to be discovered by those interested in forming a new
+          house
         </span>
-        <Link className={styles.addMeButton} href="/organizer-form">
-          Start house
-        </Link>
+        <Button
+          asChild
+          className="rounded-3xl p-6 bg-purple-700 hover:bg-purple-600 w-fit"
+        >
+          <Link href="/organizer-form">Start house</Link>
+        </Button>
       </div>
       {todayProfiles && todayProfiles.length > 0 && (
         <>

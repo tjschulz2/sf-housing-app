@@ -23,21 +23,26 @@ export async function generateMetadata({
   const metaImage = spaceDetails?.image_url || "";
   const metaDescription = spaceDetails?.description || "";
 
-  return {
+  const metadata: Metadata = {
     title: metaTitle,
     description: metaDescription,
     openGraph: {
       title: metaTitle,
-      images: metaImage,
       description: metaDescription,
     },
     twitter: {
       card: "summary_large_image",
       title: metaTitle,
-      images: metaImage,
       description: metaDescription,
     },
   };
+
+  if (metaImage) {
+    metadata.openGraph!.images = metaImage;
+    metadata.twitter!.images = metaImage;
+  }
+
+  return metadata;
 }
 
 export default async function Page({ params }: { params: { id: string } }) {

@@ -12,6 +12,7 @@ import Link from "next/link";
 import React from "react";
 import { signInWithTwitter } from "../lib/utils/auth";
 import { differenceInDays } from "date-fns";
+import { MovingBorderButton } from "./ui/moving-border-button";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -24,46 +25,27 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   const [totalWeeklyProfiles, setTotalWeeklyProfiles] = useState(0);
 
   useEffect(() => {
-    const fetchNumberOfUsers = async () => {
-      let { data, error, count } = await supabase
+    const pullMemberCount = async () => {
+      let { error, count } = await supabase
         .from("users")
         .select("user_id", { count: "exact" });
 
-      if (!error && data) {
+      if (!error) {
         setNumberOfUsers(count ?? 0);
       }
     };
 
-    fetchNumberOfUsers();
-  }, []);
-
-  useEffect(() => {
-    const countThisWeekProfiles = (profiles: any) =>
-      profiles.filter(
-        (profile: any) =>
-          differenceInDays(new Date(), new Date(profile.created_at || "")) < 30
-      ).length;
-
-    const fetchProfiles = async () => {
-      const profilePromises = [
-        getHousingSearchProfiles(),
-        getOrganizerProfiles(),
-        getCommunities(),
-      ];
-      const [searcherProfiles, organizerProfiles, communityProfiles] =
-        await Promise.all(profilePromises);
-      // const searcherProfiles = await getHousingSearchProfiles();
-      // const organizerProfiles = await getOrganizerProfiles();
-      // const communityProfiles = await getCommunities();
-      const total =
-        countThisWeekProfiles(searcherProfiles) +
-        countThisWeekProfiles(organizerProfiles) +
-        countThisWeekProfiles(communityProfiles);
-
-      setTotalWeeklyProfiles(total);
+    const pullMonthlyListingCount = async () => {
+      let { data, error } = await supabase.rpc("this_month_listing_count");
+      if (error) {
+        console.error(error);
+      } else if (data) {
+        setTotalWeeklyProfiles(data);
+      }
     };
 
-    fetchProfiles();
+    pullMemberCount();
+    pullMonthlyListingCount();
   }, []);
 
   const renderContent = () => {
@@ -110,13 +92,20 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             className={styles.applyWrapper}
           >
             <div className={styles.apply}>Apply</div>
+            {/* <MovingBorderButton
+              duration={3500}
+              borderRadius="1.75rem"
+              className="bg-black text-white"
+            >
+              Apply
+            </MovingBorderButton> */}
           </Link>
           <Link
             href=""
             className={styles.signInSmall}
             onClick={signInWithTwitter}
           >
-            Already have an account? Sign in
+            Have an account? Sign in
           </Link>
         </div>
       );
@@ -124,33 +113,72 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
   };
 
   return (
-    <section className={styles.frameParent}>
-      <div className={styles.frameWrapper}>
-        <div className={styles.ellipseParent}>
-          <img className={styles.frameChild} alt="" src="/ellipse-51@3x.jpg" />
-          <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
-          <img className={styles.frameInner} alt="" src="/ellipse-52@3x.jpg" />
-          <img className={styles.ellipseIcon} alt="" src="/ellipse-53@3x.jpg" />
+    // <section className={styles.frameParent}>
+
+    // <section className="bg-grid-slate bg-fixed h-dvh flex flex-col justify-center items-center w-full">
+    <div className="h-dvh w-full bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
+      <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 drop-shadow-xl">
+        <div className={styles.frameWrapper}>
+          <div className={styles.ellipseParent}>
+            <img
+              className={styles.frameChild}
+              alt=""
+              src="/ellipse-51@3x.jpg"
+            />
+            <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
+            <img
+              className={styles.frameInner}
+              alt=""
+              src="/ellipse-52@3x.jpg"
+            />
+            <img
+              className={styles.ellipseIcon}
+              alt=""
+              src="/ellipse-53@3x.jpg"
+            />
+          </div>
+        </div>
+        <h1 className={styles.findHousemates}>
+          Find sublets, housemates, and coliving communities in the SF tech
+          scene
+        </h1>
+        <p className={styles.thisIsAn}>
+          The SF housing directory of people you probably know
+        </p>
+        {renderContent()}
+        {/* <div className={styles.membersBox}> */}
+        <div className="flex text-sm gap-6 bg-slate-50 border-neutral-200 p-4 px-6 rounded-full mt-8">
+          <div>
+            <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
+            members of DirectorySF
+          </div>
+          <div>
+            <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
+            listings this month 🔥
+          </div>
         </div>
       </div>
-      <h1 className={styles.findHousemates}>
-        Find sublets, housemates, and coliving communities in the SF tech scene
-      </h1>
-      <p className={styles.thisIsAn}>
-        The SF housing directory of people you probably know
-      </p>
-      {renderContent()}
-      <div className={styles.membersBox}>
-        <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{numberOfUsers}</span> members
-          of DirectorySF
-        </div>
-        <div className={styles.generalWords}>
-          <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
-          listings posted this month 🔥
-        </div>
-      </div>
-    </section>
+      {/* <p className="text-neutral-500 mt-6">
+        Questions? DM{" "}
+        <a
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://twitter.com/neallseth"
+        >
+          Neall
+        </a>{" "}
+        or{" "}
+        <a
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://twitter.com/thomasschulzz"
+        >
+          Tom
+        </a>
+      </p> */}
+
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+    </div>
   );
 };
 
