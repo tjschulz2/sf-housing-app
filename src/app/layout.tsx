@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { Noto_Serif, Noto_Serif_Display } from "next/font/google";
 import { Metadata } from "next";
 import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 import { Suspense } from "react";
@@ -8,6 +9,8 @@ const GTM_ID = "GTM-KBH5Q942";
 import AuthContextProvider from "@/contexts/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
+const notoSerif = Noto_Serif({ subsets: ["latin"] });
+const notoSerifDisplay = Noto_Serif_Display({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
 
 const siteTitle = "DirectorySF";
@@ -55,7 +58,7 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={inter.className}>
+      <body className={notoSerif.className}>
         <Suspense fallback={<LoadingSpinner />}>
           <AuthContextProvider>
             {children}

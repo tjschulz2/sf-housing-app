@@ -8,6 +8,8 @@ body {
 }
 :root {
   /* fonts */
+  --font-noto-serif: 'Noto Serif', serif;
+  --font-noto-serif-display: 'Noto Serif Display', serif;
   /* font sizes */
   --font-size-lg: 1.13rem;
   --font-size-base: 1rem;
