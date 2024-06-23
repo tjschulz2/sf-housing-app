@@ -271,7 +271,7 @@ export default function SearcherProfileForm({
           name="contact_phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone number (Optional)</FormLabel>
+              <FormLabel>Contact phone number (Optional)</FormLabel>
               <FormControl>
                 <Input type="tel" placeholder="4151234567" {...field} />
               </FormControl>
@@ -285,7 +285,7 @@ export default function SearcherProfileForm({
           name="contact_email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email (Optional)</FormLabel>
+              <FormLabel>Contact email (Optional)</FormLabel>
               <FormControl>
                 <Input type="email" placeholder="me@example.com" {...field} />
               </FormControl>

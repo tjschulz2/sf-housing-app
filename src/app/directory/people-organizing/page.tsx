@@ -42,7 +42,7 @@ const Directory: NextPage = () => {
 
   return (
     <>
-      <div className="flex flex-col p-6 border-[1px] bg-purple-50 rounded-xl">
+      <div className="flex flex-col p-6 border-[1px] bg-[#FCF7F7] rounded-xl">
         <h2 className="text-xl font-bold mb-4">
           🏘️ Want to start a new house?
         </h2>
@@ -52,7 +52,7 @@ const Directory: NextPage = () => {
         </span>
         <Button
           asChild
-          className="rounded-3xl p-6 bg-purple-700 hover:bg-purple-600 w-fit"
+          className="rounded-3xl p-6 bg-[#9E58D5] hover:bg-[#B179D9] w-fit"
         >
           <Link href="/organizer-form">Start house</Link>
         </Button>

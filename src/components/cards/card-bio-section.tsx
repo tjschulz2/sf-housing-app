@@ -30,7 +30,7 @@ export default function CardBioSection({
   }, []);
 
   return (
-    <div className="p-2 bg-neutral-50 rounded-xl flex flex-col gap-1 text-sm">
+    <div className="p-2 bg-[#F6F5EB] rounded-xl flex flex-col gap-1 text-sm">
       <p ref={bioRef} className="text-neutral-600 line-clamp-3">
         {bio}
       </p>

@@ -189,7 +189,7 @@ function Directory() {
         {userHousingSearchProfile ? (
           <ActiveProfileBanner refreshProfileData={refreshProfileData} />
         ) : (
-          <div className="flex flex-col p-6 border-[1px] bg-blue-50 rounded-xl">
+          <div className="flex flex-col p-6 border-[1px] bg-[#F5F8F7] rounded-xl">
             <h2 className="text-xl font-bold mb-4">
               👋 Are you looking for housing?
             </h2>
@@ -200,7 +200,7 @@ function Directory() {
               newProfile={true}
               refreshProfileData={refreshProfileData}
             >
-              <Button className="rounded-3xl p-6 bg-blue-700 hover:bg-blue-600 w-fit">
+              <Button className="rounded-3xl p-6 bg-[#5279E0] hover:bg-[#7493E2] w-fit">
                 Add me
               </Button>
             </EditSearcherProfileDialog>

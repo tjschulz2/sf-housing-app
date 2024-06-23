@@ -19,7 +19,7 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
-  SelectTrigger,
+  SelectTrigger2,
   SelectValue,
 } from "@/components/ui/select";
 
@@ -279,9 +279,9 @@ export default function SpaceListingForm({
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger2>
                     <SelectValue placeholder="Select location" />
-                  </SelectTrigger>
+                  </SelectTrigger2>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>San Francisco</SelectLabel>

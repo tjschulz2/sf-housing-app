@@ -98,14 +98,14 @@ export default function ActiveProfileBanner({
           <EditSearcherProfileDialog refreshProfileData={refreshProfileData}>
             <Button
               variant="secondary"
-              className="rounded-3xl text-sm sm:text-md mr-4"
+              className="rounded-3xl text-sm sm:text-md mr-4 bg-[#F6F5EB]"
             >
               <Pencil size="16" className="mr-2" />
               Edit profile
             </Button>
           </EditSearcherProfileDialog>
           <DeleteSearcherProfileDialog refreshProfileData={refreshProfileData}>
-            <Button className="rounded-3xl" variant="secondary">
+            <Button className="rounded-3xl bg-[#F6F5EB]" variant="secondary">
               <Trash size="16" className="mr-2" />
               Delete profile
             </Button>

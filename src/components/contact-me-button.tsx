@@ -53,7 +53,7 @@ export default function ContactMeButton({
 
   return (
     <Popover>
-      <PopoverTrigger className="inline-flex items-center justify-center ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2  border border-neutral-200 bg-white hover:bg-neutral-100 hover:text-neutral-900  h-10 px-4 py-2 rounded-3xl font-semibold max-w-fit text-md">
+      <PopoverTrigger className="inline-flex items-center text-white justify-center ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2  border border-neutral-200 bg-[#1D462F] hover:bg-[#296141] hover:text-[#EAEFEC]  h-10 px-4 py-2 rounded-3xl font-semibold max-w-fit text-md">
         Contact me
       </PopoverTrigger>
       <PopoverContent>

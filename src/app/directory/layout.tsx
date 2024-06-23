@@ -2,6 +2,7 @@
 import styles from "./page.module.css";
 import Navbar from "../../components/navbar/navbar";
 import InviteButton from "../../components/invite-button/invite-button";
+import HeaderBar from "@/components/headerbar";
 import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
@@ -18,6 +19,7 @@ import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
+import Head from "next/head";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -108,37 +110,40 @@ export default function DirectoryLayout({
   if (userSession && userData) {
     return (
       // <div className={styles.container}>
-      <div className="w-full bg-white bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
-        <div className="drop-shadow-xl p-4 sm:p-12 max-w-screen-xl	mx-auto w-full z-10">
-          <div>
-            <div className={styles.topArea}>
-              <div className={styles.directoryInviteSettings}>
-                <h1 className="text-3xl font-bold my-4">DirectorySF</h1>
-                <div className={styles.inviteSettingsContainer}>
-                  <InviteButton />
-                  <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
+      <div className="w-full bg-[#FEFBEB]">
+        <HeaderBar />
+        <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
+          <div className="p-4 mx-auto w-full z-10 px-10">
+            <div>
+              <div className={styles.topArea}>
+                <div className={styles.directoryInviteSettings}>
+                  <h1 className="text-3xl font-bold my-4">DirectorySF</h1>
+                  <div className={styles.inviteSettingsContainer}>
+                    <InviteButton />
+                    <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
+                  </div>
                 </div>
+                <Navbar />
               </div>
-              <Navbar />
+              <ProfilesContext.Provider
+                value={{
+                  searcherProfiles,
+                  setSearcherProfiles,
+                  searcherProfilesFilter,
+                  setSearcherProfilesFilter,
+                  userHousingSearchProfile,
+                  refreshUserHousingSearchProfileData,
+                }}
+              >
+                <SpacesContextProvider>
+                  <div className={styles.directoryContainer}>{children}</div>
+                </SpacesContextProvider>
+              </ProfilesContext.Provider>
             </div>
-            <ProfilesContext.Provider
-              value={{
-                searcherProfiles,
-                setSearcherProfiles,
-                searcherProfilesFilter,
-                setSearcherProfilesFilter,
-                userHousingSearchProfile,
-                refreshUserHousingSearchProfileData,
-              }}
-            >
-              <SpacesContextProvider>
-                <div className={styles.directoryContainer}>{children}</div>
-              </SpacesContextProvider>
-            </ProfilesContext.Provider>
+            <Footer />
           </div>
-          <Footer />
+          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         </div>
-        <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
       </div>
     );
   } else {
