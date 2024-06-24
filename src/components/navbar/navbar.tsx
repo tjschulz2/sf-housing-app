@@ -17,6 +17,10 @@ const navConfig = [
     path: "/directory/spaces",
     title: "Existing spaces",
   },
+  // {
+  //   path: "/directory/leases",
+  //   title: "Leases",
+  // },
 ];
 
 export default function Navbar() {

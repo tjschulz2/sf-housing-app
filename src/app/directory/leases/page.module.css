@@ -1,30 +1,32 @@
+.selectedText {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  border-bottom: 4px solid black;
+}
+
 .addInfoText {
   margin-bottom: 16px;
-}
-
-.signOutButton {
-  text-decoration: none;
-  color: grey;
-  margin-left: 24px;
-}
-
-.signOutButton:hover {
-  opacity: 0.7;
 }
 
 .directoryContainer {
   display: flex;
   flex-direction: column;
   padding-top: 24px;
-  padding-bottom: 80px;
 }
 
 .lookingHousematesContainer {
   display: flex;
   flex-direction: column;
+  margin-bottom: 40px;
   background-color: #f2f2f2;
   border-radius: 10px;
   padding: 24px;
+}
+
+.unselectedText {
+  text-decoration: none;
+  color: var(--color-gray-100);
 }
 
 .topArea {
@@ -41,7 +43,7 @@
 .addMeButton {
   border-radius: 100px;
   padding: 18px 30px 18px 30px;
-  background-color: rgb(18, 74, 187);
+  background-color: #1d8d64;
   color: white;
   font-weight: 600;
   text-decoration: none;
@@ -50,7 +52,13 @@
 }
 
 .addMeButton:hover {
-  background-color: rgb(18, 74, 187, 0.8);
+  background-color: #125e42;
+}
+
+.sectionButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 
 .settingsButton {
@@ -81,6 +89,13 @@
 
 /* Grid stuff */
 
+.container {
+  margin: 0 auto;
+  padding: 20px 80px;
+  box-sizing: border-box;
+  max-width: 1625px;
+}
+
 .containerGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -89,18 +104,30 @@
 }
 
 @media (max-width: 1625px) {
+  .container {
+    max-width: 1400px;
+    padding: 20px 60px;
+  }
   .containerGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 1275px) {
+  .container {
+    max-width: 1000px;
+    padding: 20px 60px;
+  }
   .containerGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 885px) {
+  .container {
+    max-width: 650px;
+    padding: 60px 60px;
+  }
   .containerGrid {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -115,6 +142,12 @@
     gap: 24px;
   }
 
+  .sectionButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .topArea {
     border-bottom: 0px;
   }
@@ -125,19 +158,18 @@
 }
 
 @media (max-width: 490px) {
+  .container {
+    padding: 16px 16px;
+    max-width: 490px;
+  }
   .containerGrid {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 
-.responsivePadding {
-  padding-left: 40px; /* Default padding */
-  padding-right: 40px; /* Default padding */
-}
-
-@media (max-width: 500px) {
-  .responsivePadding {
-    padding-left: 12px; /* Adjusted padding for small screens */
-    padding-right: 12px; /* Adjusted padding for small screens */
+@media (max-width: 406px) {
+  .container {
+    max-width: 406px;
+    padding: 0px 0px;
   }
 }

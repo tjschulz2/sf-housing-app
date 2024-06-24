@@ -356,3 +356,35 @@
     margin-top: 2rem;
   }
 }
+
+.hiddenOnSmallScreens {
+  display: block; /* Ensure it is visible by default */
+}
+
+@media (max-width: 894px) {
+  .hiddenOnSmallScreens {
+    display: none; /* Hide at 894 pixels or less */
+  }
+}
+
+.hiddenOnVerySmallScreens {
+  display: flex; /* Ensure it is visible by default */
+}
+
+@media (max-width: 500px) {
+  .hiddenOnVerySmallScreens {
+    display: none; /* Hide at 500 pixels or less */
+  }
+}
+
+.responsiveHeaderPadding {
+  padding-left: 40px; /* Default padding */
+  padding-right: 40px; /* Default padding */
+}
+
+@media (max-width: 500px) {
+  .responsiveHeaderPadding {
+    padding-left: 12px; /* Adjusted padding for small screens */
+    padding-right: 12px; /* Adjusted padding for small screens */
+  }
+}

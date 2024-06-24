@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import Navbar from "../../components/navbar/navbar";
 import InviteButton from "../../components/invite-button/invite-button";
-import HeaderBar from "@/components/headerbar";
+import HeaderBarInApp from "@/components/headerbarinapp";
 import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
@@ -111,18 +111,11 @@ export default function DirectoryLayout({
     return (
       // <div className={styles.container}>
       <div className="w-full bg-[#FEFBEB]">
-        <HeaderBar />
+        <HeaderBarInApp userSession={userSession} />
         <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
-          <div className="p-4 mx-auto w-full z-10 px-10">
+          <div className={`p-4 mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}>
             <div>
               <div className={styles.topArea}>
-                <div className={styles.directoryInviteSettings}>
-                  <h1 className="text-3xl font-bold my-4">DirectorySF</h1>
-                  <div className={styles.inviteSettingsContainer}>
-                    <InviteButton />
-                    <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
-                  </div>
-                </div>
                 <Navbar />
               </div>
               <ProfilesContext.Provider
