@@ -1,10 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Redis from 'ioredis';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 const redisUrl = process.env.REDIS_URL as string;
+
+// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT_DEV as string;
+// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV as string;
+// const redisUrl = process.env.REDIS_URL_DEV as string;
+
+
 const twitterBearerToken = process.env.TWITTER_BEARER_TOKEN as string;
 const socialDataApiKey = process.env.SOCIALDATA_API_KEY as string;
 

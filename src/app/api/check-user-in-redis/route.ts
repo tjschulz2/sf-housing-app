@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server';
 
 const redisClient = createClient({
   url: process.env.REDIS_URL
+  // url: process.env.REDIS_URL_DEV
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
