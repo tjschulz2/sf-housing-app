@@ -1,82 +1,112 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Redis from 'ioredis';
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const redisUrl = process.env.REDIS_URL as string;
+const twitterBearerToken = process.env.TWITTER_BEARER_TOKEN as string;
+const socialDataApiKey = process.env.SOCIALDATA_API_KEY as string;
+
 const supabase = createClient(supabaseUrl, supabaseKey);
-const redisClient = new Redis(process.env.REDIS_URL!);
+const redisClient = new Redis(redisUrl);
 
-interface TwitterUser { 
-  id_str: string;
-  screen_name: string;
-  profile_image_url_https: string;
-}
-
-async function getAllFollowers(twitterID: string, apiKey: string): Promise<TwitterUser[]> {
-  const followers: TwitterUser[] = [];
-  let cursor = null;
-
-  while (true) {
-    const url = `https://api.socialdata.tools/twitter/followers/list?user_id=${twitterID}&count=200${cursor ? `&cursor=${cursor}` : ''}`;
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Accept': 'application/json'
-      }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      followers.push(...data.users);
-      cursor = data.next_cursor;
-      if (!cursor || cursor === '0') break;
-    } else {
-      throw new Error(`Error fetching followers: ${response.statusText}`);
-    }
+async function getFollowers(userId: string, apiKey: string, cursor?: string): Promise<any> {
+  const url = 'https://api.socialdata.tools/twitter/followers/list';
+  const headers = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Accept': 'application/json'
+  };
+  const params = new URLSearchParams({
+    'user_id': userId,
+    'count': '200'
+  });
+  if (cursor) {
+    params.append('cursor', cursor);
   }
-  return followers;
-}
 
-async function getAllFollowing(twitterID: string, apiKey: string): Promise<TwitterUser[]> {
-  const following: TwitterUser[] = [];
-  let cursor = null;
-
-  while (true) {
-    const url = `https://api.socialdata.tools/twitter/friends/list?user_id=${twitterID}&count=200${cursor ? `&cursor=${cursor}` : ''}`;
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Accept': 'application/json'
-      }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      following.push(...data.users);
-      cursor = data.next_cursor;
-      if (!cursor || cursor === '0') break;
-    } else {
-      throw new Error(`Error fetching following: ${response.statusText}`);
-    }
+  const response = await fetch(`${url}?${params}`, { headers });
+  if (response.ok) {
+    return response.json();
+  } else {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
   }
-  return following;
 }
 
-async function storeUserDetails(redisClient: Redis, userDetails: TwitterUser[]): Promise<void> {
+async function getFollowing(userId: string, apiKey: string, cursor?: string): Promise<any> {
+  const url = 'https://api.socialdata.tools/twitter/friends/list';
+  const headers = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Accept': 'application/json'
+  };
+  const params = new URLSearchParams({
+    'user_id': userId,
+    'count': '200'
+  });
+  if (cursor) {
+    params.append('cursor', cursor);
+  }
+
+  const response = await fetch(`${url}?${params}`, { headers });
+  if (response.ok) {
+    return response.json();
+  } else {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+}
+
+async function getAllFollowers(userId: string, apiKey: string): Promise<any[]> {
+  let allFollowers: any[] = [];
+  let cursor: string | undefined = undefined;
+  let count = 0;
+
+  while (count < 5000) {
+    const followersData = await getFollowers(userId, apiKey, cursor);
+    allFollowers = allFollowers.concat(followersData.users);
+    cursor = followersData.next_cursor;
+    count += followersData.users.length;
+    console.log(`Fetched ${count} followers so far...`);
+    if (!cursor || cursor === '0') break;
+  }
+
+  return allFollowers;
+}
+
+async function getAllFollowing(userId: string, apiKey: string): Promise<any[]> {
+  let allFollowing: any[] = [];
+  let cursor: string | undefined = undefined;
+  let count = 0;
+
+  while (count < 5000) {
+    const followingData = await getFollowing(userId, apiKey, cursor);
+    allFollowing = allFollowing.concat(followingData.users);
+    cursor = followingData.next_cursor;
+    count += followingData.users.length;
+    console.log(`Fetched ${count} following so far...`);
+    if (!cursor || cursor === '0') break;
+  }
+
+  return allFollowing;
+}
+
+async function storeUserDetails(redisClient: Redis, userDetails: any[]): Promise<void> {
   for (const user of userDetails) {
-    const userID = user.id_str;
-    await redisClient.hset(`user:${userID}`, {
-      screen_name: user.screen_name,
-      profile_image_url: user.profile_image_url_https
+    const userId = user.id_str;
+    await redisClient.hmset(`user:${userId}`, {
+      'screen_name': user.screen_name,
+      'profile_image_url': user.profile_image_url_https
     });
   }
 }
 
-async function storeInRedis(redisClient: Redis, uuid: string, followers: TwitterUser[], following: TwitterUser[]): Promise<void> {
+async function storeInRedis(uuid: string, followers: any[], following: any[]): Promise<void> {
+  // Store followers
   for (const follower of followers) {
     await redisClient.sadd(`user-followers:${uuid}`, follower.id_str);
     await storeUserDetails(redisClient, [follower]);
   }
 
+  // Store following
   for (const follow of following) {
     await redisClient.sadd(`user-following:${uuid}`, follow.id_str);
     await storeUserDetails(redisClient, [follow]);
@@ -91,20 +121,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Missing twitterID or uuid' }, { status: 400 });
     }
 
-    const apiKey = process.env.SOCIALDATA_API_KEY!;
+    console.log(`Starting to fetch data for UUID: ${uuid} and TwitterID: ${twitterID}`);
 
-    const followers = await getAllFollowers(twitterID, apiKey);
-    const following = await getAllFollowing(twitterID, apiKey);
+    // Get all followers and following
+    const followers = await getAllFollowers(twitterID, socialDataApiKey);
+    console.log(`Fetched all followers for UUID: ${uuid}`);
 
-    await storeInRedis(redisClient, uuid, followers, following);
+    const following = await getAllFollowing(twitterID, socialDataApiKey);
+    console.log(`Fetched all following for UUID: ${uuid}`);
 
-    return NextResponse.json({ message: 'Success' });
-  } catch (error: unknown) {
+    // Store the results in Redis using UUID
+    await storeInRedis(uuid, followers, following);
+
+    console.log(`Stored data for UUID: ${uuid}`);
+
+    return NextResponse.json({ message: 'Data stored successfully' }, { status: 200 });
+  } catch (error) {
     console.error(error);
-    if (error instanceof Error) {
-      return NextResponse.json({ message: 'Server error', error: error.message }, { status: 500 });
-    } else {
-      return NextResponse.json({ message: 'Unknown server error' }, { status: 500 });
-    }
+    return NextResponse.json({ message: 'Server error', error: (error as Error).message }, { status: 500 });
   }
 }

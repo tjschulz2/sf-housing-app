@@ -1,87 +1,56 @@
-import { NextResponse } from "next/server";
-import { storeFollowing, storeFollowers } from "../../../lib/utils/data";
-import { createRedisClient } from "../../../lib/redisClient";
-import { verify } from "jsonwebtoken";
-import { twitter } from "../../../lib/utils/data";
-import { headers } from "next/headers";
-import { User } from "@supabase/supabase-js";
-import { JwtPayload } from "jsonwebtoken";
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import fetch from 'node-fetch';
 
-export async function GET() {
-  const headersList = headers();
-  try {
-    const headersList = headers();
-    const jwt = headersList.get("accessToken");
-    if (!jwt) {
-      throw new Error("Missing header: accessToken");
-    }
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const storeTwitterDataUrl = 'http://localhost:3000/api/store-twitter-data';
 
-    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
-      JwtPayload;
-    const { sub: userID } = user;
-    const { sub: twitterID } = user.user_metadata;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (userID && typeof userID === "string") {
-      const followingPromise = twitter.following
-        .getFromTwitter(twitterID)
-        .catch((err) => {
-          throw `Error in followingPromise: ${err}`;
-        });
-      const followersPromise = twitter.followers
-        .getFromTwitter(twitterID)
-        .catch((err) => {
-          throw `Error in followersPromise: ${err}`;
-        });
+interface User {
+  uuid: string;
+  twitter_id: string;
+}
 
-      const [followingResponse, followersResponse] = await Promise.all([
-        followingPromise,
-        followersPromise,
-      ]);
-
-      const followingList = followingResponse.map((user) => user.id.toString());
-      const followersList = followersResponse.map((user) => user.id.toString());
-
-      const redisClient = await createRedisClient();
-      if (!redisClient) {
-        throw "server error - no redis client";
-      }
-
-      const followingStoragePromise = twitter.following.setToStore(
-        redisClient,
-        userID,
-        followingList
-      );
-      const followersStoragePromise = twitter.followers.setToStore(
-        redisClient,
-        userID,
-        followersList
-      );
-
-      const [followingStorageResult, followersStorageResult] =
-        await Promise.all([followingStoragePromise, followersStoragePromise]);
-
-      redisClient.quit();
-
-      if (
-        followingStorageResult.status === "error" ||
-        followersStorageResult.status === "error"
-      ) {
-        throw "Failed to store follow data";
-      }
-    }
-  } catch (err) {
-    if (err instanceof Error && err.message.includes("Rate limit reached")) {
-      return NextResponse.json(
-        { message: "Rate limit reached. Try again later." },
-        { status: 429 }
-      );
-    } else {
-      return NextResponse.json(
-        { message: `Unexpected server error: ${err}` },
-        { status: 500 }
-      );
-    }
+async function fetchNewUsers(): Promise<User[]> {
+  console.log("Fetching new users...");
+  const response = await fetch('http://localhost:3000/api/fetch-new-users');
+  if (!response.ok) {
+    console.error("Failed to fetch new users:", response.statusText);
+    throw new Error('Failed to fetch new users');
   }
 
-  return NextResponse.json({ message: "success" }, { status: 200 });
+  const data: { users: User[] } = await response.json(); // Specify the expected structure
+  console.log("Fetched new users:", data.users);
+  return data.users;
 }
+
+async function storeTwitterData(uuid: string, twitterID: string): Promise<void> {
+  console.log(`Storing Twitter data for UUID: ${uuid}, TwitterID: ${twitterID}`);
+  const response = await fetch(storeTwitterDataUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ uuid, twitterID }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Failed to store Twitter data:", errorData.message);
+    throw new Error(`Failed to store Twitter data: ${errorData.message}`);
+  }
+
+  console.log(`Successfully stored Twitter data for UUID: ${uuid}`);
+}
+
+export async function GET(req: Request) {
+  try {
+    console.log("Starting refresh-twitter-follows process...");
+    const users = await fetchNewUsers();
+
+    for (const user of users) {
+      console.log(`Processing user UUID: ${user.uuid}, TwitterID: ${user.twitter_id}`);
+      await storeTwitterData(user.uuid, user.twitter_id);
+ 
