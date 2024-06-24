@@ -7,15 +7,24 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const redisUrl = process.env.REDIS_URL!;
 
+// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT_DEV!;
+// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV!;
+// const redisUrl = process.env.REDIS_URL_DEV!;
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 const redisClient = new Redis(redisUrl);
 
-async function fetchNewUsers(): Promise<{ user_id: string, twitter_id: string }[]> {
+interface User {
+  user_id: string;
+  twitter_id: string;
+}
+
+async function fetchNewUsers(): Promise<User[]> {
   const fetchNewUsersResponse = await fetch('http://localhost:3000/api/fetch-new-users');
   if (!fetchNewUsersResponse.ok) {
     throw new Error(`Failed to fetch new users: ${fetchNewUsersResponse.statusText}`);
   }
-  const data = await fetchNewUsersResponse.json();
+  const data = await fetchNewUsersResponse.json() as { users: User[] };
   return data.users;
 }
 
@@ -33,7 +42,7 @@ async function storeTwitterData(twitterID: string, uuid: string): Promise<void> 
     if (error instanceof Error) {
       console.error(`Failed to store Twitter data for user ${uuid}: ${error.message}`);
     } else {
-      console.error(`Failed to store Twitter data for user ${uuid}: ${error}`);
+      console.error(`Failed to store Twitter data for user ${uuid}: ${String(error)}`);
     }
     throw error;
   }
