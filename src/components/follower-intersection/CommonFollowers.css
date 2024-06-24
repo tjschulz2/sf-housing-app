@@ -1,63 +1,35 @@
 .common-followers-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-top: 0.5rem; /* Adjust the spacing between elements */
-  }
-  
-  .common-followers-avatars {
-    display: flex;
-    margin-right: 0.5rem; /* Adjust the spacing between avatars and text */
-  }
-  
-  .follower-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-left: -10px; /* Adjust overlap */
-    border: 2px solid white; /* Border to distinguish overlap */
-    position: relative;
-    z-index: 1;
-  }
-  
-  .follower-avatar:first-child {
-    margin-left: 0; /* No negative margin for the first avatar */
-  }
-  
-  .common-followers-text {
-    font-size: 0.875rem; /* Adjust font size */
-    color: #4a4a4a; /* Adjust text color */
-    white-space: nowrap; /* Prevent text from wrapping */
-  }
-  
-  .common-followers-text.not-followed {
-    color: #4a4a4a; /* Specific color for the 'not followed' text */
-    white-space: nowrap; /* Prevent text from wrapping */
-  }
-  
-  .common-followers-hover-list {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the left */
-  }
-  
-  .common-followers-hover-list .follower-handle {
-    color: #0073e6; /* Adjust the color of the hover list links */
-    text-decoration: none;
-    padding: 0.25rem 0;
-  }
-  
-  .common-followers-hover-list .follower-handle:hover {
-    text-decoration: underline; /* Add underline on hover */
-  }
-  
+  display: flex;
+  align-items: center;
+}
+
+.common-followers-avatars {
+  display: flex;
+  margin-right: 8px; /* Add space between the avatars and the text */
+}
+
+.follower-avatar {
+  border-radius: 50%;
+  margin-left: -8px; /* Adjust as needed for overlap effect */
+  border: 2px solid #fff;
+}
+
+.common-followers-text {
+  font-size: 14px; /* Adjust as needed */
+  color: #4a4a4a;
+  display: flex;
+  align-items: center;
+}
+
+.common-followers-container a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.common-followers-container a:hover {
+  text-decoration: underline;
+}
+
+.common-followers-container .common-followers-text {
+  margin-top: 0px;
+}
