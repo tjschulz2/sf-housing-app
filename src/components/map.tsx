@@ -104,7 +104,7 @@ const listings = [
 
 const Map: React.FC = () => {
   return (
-    <LoadScript googleMapsApiKey="AIzaSyBu1Eb9VxIF-3RLo0WubSKo1kPwoQ6Ejvs">
+    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={14.75}
