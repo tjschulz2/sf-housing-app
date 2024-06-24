@@ -37,14 +37,33 @@ export default function AuthContextProvider({
       const userData = await getUserData(session.userID);
       if (userData) {
         setUserData(userData);
-        // Call the API to store followers/following in Redis
-        await fetch('/api/store-twitter-data', {
+        console.log(`User session initialized for ${session.twitterHandle}`);
+
+        // Check if the user's data exists in Redis
+        const checkResponse = await fetch('/api/check-redis-data', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ twitterID: session.twitterID, uuid: session.userID }),
+          body: JSON.stringify({ uuid: session.userID }),
         });
+
+        const checkResult = await checkResponse.json();
+
+        // If data does not exist, call the API to store followers/following in Redis
+        if (checkResponse.ok && checkResult.message.includes("No data found")) {
+          console.log("No existing data found in Redis. Pulling new data.");
+          await fetch('/api/store-twitter-data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ twitterID: session.twitterID, uuid: session.userID }),
+          });
+          console.log("Data successfully pulled and stored in Redis.");
+        } else {
+          console.log("User data already exists in Redis. No need to pull new data.");
+        }
       }
     }
     setAuthLoading(false);

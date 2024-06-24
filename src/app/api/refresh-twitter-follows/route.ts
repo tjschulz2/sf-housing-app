@@ -1,56 +1,73 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import Redis from 'ioredis';
 import fetch from 'node-fetch';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-const storeTwitterDataUrl = 'http://localhost:3000/api/store-twitter-data';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const redisUrl = process.env.REDIS_URL!;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+const redisClient = new Redis(redisUrl);
 
-interface User {
-  uuid: string;
-  twitter_id: string;
-}
-
-async function fetchNewUsers(): Promise<User[]> {
-  console.log("Fetching new users...");
-  const response = await fetch('http://localhost:3000/api/fetch-new-users');
-  if (!response.ok) {
-    console.error("Failed to fetch new users:", response.statusText);
-    throw new Error('Failed to fetch new users');
+async function fetchNewUsers(): Promise<{ user_id: string, twitter_id: string }[]> {
+  const fetchNewUsersResponse = await fetch('http://localhost:3000/api/fetch-new-users');
+  if (!fetchNewUsersResponse.ok) {
+    throw new Error(`Failed to fetch new users: ${fetchNewUsersResponse.statusText}`);
   }
-
-  const data: { users: User[] } = await response.json(); // Specify the expected structure
-  console.log("Fetched new users:", data.users);
+  const data = await fetchNewUsersResponse.json();
   return data.users;
 }
 
-async function storeTwitterData(uuid: string, twitterID: string): Promise<void> {
-  console.log(`Storing Twitter data for UUID: ${uuid}, TwitterID: ${twitterID}`);
-  const response = await fetch(storeTwitterDataUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ uuid, twitterID }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Failed to store Twitter data:", errorData.message);
-    throw new Error(`Failed to store Twitter data: ${errorData.message}`);
+async function storeTwitterData(twitterID: string, uuid: string): Promise<void> {
+  try {
+    console.log(`Starting to fetch data for UUID: ${uuid} and TwitterID: ${twitterID}`);
+    await fetch('http://localhost:3000/api/store-twitter-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ twitterID, uuid }),
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Failed to store Twitter data for user ${uuid}: ${error.message}`);
+    } else {
+      console.error(`Failed to store Twitter data for user ${uuid}: ${error}`);
+    }
+    throw error;
   }
-
-  console.log(`Successfully stored Twitter data for UUID: ${uuid}`);
 }
 
-export async function GET(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
-    console.log("Starting refresh-twitter-follows process...");
     const users = await fetchNewUsers();
-
     for (const user of users) {
-      console.log(`Processing user UUID: ${user.uuid}, TwitterID: ${user.twitter_id}`);
-      await storeTwitterData(user.uuid, user.twitter_id);
- 
+      const { user_id: uuid, twitter_id: twitterID } = user;
+      if (!uuid || !twitterID) {
+        console.log(`Missing uuid or twitter_id for user: ${JSON.stringify(user)}`);
+        continue;
+      }
+      // Check if user data already exists in Redis
+      const isInRedis = await redisClient.exists(`user-followers:${uuid}`);
+      if (isInRedis) {
+        console.log(`Data for UUID: ${uuid} already exists in Redis, skipping.`);
+        continue;
+      }
+      // Store Twitter data in Redis
+      await storeTwitterData(twitterID, uuid);
+    }
+    return NextResponse.json({ message: 'Data refresh completed successfully' });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error);
+      return NextResponse.json({ message: 'Server error', error: error.message });
+    } else {
+      return NextResponse.json({ message: 'Server error', error: 'Unknown error' });
+    }
+  }
+}
+
+export const GET = POST;
+export const PUT = POST;
+export const DELETE = POST;
