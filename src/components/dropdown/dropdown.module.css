@@ -3,7 +3,7 @@
     align-items: center;
     cursor: pointer;
     position: relative;
-    z-index: 10;
+    z-index: 1000;
   }
   
   .avatar {
