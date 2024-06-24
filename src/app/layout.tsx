@@ -65,6 +65,7 @@ export default function RootLayout({
             <Toaster />
           </AuthContextProvider>
         </Suspense>
+        <div id="modal-root"></div>
       </body>
       <Script id="google-tag-manager" strategy="afterInteractive">
         {`

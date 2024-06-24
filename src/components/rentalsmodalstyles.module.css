@@ -1,0 +1,33 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  
+  .modalContainer {
+    position: relative;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    width: 85%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 2000;
+  }
+  
+  .modalCloseButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 2000;
+  }
+  

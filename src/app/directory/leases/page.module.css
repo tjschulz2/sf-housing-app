@@ -173,3 +173,8 @@
     padding: 0px 0px;
   }
 }
+
+.directoryContent {
+  overflow-y: auto;
+  height: 80vh;
+}

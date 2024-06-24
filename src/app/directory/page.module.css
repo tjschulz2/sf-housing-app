@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   padding-top: 24px;
-  padding-bottom: 80px;
+  /* padding-bottom: 80px; */
 }
 
 .lookingHousematesContainer {
@@ -140,4 +140,15 @@
     padding-left: 12px; /* Adjusted padding for small screens */
     padding-right: 12px; /* Adjusted padding for small screens */
   }
+}
+
+/* page.module.css */
+.scrollable {
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.unscrollable {
+  overflow: hidden;
+  height: 100vh;
 }

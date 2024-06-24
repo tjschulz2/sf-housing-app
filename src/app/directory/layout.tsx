@@ -11,7 +11,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getUserSession } from "../../lib/utils/auth";
 import { getUserData, getUserHousingSearchProfile } from "../../lib/utils/data";
 import Dropdown from "../../components/dropdown/dropdown";
@@ -107,10 +107,14 @@ export default function DirectoryLayout({
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
+  const pathname = usePathname()
+  const currentPath = pathname;
+  const isDirectoryPage = currentPath === "/directory/leases";
+
   if (userSession && userData) {
     return (
       // <div className={styles.container}>
-      <div className="w-full bg-[#FEFBEB]">
+      <div className={`w-full bg-[#FEFBEB] ${isDirectoryPage ? styles.unscrollable : styles.scrollable}`}>
         <HeaderBarInApp userSession={userSession} />
         <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
           <div className={`p-4 mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}>
@@ -133,7 +137,7 @@ export default function DirectoryLayout({
                 </SpacesContextProvider>
               </ProfilesContext.Provider>
             </div>
-            <Footer />
+            {!isDirectoryPage && <Footer />}
           </div>
           <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         </div>

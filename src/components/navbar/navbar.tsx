@@ -7,20 +7,20 @@ import styles from "./navbar.module.css";
 const navConfig = [
   {
     path: "/directory",
-    title: "Looking for housing",
-  },
-  {
-    path: "/directory/people-organizing",
-    title: "Starting a new house",
-  },
-  {
-    path: "/directory/spaces",
-    title: "Existing spaces",
+    title: "People",
   },
   // {
-  //   path: "/directory/leases",
-  //   title: "Leases",
+  //   path: "/directory/people-organizing",
+  //   title: "Starting a new house",
   // },
+  {
+    path: "/directory/spaces",
+    title: "Sublets (Short term)",
+  },
+  {
+    path: "/directory/leases",
+    title: "Rentals (One year+)",
+  },
 ];
 
 export default function Navbar() {
