@@ -14,7 +14,7 @@ interface Follower {
 
 const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) => {
   const [commonFollowers, setCommonFollowers] = useState<Follower[]>([]);
-  const [isHovered, setIsHovered] = useState(false);
+  const [twitterHandle, setTwitterHandle] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,43 +42,51 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
     fetchCommonFollowers();
   }, [userID1, userID2]);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
+  useEffect(() => {
+    const fetchTwitterHandle = async () => {
+      try {
+        const response = await fetch('/api/get-twitter-handle', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userID: userID2 }),
+        });
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
+        const data = await response.json();
+        if (response.ok) {
+          setTwitterHandle(data.twitterHandle);
+        } else {
+          setError(data.message);
+        }
+      } catch (error) {
+        setError('Failed to fetch Twitter handle');
+      }
+    };
+
+    fetchTwitterHandle();
+  }, [userID2]);
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    <div className="common-followers-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="common-followers-container">
       <div className="common-followers-avatars">
         {commonFollowers.slice(0, 2).map((follower, index) => (
-          <Image key={index} src={follower.profile_image_url} alt={follower.screen_name} className="follower-avatar" width={50} height={50} />
+          <Image key={index} src={follower.profile_image_url} alt={follower.screen_name} className="follower-avatar" width={30} height={30} />
         ))}
       </div>
       <div className="common-followers-text">
         {commonFollowers.length > 0 ? (
-          <a href={`https://x.com/${commonFollowers[0].screen_name}/followers_you_follow`} target="_blank" rel="noopener noreferrer">
+          <a href={`https://x.com/${twitterHandle}/followers_you_follow`} target="_blank" rel="noopener noreferrer">
             Followed by {commonFollowers.length} people you know
           </a>
         ) : (
           "Not followed by anyone you're following"
         )}
       </div>
-      {isHovered && commonFollowers.length > 0 && (
-        <div className="common-followers-hover-list">
-          {commonFollowers.map((follower, index) => (
-            <a key={index} href={`https://x.com/${follower.screen_name}`} target="_blank" rel="noopener noreferrer">
-              <div className="follower-handle">@{follower.screen_name}</div>
-            </a>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

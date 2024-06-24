@@ -70,9 +70,11 @@ export default function SearcherProfileCard(props: PropsType) {
         </div>
       </CardTop>
       <CardBottom>
+
       {userSession && (
           <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
       )}
+      
         <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">

@@ -17,6 +17,8 @@ import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import { Button } from "../ui/button";
+import CommonFollowers from '@/components/follower-intersection/CommonFollowers';
+
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +32,7 @@ type PropsType = {
 
 export default function SpaceProfileCard(props: PropsType) {
   const { profile } = props;
+  const { userSession } = useAuthContext();
 
   const bio = profile.description ?? "";
 
@@ -131,6 +134,11 @@ export default function SpaceProfileCard(props: PropsType) {
         </Link>
       </div>
       <CardBottom>
+
+      {userSession && (
+          <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
+      )}
+
         <CardBioSection bio={bio} link={profile.website_url} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
