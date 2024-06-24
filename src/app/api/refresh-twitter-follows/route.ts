@@ -6,11 +6,6 @@ import fetch from 'node-fetch';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const redisUrl = process.env.REDIS_URL!;
-
-// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT_DEV!;
-// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV!;
-// const redisUrl = process.env.REDIS_URL_DEV!;
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 const redisClient = new Redis(redisUrl);
 
@@ -24,7 +19,7 @@ async function fetchNewUsers(): Promise<User[]> {
   if (!fetchNewUsersResponse.ok) {
     throw new Error(`Failed to fetch new users: ${fetchNewUsersResponse.statusText}`);
   }
-  const data = await fetchNewUsersResponse.json() as { users: User[] };
+  const data = (await fetchNewUsersResponse.json()) as { users: User[] };
   return data.users;
 }
 
@@ -42,7 +37,7 @@ async function storeTwitterData(twitterID: string, uuid: string): Promise<void> 
     if (error instanceof Error) {
       console.error(`Failed to store Twitter data for user ${uuid}: ${error.message}`);
     } else {
-      console.error(`Failed to store Twitter data for user ${uuid}: ${String(error)}`);
+      console.error(`Failed to store Twitter data for user ${uuid}: ${error}`);
     }
     throw error;
   }
@@ -57,13 +52,7 @@ export async function POST(req: Request): Promise<Response> {
         console.log(`Missing uuid or twitter_id for user: ${JSON.stringify(user)}`);
         continue;
       }
-      // Check if user data already exists in Redis
-      const isInRedis = await redisClient.exists(`user-followers:${uuid}`);
-      if (isInRedis) {
-        console.log(`Data for UUID: ${uuid} already exists in Redis, skipping.`);
-        continue;
-      }
-      // Store Twitter data in Redis
+      // Store Twitter data in Redis, overriding existing data
       await storeTwitterData(twitterID, uuid);
     }
     return NextResponse.json({ message: 'Data refresh completed successfully' });
