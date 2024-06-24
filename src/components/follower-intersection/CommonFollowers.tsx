@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import './CommonFollowers.css';
 
 interface CommonFollowersProps {
@@ -50,21 +51,21 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
   };
 
   if (error) {
-    return <div className="common-followers-text not-followed">{error}</div>;
+    return <div>{error}</div>;
   }
 
   return (
     <div className="common-followers-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="common-followers-avatars">
         {commonFollowers.slice(0, 2).map((follower, index) => (
-          <img key={index} src={follower.profile_image_url} alt={follower.screen_name} className="follower-avatar" />
+          <Image key={index} src={follower.profile_image_url} alt={follower.screen_name} className="follower-avatar" width={50} height={50} />
         ))}
       </div>
-      <div className={`common-followers-text ${commonFollowers.length === 0 ? 'not-followed' : ''}`}>
+      <div className="common-followers-text">
         {commonFollowers.length > 0 ? (
-          <>
+          <a href={`https://x.com/${commonFollowers[0].screen_name}/followers_you_follow`} target="_blank" rel="noopener noreferrer">
             Followed by {commonFollowers.length} people you know
-          </>
+          </a>
         ) : (
           "Not followed by anyone you're following"
         )}
@@ -72,8 +73,8 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
       {isHovered && commonFollowers.length > 0 && (
         <div className="common-followers-hover-list">
           {commonFollowers.map((follower, index) => (
-            <a key={index} href={`https://x.com/${follower.screen_name}`} target="_blank" rel="noopener noreferrer" className="follower-handle">
-              @{follower.screen_name}
+            <a key={index} href={`https://x.com/${follower.screen_name}`} target="_blank" rel="noopener noreferrer">
+              <div className="follower-handle">@{follower.screen_name}</div>
             </a>
           ))}
         </div>
