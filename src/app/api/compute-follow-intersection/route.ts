@@ -100,7 +100,7 @@ export async function POST(request: Request) {
     );
 
     // Step 3: Store the result in Supabase
-    //await storeIntersectionInSupabase(userID1, userID2, intersectionCount);
+    // await storeIntersectionInSupabase(userID1, userID2, intersectionCount);
 
     console.log("got it from redis");
     return NextResponse.json(
