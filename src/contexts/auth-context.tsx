@@ -17,6 +17,7 @@ type AuthContextType = {
   authLoading: boolean;
   userData: UserDataType | null;
   userSession: UserSessionType | null;
+  dataReady: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,6 +30,7 @@ export default function AuthContextProvider({
   const [userData, setUserData] = useState<UserDataType | null>(null);
   const [userSession, setUserSession] = useState<UserSessionType | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [dataReady, setDataReady] = useState(false);
 
   async function initializeUser() {
     const session = await getUserSession();
@@ -64,6 +66,7 @@ export default function AuthContextProvider({
         } else {
           console.log("User data already exists in Redis. No need to pull new data.");
         }
+        setDataReady(true);
       }
     }
     setAuthLoading(false);
@@ -74,7 +77,7 @@ export default function AuthContextProvider({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userData, userSession, authLoading }}>
+    <AuthContext.Provider value={{ userData, userSession, authLoading, dataReady }}>
       {children}
     </AuthContext.Provider>
   );
