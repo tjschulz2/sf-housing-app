@@ -78,20 +78,20 @@ export async function POST(request: Request) {
             throw "Missing one or more userIDs";
         }
 
-        // Step 1: Check if existing pairs are in Supabase
-        const existingCount = await fetchIntersectionFromSupabase(
-            userID1,
-            userID2
-        );
+        // // Step 1: Check if existing pairs are in Supabase
+        // const existingCount = await fetchIntersectionFromSupabase(
+        //     userID1,
+        //     userID2
+        // );
 
-        console.log("existing count", existingCount);
-        if (existingCount !== null) {
-            console.log("got it from supabase");
-            return NextResponse.json(
-                { message: "success", count: existingCount },
-                { status: 200 }
-            );
-        }
+        // console.log("existing count", existingCount);
+        // if (existingCount !== null) {
+        //     console.log("got it from supabase");
+        //     return NextResponse.json(
+        //         { message: "success", count: existingCount },
+        //         { status: 200 }
+        //     );
+        // }
 
         // Step 2: Find the intersection count in Redis
         const redisClient = await createRedisClient();
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         );
 
         // Step 3: Store the result in Supabase
-        await storeIntersectionInSupabase(userID1, userID2, intersectionCount);
+        //await storeIntersectionInSupabase(userID1, userID2, intersectionCount);
 
         redisClient.quit();
 
