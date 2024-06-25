@@ -40,7 +40,7 @@ export default function AuthContextProvider({
         console.log(`User session initialized for ${session.twitterHandle}`);
 
         // Check if the user's data exists in Redis
-        const checkResponse = await fetch('/api/check-redis-data', {
+        const checkResponse = await fetch('/api/check-user-in-redis', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function AuthContextProvider({
         // If data does not exist, call the API to store followers/following in Redis
         if (checkResponse.ok && checkResult.message.includes("No data found")) {
           console.log("No existing data found in Redis. Pulling new data.");
-          await fetch('/api/store-twitter-data', {
+          await fetch('/api/store-follow-redis', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -1,20 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import Redis from 'ioredis';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 const redisUrl = process.env.REDIS_URL as string;
-
-// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT_DEV as string;
-// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV as string;
-// const redisUrl = process.env.REDIS_URL_DEV as string;
-
-
-const twitterBearerToken = process.env.TWITTER_BEARER_TOKEN as string;
 const socialDataApiKey = process.env.SOCIALDATA_API_KEY as string;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
 const redisClient = new Redis(redisUrl);
 
 async function getFollowers(userId: string, apiKey: string, cursor?: string): Promise<any> {
@@ -95,27 +84,15 @@ async function getAllFollowing(userId: string, apiKey: string): Promise<any[]> {
   return allFollowing;
 }
 
-async function storeUserDetails(redisClient: Redis, userDetails: any[]): Promise<void> {
-  for (const user of userDetails) {
-    const userId = user.id_str;
-    await redisClient.hmset(`user:${userId}`, {
-      'screen_name': user.screen_name,
-      'profile_image_url': user.profile_image_url_https
-    });
-  }
-}
-
 async function storeInRedis(uuid: string, followers: any[], following: any[]): Promise<void> {
   // Store followers
   for (const follower of followers) {
-    await redisClient.sadd(`user-followers:${uuid}`, follower.id_str);
-    await storeUserDetails(redisClient, [follower]);
+    await redisClient.sadd(`${uuid}_followers`, follower.id_str);
   }
 
   // Store following
   for (const follow of following) {
-    await redisClient.sadd(`user-following:${uuid}`, follow.id_str);
-    await storeUserDetails(redisClient, [follow]);
+    await redisClient.sadd(`${uuid}_following`, follow.id_str);
   }
 }
 

@@ -14,8 +14,8 @@ redisClient.on('error', (err) => console.error('Redis Client Error', err));
 })();
 
 async function checkRedisData(uuid: string): Promise<boolean> {
-  const followersKey = `user-followers:${uuid}`;
-  const followingKey = `user-following:${uuid}`;
+  const followersKey = `${uuid}_followers`;
+  const followingKey = `${uuid}_following`;
 
   const followersExist = await redisClient.exists(followersKey);
   const followingExist = await redisClient.exists(followingKey);
