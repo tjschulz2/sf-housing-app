@@ -1,18 +1,14 @@
 import { createClient } from "redis";
 
-export async function createRedisClient() {
-  if (!process.env.REDIS_URL) {
-    console.error("Environment Variable 'REDIS_URL' undefined");
-    return;
-  }
-  try {
-    const client = createClient({
-      url: process.env.REDIS_URL,
-    });
-    client.on("error", (err) => console.log("Redis Client Error", err));
-    await client.connect();
-    return client;
-  } catch (err) {
-    console.error(err);
-  }
-}
+const redisClient = createClient({
+  url: process.env.REDIS_URL,
+  // url: process.env.REDIS_URL_DEV
+});
+
+redisClient.on("error", (err) => console.error("Redis Client Error", err));
+
+(async () => {
+  await redisClient.connect();
+})();
+
+export default redisClient;

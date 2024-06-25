@@ -42,10 +42,11 @@ export default function AuthContextProvider({
         console.log(`User session initialized for ${session.twitterHandle}`);
 
         // Check if the user's data exists in Redis
-        const checkResponse = await fetch('/api/check-user-in-redis', {
-          method: 'POST',
+        console.log("pinging check-user-in-redis api!");
+        const checkResponse = await fetch("/api/check-user-in-redis", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ uuid: session.userID }),
         });
@@ -55,16 +56,21 @@ export default function AuthContextProvider({
         // If data does not exist, call the API to store followers/following in Redis
         if (checkResponse.ok && checkResult.message.includes("No data found")) {
           console.log("No existing data found in Redis. Pulling new data.");
-          await fetch('/api/store-follow-redis', {
-            method: 'POST',
+          await fetch("/api/store-follow-redis", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify({ twitterID: session.twitterID, uuid: session.userID }),
+            body: JSON.stringify({
+              twitterID: session.twitterID,
+              uuid: session.userID,
+            }),
           });
           console.log("Data successfully pulled and stored in Redis.");
         } else {
-          console.log("User data already exists in Redis. No need to pull new data.");
+          console.log(
+            "User data already exists in Redis. No need to pull new data."
+          );
         }
         setDataReady(true);
       }
@@ -77,7 +83,9 @@ export default function AuthContextProvider({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userData, userSession, authLoading, dataReady }}>
+    <AuthContext.Provider
+      value={{ userData, userSession, authLoading, dataReady }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,17 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createClient } from 'redis';
 import { NextRequest } from 'next/server';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL
-  // url: process.env.REDIS_URL_DEV
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-(async () => {
-  await redisClient.connect();
-})();
+import redisClient from '@/lib/redisClient'; // Adjust the import based on your file structure
 
 async function checkRedisData(uuid: string): Promise<boolean> {
   const followersKey = `${uuid}_followers`;
@@ -23,6 +12,13 @@ async function checkRedisData(uuid: string): Promise<boolean> {
   return followersExist > 0 && followingExist > 0;
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  const timeout = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Request timed out')), ms);
+  });
+  return Promise.race([promise, timeout]);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { uuid } = await req.json();
@@ -31,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'UUID is required' }, { status: 400 });
     }
 
-    const exists = await checkRedisData(uuid);
+    const exists = await withTimeout(checkRedisData(uuid), 30000); // Set timeout to 30 seconds
 
     if (exists) {
       return NextResponse.json({ message: `Data exists for UUID: ${uuid}` });
@@ -40,7 +36,13 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error('Error:', error);
-    return NextResponse.json({ message: 'Server error', error: (error as Error).message }, { status: 500 });
+    if (error instanceof Error) {
+      if (error.message === 'Request timed out') {
+        return NextResponse.json({ message: 'Request timed out' }, { status: 503 });
+      }
+      return NextResponse.json({ message: 'Server error', error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ message: 'Unknown server error' }, { status: 500 });
   }
 }
 
