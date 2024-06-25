@@ -2,6 +2,7 @@
 import { getUserSession } from "@/lib/utils/auth";
 import { getUserData } from "@/lib/utils/data";
 import { createContext, useContext, useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 type UserDataType = Database["public"]["Tables"]["users"]["Row"];
 type UserSessionType = {
@@ -22,6 +23,10 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export default function AuthContextProvider({
   children,
 }: {
@@ -40,23 +45,23 @@ export default function AuthContextProvider({
       if (userData) {
         setUserData(userData);
         console.log(`User session initialized for ${session.twitterHandle}`);
+        console.log("userid", session.userID);
 
-        // Check if the user's data exists in Redis
-        console.log("pinging check-user-in-redis api!");
-        const checkResponse = await fetch("/api/check-user-in-redis", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ uuid: session.userID }),
-        });
+        // Check if the user's data exists in the `twitter_followers_added` table
+        const { data, error } = await supabase
+          .from('twitter_followers_added')
+          .select('created_at')
+          .eq('user_id', session.userID)
+          .maybeSingle();
 
-        const checkResult = await checkResponse.json();
+        if (error) {
+          console.error('Error checking data status in Supabase:', error);
+          throw new Error('Failed to check data status');
+        }
 
-        // If data does not exist, call the API to store followers/following in Redis
-        if (checkResponse.ok && checkResult.message.includes("No data found")) {
-          console.log("No existing data found in Redis. Pulling new data.");
-          await fetch("/api/store-follow-redis", {
+        if (!data) {
+          console.log("No existing data found in Supabase. Pulling new data.");
+          const response = await fetch("/api/store-follow-redis", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -66,10 +71,16 @@ export default function AuthContextProvider({
               uuid: session.userID,
             }),
           });
-          console.log("Data successfully pulled and stored in Redis.");
+
+          if (!response.ok) {
+            console.error("Failed to pull data from Twitter API");
+            throw new Error("Failed to pull data from Twitter API");
+          }
+
+          console.log("Data successfully pulled and stored in Supabase.");
         } else {
           console.log(
-            "User data already exists in Redis. No need to pull new data."
+            "User data already exists in Supabase. No need to pull new data."
           );
         }
         setDataReady(true);
