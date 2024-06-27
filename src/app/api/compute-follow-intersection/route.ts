@@ -1,117 +1,90 @@
 import { NextResponse } from "next/server";
-import redisClient from "../../../lib/redisClient";
+import { createRedisClient } from "../../../lib/redisClient";
 import { headers } from "next/headers";
 import { RedisClientType } from "redis";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_CLIENT as string;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-async function fetchIntersectionFromSupabase(userID1: string, userID2: string) {
-  const { data, error } = await supabase
-    .from("follow_intersections")
-    .select("intersection_count")
-    .eq("user_1_id", userID1)
-    .eq("user_2_id", userID2)
-    .single();
-
-  if (error) {
-    console.error("Error fetching intersection from Supabase:", error);
-    return null;
-  }
-
-  return data ? data.intersection_count : null;
-}
 
 async function computeFollowIntersectionServerSide(
-  redisClient: RedisClientType<any, any, any>,
-  userID1: string,
-  userID2: string
+    redisClient: RedisClientType<any, any, any>,
+    userID1: string,
+    userID2: string
 ) {
-  const user1FollowsKey = `${userID1}_following`;
-  const user2FollowersKey = `${userID2}_followers`;
+    // Computes and retrieves intersection between {user1 following} and {user2 followers}
+    const user1FollowsKey = `user-following:${userID1}`;
+    const user2FollowersKey = `user-followers:${userID2}`;
+    const intersectionIDs = await redisClient.sInter([
+        user1FollowsKey,
+        user2FollowersKey,
+    ]);
 
-  // Fetch the following and followers lists from Redis
-  const user1Following = await redisClient.sMembers(user1FollowsKey);
-  const user2Followers = await redisClient.sMembers(user2FollowersKey);
+    // Assuming intersectionIDs are just IDs, convert them to detailed follower data
+    const intersectionDetails = await Promise.all(
+        intersectionIDs.map(async (id: string) => {
+            const screen_name = await redisClient.hGet(
+                `user:${id}`,
+                "screen_name"
+            );
+            const profile_image_url = await redisClient.hGet(
+                `user:${id}`,
+                "profile_image_url"
+            );
+            return { screen_name, profile_image_url };
+        })
+    );
 
-  console.log("user1Following", user1Following);
-  console.log("user2Followers", user2Followers);
-
-  // Compute the intersection
-  const intersectionIDs = user1Following.filter((id) =>
-    user2Followers.includes(id)
-  );
-
-  return intersectionIDs.length;
-}
-
-async function storeIntersectionInSupabase(
-  userID1: string,
-  userID2: string,
-  intersectionCount: number
-) {
-  const { data, error } = await supabase.from("follow_intersections").upsert([
-    {
-      user_1_id: userID1,
-      user_2_id: userID2,
-      intersection_count: intersectionCount,
-    },
-  ]);
-
-  if (error) {
-    console.error("Error storing intersection in Supabase:", error);
-  } else {
-    console.log("Stored intersection in Supabase:", data);
-  }
+    return intersectionDetails;
 }
 
 export async function POST(request: Request) {
-  try {
-    const headersList = headers();
-    const reqBody = await request.json();
-    const { userID1, userID2 }: { userID1: string; userID2: string } =
-      reqBody;
+    try {
+        const headersList = headers();
+        const reqBody = await request.json();
+        const { userID1, userID2 }: { userID1: string; userID2: string } =
+            reqBody;
 
-    if (!userID1 || !userID2) {
-      throw "Missing one or more userIDs";
+        if (!userID1 || !userID2) {
+            throw "Missing one or more userIDs";
+        }
+
+        const redisClient = await createRedisClient();
+        if (!redisClient) {
+            throw "server error - no redis client";
+        }
+
+        const intersectionDetails = await computeFollowIntersectionServerSide(
+            redisClient,
+            userID1,
+            userID2
+        );
+        const intersectionCount = intersectionDetails.filter(
+            (detail) => detail.screen_name
+        ).length;
+
+        redisClient.quit();
+
+        if (intersectionCount === 0) {
+            return NextResponse.json(
+                {
+                    message: "No data available",
+                    intersectionDetails: [],
+                    count: 0,
+                },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            {
+                message: "success",
+                intersectionDetails,
+                count: intersectionCount,
+            },
+            { status: 200 }
+        );
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { message: "server error", details: err },
+            { status: 500 }
+        );
     }
-
-    // Step 1: Check if existing pairs are in Supabase
-    // const existingCount = await fetchIntersectionFromSupabase(
-    //   userID1,
-    //   userID2
-    // );
-
-    // if (existingCount !== null) {
-    //   console.log("got it from supabase");
-    //   return NextResponse.json(
-    //     { message: "success", count: existingCount },
-    //     { status: 200 }
-    //   );
-    // }
-
-    // Step 2: Find the intersection count in Redis
-    const intersectionCount = await computeFollowIntersectionServerSide(
-      redisClient,
-      userID1,
-      userID2
-    );
-
-    // Step 3: Store the result in Supabase
-    // await storeIntersectionInSupabase(userID1, userID2, intersectionCount);
-
-    console.log("got it from redis");
-    return NextResponse.json(
-      { message: "success", count: intersectionCount },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { message: "server error", details: err },
-      { status: 500 }
-    );
-  }
 }

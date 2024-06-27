@@ -4,6 +4,10 @@ import { getUserSession } from "./auth";
 import { getCurrentTimestamp, isValidUUID } from "./general";
 import { z } from "zod";
 
+// Social Data API Key
+const socialDataApiKey = process.env.SOCIALDATA_API_KEY as string;
+
+
 // ----- Users & Profiles -----
 
 export async function getUserData(userID?: string) {
@@ -634,12 +638,105 @@ export async function getFollowIntersectionWithCaching(
   }
 }
 
-export async function fetchFromTwitter(
+// export async function fetchFromTwitter(
+//   url: string,
+//   options: RequestInit = {}
+// ): Promise<Response> {
+//   const defaultHeaders: Record<string, string> = {
+//     Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+//   };
+
+//   options.headers = options.headers
+//     ? { ...(options.headers as Record<string, string>), ...defaultHeaders }
+//     : defaultHeaders;
+
+//   const response = await fetch(url, options);
+
+//   if (!response.ok) {
+//     throw new Error(`HTTP ${response.status}: Network response was not ok`);
+//   }
+//   return response;
+// }
+
+// export const twitter = {
+//   following: {
+//     getFromTwitter: async (twitterID: string) => {
+//       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
+//       let cursor = null;
+//       let following: User[] = [];
+//       try {
+//         do {
+//           const res = await fetchFromTwitter(
+//             `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+//           );
+//           const data = await res.json();
+//           if (data.data) {
+//             following = [...following, ...data.data];
+//             cursor = data.meta.next_token;
+//           }
+//         } while (cursor);
+//       } catch (err) {
+//         if (
+//           err instanceof Error &&
+//           err.message.includes("Rate limit reached")
+//         ) {
+//           console.error(
+//             "Rate limit reached for following. Returning what we have so far."
+//           );
+//         } else {
+//           throw err;
+//         }
+//       }
+//       return following;
+//     },
+//     setToStore: storeFollowing,
+//   },
+//   followers: {
+//     getFromTwitter: async (twitterID: string) => {
+//       const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/followers`;
+//       let cursor: string | null = null;
+//       let followers: User[] = [];
+//       try {
+//         do {
+//           const res = await fetchFromTwitter(
+//             `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
+//           );
+//           const data = await res.json();
+//           if (data.data) {
+//             followers = [...followers, ...data.data];
+//             cursor = data.meta.next_token;
+//           }
+//         } while (cursor);
+//       } catch (err) {
+//         if (
+//           err instanceof Error &&
+//           err.message.includes("Rate limit reached")
+//         ) {
+//           console.error(
+//             "Rate limit reached for followers. Returning what we have so far."
+//           );
+//         } else {
+//           throw err;
+//         }
+//       }
+//       return followers;
+//     },
+//     setToStore: storeFollowers,
+//   },
+//   followIntersection: {
+//     compute: async () => {},
+//     setToStore: async () => {},
+//   },
+// };
+
+
+async function fetchFromSocialData(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
   const defaultHeaders: Record<string, string> = {
-    Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+    Authorization: `Bearer ${socialDataApiKey}`,
+    Accept: "application/json",
   };
 
   options.headers = options.headers
@@ -654,28 +751,31 @@ export async function fetchFromTwitter(
   return response;
 }
 
+
 export const twitter = {
   following: {
-    getFromTwitter: async (twitterID: string) => {
-      const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/following`;
-      let cursor = null;
+    getFromTwitter: async (userId: string, cursor?: string) => {
+      const url = "https://api.socialdata.tools/twitter/friends/list";
       let following: User[] = [];
+
       try {
         do {
-          const res = await fetchFromTwitter(
-            `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
-          );
-          const data = await res.json();
-          if (data.data) {
-            following = [...following, ...data.data];
-            cursor = data.meta.next_token;
+          const params = new URLSearchParams({
+            user_id: userId,
+            count: "200",
+          });
+          if (cursor) {
+            params.append("cursor", cursor);
           }
-        } while (cursor);
+          const res = await fetchFromSocialData(`${url}?${params.toString()}`);
+          const data = await res.json();
+          if (data.users) {
+            following = [...following, ...data.users];
+            cursor = data.next_cursor_str;
+          }
+        } while (cursor && cursor !== "0");
       } catch (err) {
-        if (
-          err instanceof Error &&
-          err.message.includes("Rate limit reached")
-        ) {
+        if (err instanceof Error && err.message.includes("Rate limit reached")) {
           console.error(
             "Rate limit reached for following. Returning what we have so far."
           );
@@ -688,26 +788,28 @@ export const twitter = {
     setToStore: storeFollowing,
   },
   followers: {
-    getFromTwitter: async (twitterID: string) => {
-      const twEndpoint = `https://api.twitter.com/2/users/${twitterID}/followers`;
-      let cursor: string | null = null;
+    getFromTwitter: async (userId: string, cursor?: string) => {
+      const url = "https://api.socialdata.tools/twitter/followers/list";
       let followers: User[] = [];
+
       try {
         do {
-          const res = await fetchFromTwitter(
-            `${twEndpoint}${cursor ? `?pagination_token=${cursor}` : ""}`
-          );
-          const data = await res.json();
-          if (data.data) {
-            followers = [...followers, ...data.data];
-            cursor = data.meta.next_token;
+          const params = new URLSearchParams({
+            user_id: userId,
+            count: "200",
+          });
+          if (cursor) {
+            params.append("cursor", cursor);
           }
-        } while (cursor);
+          const res = await fetchFromSocialData(`${url}?${params.toString()}`);
+          const data = await res.json();
+          if (data.users) {
+            followers = [...followers, ...data.users];
+            cursor = data.next_cursor_str;
+          }
+        } while (cursor && cursor !== "0");
       } catch (err) {
-        if (
-          err instanceof Error &&
-          err.message.includes("Rate limit reached")
-        ) {
+        if (err instanceof Error && err.message.includes("Rate limit reached")) {
           console.error(
             "Rate limit reached for followers. Returning what we have so far."
           );
@@ -724,3 +826,4 @@ export const twitter = {
     setToStore: async () => {},
   },
 };
+
