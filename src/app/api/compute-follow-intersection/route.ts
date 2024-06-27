@@ -9,29 +9,35 @@ async function computeFollowIntersectionServerSide(
     userID2: string
 ) {
     // Computes and retrieves intersection between {user1 following} and {user2 followers}
-    const user1FollowsKey = `user-following:${userID1}`;
-    const user2FollowersKey = `user-followers:${userID2}`;
+    // const user1FollowsKey = `user-following:${userID1}`;
+    // const user2FollowersKey = `user-followers:${userID2}`;
+
+    const user1FollowsKey = `${userID1}_following`;
+    const user2FollowersKey = `${userID2}_followers`;
     const intersectionIDs = await redisClient.sInter([
         user1FollowsKey,
         user2FollowersKey,
     ]);
 
-    // Assuming intersectionIDs are just IDs, convert them to detailed follower data
-    const intersectionDetails = await Promise.all(
-        intersectionIDs.map(async (id: string) => {
-            const screen_name = await redisClient.hGet(
-                `user:${id}`,
-                "screen_name"
-            );
-            const profile_image_url = await redisClient.hGet(
-                `user:${id}`,
-                "profile_image_url"
-            );
-            return { screen_name, profile_image_url };
-        })
-    );
+    const intersectionCount = intersectionIDs.length;
+    return intersectionCount
 
-    return intersectionDetails;
+    // // Assuming intersectionIDs are just IDs, convert them to detailed follower data
+    // const intersectionDetails = await Promise.all(
+    //     intersectionIDs.map(async (id: string) => {
+    //         const screen_name = await redisClient.hGet(
+    //             `user:${id}`,
+    //             "screen_name"
+    //         );
+    //         const profile_image_url = await redisClient.hGet(
+    //             `user:${id}`,
+    //             "profile_image_url"
+    //         );
+    //         return { screen_name, profile_image_url };
+    //     })
+    // );
+
+    // return intersectionDetails;
 }
 
 export async function POST(request: Request) {
@@ -50,14 +56,14 @@ export async function POST(request: Request) {
             throw "server error - no redis client";
         }
 
-        const intersectionDetails = await computeFollowIntersectionServerSide(
+        const intersectionCount = await computeFollowIntersectionServerSide(
             redisClient,
             userID1,
             userID2
         );
-        const intersectionCount = intersectionDetails.filter(
-            (detail) => detail.screen_name
-        ).length;
+        // const intersectionCount = intersectionDetails.filter(
+        //     (detail) => detail.screen_name
+        // ).length;
 
         redisClient.quit();
 
@@ -65,7 +71,7 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 {
                     message: "No data available",
-                    intersectionDetails: [],
+                    // intersectionDetails: [],
                     count: 0,
                 },
                 { status: 404 }
@@ -75,7 +81,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
             {
                 message: "success",
-                intersectionDetails,
+                // intersectionDetails,
                 count: intersectionCount,
             },
             { status: 200 }
