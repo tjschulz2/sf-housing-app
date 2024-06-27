@@ -222,7 +222,7 @@ function Directory() {
                 <p className="m-auto p-4 italic text-neutral-600">No data</p>
             ) : null}
 
-            {/* {todayProfiles && todayProfiles.length > 0 && (
+            {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
           <CardGrid>
@@ -242,9 +242,9 @@ function Directory() {
             ))}
           </CardGrid>
         </>
-      )} */}
+      )}
 
-            {todayProfiles && todayProfiles.length > 0 && (
+            {/* {todayProfiles && todayProfiles.length > 0 && (
                 <>
                     <h2 className="text-2xl font-bold my-4">Today</h2>
                     <CardGrid>
@@ -272,7 +272,7 @@ function Directory() {
                         ))}
                     </CardGrid>
                 </>
-            )}
+            )} */}
 
             {thisMonthProfiles && thisMonthProfiles.length > 0 && (
                 <>
