@@ -47,12 +47,12 @@ export default function SearcherProfileCard(props: PropsType) {
               },
               body: JSON.stringify({ userID1: userSession.userID, userID2: profile.user_id }),
             });
-
+  
             if (response.status === 404) {
               setCommonFollowersCount(0); // Handle not found case
               return;
             }
-
+  
             const data = await response.json();
             if (response.ok) {
               setCommonFollowersCount(data.count);
@@ -60,15 +60,23 @@ export default function SearcherProfileCard(props: PropsType) {
               throw new Error(data.message);
             }
           } catch (error) {
-            console.error("Failed to fetch common followers count:", error);
+            if (error instanceof Error) {
+              console.error("Failed to fetch common followers count:", error);
+              console.error("Error message:", error.message);
+              console.error("Error stack:", error.stack);
+            } else {
+              console.error("An unexpected error occurred:", error);
+            }
             setCommonFollowersCount(null); // Hide component if there's an error
           }
         }
       };
-
+  
       fetchCommonFollowersCount();
     }
   }, [userSession, profile.user_id, isFirstProfile]);
+  
+  
 
   return (
     <Card>
