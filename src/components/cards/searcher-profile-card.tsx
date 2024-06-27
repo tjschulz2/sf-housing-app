@@ -109,7 +109,7 @@ export default function SearcherProfileCard(props: PropsType) {
           <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
         )} */}
 
-        <p>commonFollowersCount</p>
+        <p>{commonFollowersCount}</p>
 
         <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
