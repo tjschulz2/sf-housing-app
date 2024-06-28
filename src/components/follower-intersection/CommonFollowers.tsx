@@ -131,9 +131,10 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
 
   useEffect(() => {
     const fetchCommonFollowersCount = async () => {
-      console.log("userID1: ", userID1);
-      console.log("userID2: ", userID2);
+     
       try {
+        console.log("userID1: ", userID1);
+        console.log("userID2: ", userID2);
         const response = await fetch("/api/compute-follow-intersection", {
           method: "POST",
           headers: {
