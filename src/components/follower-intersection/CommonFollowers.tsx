@@ -107,6 +107,7 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
   useEffect(() => {
     const fetchTwitterHandle = async () => {
       try {
+        console.log("Fetching Twitter handle for userID2:", userID2);
         const response = await fetch("/api/get-twitter-handle", {
           method: "POST",
           headers: {
@@ -115,13 +116,17 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
           body: JSON.stringify({ userID: userID2 }),
         });
 
+        console.log("Twitter handle response status:", response.status);
         const data = await response.json();
+        console.log("Twitter handle data:", data);
+
         if (response.ok) {
           setTwitterHandle(data.twitterHandle);
         } else {
           throw new Error(data.message);
         }
       } catch (error) {
+        console.error("Error fetching Twitter handle:", error);
         setVisible(false); // Hide component if there's an error
       }
     };
@@ -131,10 +136,8 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
 
   useEffect(() => {
     const fetchCommonFollowersCount = async () => {
-     
       try {
-        console.log("userID1: ", userID1);
-        console.log("userID2: ", userID2);
+        console.log("Fetching common followers count for userID1:", userID1, "and userID2:", userID2);
         const response = await fetch("/api/compute-follow-intersection", {
           method: "POST",
           headers: {
@@ -143,14 +146,17 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
           body: JSON.stringify({ userID1, userID2 }),
         });
 
-       
+        console.log("Common followers response status:", response.status);
 
         if (response.status === 404) {
+          console.log("No intersection data found");
           setVisible(false); // Hide component if there's no intersection data
           return;
         }
 
         const data = await response.json();
+        console.log("Common followers data:", data);
+
         if (response.ok) {
           setCommonFollowersCount(data.count);
         } else {
