@@ -131,6 +131,8 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
 
   useEffect(() => {
     const fetchCommonFollowersCount = async () => {
+      console.log("userID1: ", userID1);
+      console.log("userID2: ", userID2);
       try {
         const response = await fetch("/api/compute-follow-intersection", {
           method: "POST",
@@ -139,6 +141,8 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
           },
           body: JSON.stringify({ userID1, userID2 }),
         });
+
+       
 
         if (response.status === 404) {
           setVisible(false); // Hide component if there's no intersection data
