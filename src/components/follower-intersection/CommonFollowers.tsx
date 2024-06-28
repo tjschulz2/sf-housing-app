@@ -171,6 +171,18 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
     fetchCommonFollowersCount();
   }, [userID1, userID2]);
 
+  const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    const url = `https://x.com/${twitterHandle}/followers_you_follow`;
+    if (navigator.userAgent.match(/Mobi/)) {
+      // If on mobile, try to force desktop view
+      window.location.href = `${url}?mode=desktop`;
+    } else {
+      // If on desktop, redirect directly
+      window.location.href = url;
+    }
+  };
+
   if (!visible) {
     return null; // Do not render the component if it's not visible
   }
@@ -184,6 +196,7 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
             target="_blank"
             rel="noopener noreferrer"
             className="underline-text"
+            onClick={handleRedirect}
           >
             Followed by {commonFollowersCount} people you know
           </a>
@@ -196,6 +209,8 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
 };
 
 export default CommonFollowers;
+
+
 
 
 
