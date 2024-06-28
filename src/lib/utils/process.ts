@@ -85,11 +85,11 @@ export async function handleSignIn() {
       }
     }
 
-    // await refreshTwitterFollowsIfNeeded(
-    //   userData,
-    //   24 * 30,
-    //   currentUser.accessToken
-    // );
+    await refreshTwitterFollowsIfNeeded(
+      userData,
+      24 * 30,
+      currentUser.accessToken
+    );
   } catch (err) {
     return { status: "error", message: err };
   }

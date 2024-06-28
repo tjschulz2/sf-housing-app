@@ -9,11 +9,11 @@ async function computeFollowIntersectionServerSide(
     userID2: string
 ) {
     // Computes and retrieves intersection between {user1 following} and {user2 followers}
-    // const user1FollowsKey = `user-following:${userID1}`;
-    // const user2FollowersKey = `user-followers:${userID2}`;
+    const user1FollowsKey = `user-following:${userID1}`;
+    const user2FollowersKey = `user-followers:${userID2}`;
 
-    const user1FollowsKey = `${userID1}_following`;
-    const user2FollowersKey = `${userID2}_followers`;
+    // const user1FollowsKey = `${userID1}_following`;
+    // const user2FollowersKey = `${userID2}_followers`;
     const intersectionIDs = await redisClient.sInter([
         user1FollowsKey,
         user2FollowersKey,
@@ -48,11 +48,13 @@ export async function POST(request: Request) {
             reqBody;
 
         if (!userID1 || !userID2) {
+            console.log("failing here 51");
             throw "Missing one or more userIDs";
         }
 
         const redisClient = await createRedisClient();
         if (!redisClient) {
+            console.log("failing here 57");
             throw "server error - no redis client";
         }
 
@@ -67,16 +69,17 @@ export async function POST(request: Request) {
 
         redisClient.quit();
 
-        if (intersectionCount === 0) {
-            return NextResponse.json(
-                {
-                    message: "No data available",
-                    // intersectionDetails: [],
-                    count: 0,
-                },
-                { status: 404 }
-            );
-        }
+        // if (intersectionCount === 0) {
+        //     console.log("failing here 71");
+        //     return NextResponse.json(
+        //         {
+        //             message: "No data available",
+        //             // intersectionDetails: [],
+        //             count: 0,
+        //         },
+        //         { status: 404 }
+        //     );
+        // }
 
         return NextResponse.json(
             {
@@ -87,6 +90,7 @@ export async function POST(request: Request) {
             { status: 200 }
         );
     } catch (err) {
+        console.log("failing here 93");
         console.error(err);
         return NextResponse.json(
             { message: "server error", details: err },

@@ -506,7 +506,8 @@ export async function storeFollowing(
     return { status: "error", message: "Failed to create Redis client" };
   }
   try {
-    const redisKey = `user-following:${userID}`;
+    // const redisKey = `user-following:${userID}`;
+    const redisKey = `${userID}_following`;
     const result = await redisClient.sAdd(redisKey, following);
     return { status: "success", message: result };
   } catch (err) {
@@ -524,7 +525,8 @@ export async function storeFollowers(
     return { status: "error", message: "Failed to create Redis client" };
   }
   try {
-    const redisKey = `user-followers:${userID}`;
+    // const redisKey = `user-followers:${userID}`;
+    const redisKey = `${userID}_followers`;
     const result = await redisClient.sAdd(redisKey, followers);
     return { status: "success", message: result };
   } catch (err) {
@@ -547,6 +549,9 @@ async function computeFollowIntersection(userID1: string, userID2: string) {
   });
   if (response.status !== 200) {
     const body = await response.json();
+    console.log("failing here 552");
+    console.log("user1", userID1);
+    console.log("user2", userID2);
     throw "failed to compute intersection";
   } else {
     const { intersectionCount } = await response.json();
