@@ -185,7 +185,7 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
             rel="noopener noreferrer"
             className="underline-text"
           >
-            Followed by fjadslkjfads {commonFollowersCount} people you know
+            Followed by {commonFollowersCount} people you know
           </a>
         ) : (
           "Not followed by anyone you're following"
