@@ -121,6 +121,7 @@ export default function SpaceProfileCard(props: PropsType) {
         <Link
           href={`https://x.com/${profile.user?.twitter_handle}`}
           className="flex items-center justify-center w-full"
+          target="_blank"
         >
           {/* <UserProfileImage
             size="small"

@@ -189,21 +189,21 @@ const CommonFollowers: React.FC<CommonFollowersProps> = ({ userID1, userID2 }) =
 
   return (
     <div className="common-followers-container">
-      <div className="common-followers-text">
-        {commonFollowersCount > 0 ? (
-          <a
+      {commonFollowersCount > 0 && (
+        <div className="common-followers-text">
+          <a 
             href={`https://x.com/${twitterHandle}/followers_you_follow`}
             target="_blank"
             rel="noopener noreferrer"
             className="underline-text"
             onClick={handleRedirect}
           >
-            Followed by {commonFollowersCount} people you know
+            {commonFollowersCount === 1
+              ? "Followed by 1 person you know"
+              : `Followed by ${commonFollowersCount} people you know`}
           </a>
-        ) : (
-          "Not followed by anyone you're following"
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
