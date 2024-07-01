@@ -832,3 +832,18 @@ export const twitter = {
   },
 };
 
+
+export async function checkTwitterFollowersAdded(userID: string) {
+  const { data, error } = await supabase
+    .from("twitter_followers_added")
+    .select("*")
+    .eq("user_id", userID)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    console.error("Error checking twitter followers added:", error);
+    return null;
+  }
+  return data;
+}
+
