@@ -15,11 +15,11 @@ const navConfig = [
   // },
   {
     path: "/directory/spaces",
-    title: "Sublets (Short term)",
+    title: "Rooms",
   },
   {
     path: "/directory/leases",
-    title: "Rentals (One year+)",
+    title: "Rentals",
   },
 ];
 

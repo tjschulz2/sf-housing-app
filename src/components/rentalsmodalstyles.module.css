@@ -1,33 +1,199 @@
 .modalOverlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContainer {
+  position: relative;
+  background-color: #FEFBEB;
+  overflow: hidden;
+  width: 85%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modalContent {
+  display: flex;
+  height: 100%;
+}
+
+.imageContainer {
+  display: block;
+}
+
+.details {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.header {
+  background-color: #FEFBEB;
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.responsiveHeaderPadding {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.hiddenOnVerySmallScreens {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .hiddenOnVerySmallScreens {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
   }
-  
+}
+
+.brandingContainer {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+}
+
+.logo {
+  width: 28px;
+  height: 36px;
+}
+
+.branding {
+  font-family: var(--font-noto-serif-display);
+  font-weight: 600;
+  color: #1D462F;
+  font-size: 24px;
+  margin-left: 8px; /* added margin to space out elements */
+}
+
+.content {
+  padding: 16px;
+}
+
+.priceSection {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: bold;
+}
+
+.perMonth {
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.detailsText {
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  color: #474747;
+  margin-left: 4px;
+}
+
+.address {
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  color: #474747;
+  margin-top: 16px;
+}
+
+.tourButton {
+  width: 100%;
+  background-color: #1D462F;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  margin-top: 16px;
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  cursor: pointer;
+}
+
+.overview {
+  color: #1D462F;
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.overviewItem {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.icon {
+  width: 21px;
+  height: 21px;
+  margin-right: 8px;
+}
+
+.description {
+  color: #1D462F;
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  margin-top: 32px;
+}
+
+.descriptionContent {
+  margin-top: 16px;
+  margin-bottom: 40px;
+  font-size: clamp(0.8rem, 1.6vw, 1rem);
+  color: #474747;
+}
+
+.map {
+  margin-bottom: 16px;
+}
+
+.mapFrame {
+  width: 100%;
+  border: 0;
+  aspect-ratio: 1 / 0.5;
+}
+
+@media (max-width: 1041px) {
   .modalContainer {
-    position: relative;
-    background-color: white;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    width: 85%;
+    width: 100%;
     height: 100%;
-    display: flex;
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+
+  .modalContent {
     flex-direction: column;
-    z-index: 2000;
+    height: auto; /* Ensure modal content can grow with content height */
   }
-  
-  .modalCloseButton {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: #f0f0f0;
-    border-radius: 50%;
-    padding: 0.5rem;
-    cursor: pointer;
-    z-index: 2000;
+
+  .imageContainer {
+    display: none;
   }
-  
+
+  .details {
+    width: 100%;
+    overflow-y: visible; /* Ensure content within details is visible */
+  }
+}

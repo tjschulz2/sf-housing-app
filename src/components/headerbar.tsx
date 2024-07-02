@@ -49,10 +49,7 @@ export default function HeaderBar() {
       <nav className="hidden md:flex md:items-center md:space-x-6">
         <ul className="md:flex md:space-x-6">
           {[
-            { name: 'Solaris AI', link: 'https://www.solarissf.com/solaris-ai/root' },
-            { name: 'DirectorySF', link: 'https://directorysf.com' },
-            { name: 'Email', link: 'mailto:thomas@solarissf.com?subject=Let%27s%20talk%20Solaris' },
-            { name: 'Twitter', link: 'https://x.com/solarissociety' }
+            { name: 'List a rental', link: 'https://airtable.com/appurOWXAegMj76UY/pagI9io5qFhw7F264/form' }
           ].map((item) => (
             <li key={item.name}>
               <a 

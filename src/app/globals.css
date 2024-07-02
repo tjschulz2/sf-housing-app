@@ -6,6 +6,7 @@ body {
   margin: 0;
   line-height: normal;
 }
+
 :root {
   /* fonts */
   --font-noto-serif: 'Noto Serif', serif;

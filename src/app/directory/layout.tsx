@@ -19,6 +19,7 @@ import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
+import { LoadScript } from "@react-google-maps/api";
 import Head from "next/head";
 
 export type ProfilesContextType = {
@@ -110,38 +111,43 @@ export default function DirectoryLayout({
   const pathname = usePathname()
   const currentPath = pathname;
   const isDirectoryPage = currentPath === "/directory/leases";
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
   if (userSession && userData) {
     return (
       // <div className={styles.container}>
-      <div className={`w-full bg-[#FEFBEB] ${isDirectoryPage ? styles.unscrollable : styles.scrollable}`}>
-        <HeaderBarInApp userSession={userSession} />
-        <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
-          <div className={`p-4 mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}>
-            <div>
-              <div className={styles.topArea}>
-                <Navbar />
+      <LoadScript googleMapsApiKey={googleMapsApiKey}>
+        <div className={`w-full bg-[#FEFBEB] ${isDirectoryPage ? styles.unscrollable : styles.scrollable}`}>
+          <HeaderBarInApp userSession={userSession} />
+          <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
+            <div className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}>
+              <div>
+                <div className={styles.topArea}>
+                  <div className={styles.navbarContainer}>
+                    <Navbar />
+                  </div>
+                </div>
+                <ProfilesContext.Provider
+                  value={{
+                    searcherProfiles,
+                    setSearcherProfiles,
+                    searcherProfilesFilter,
+                    setSearcherProfilesFilter,
+                    userHousingSearchProfile,
+                    refreshUserHousingSearchProfileData,
+                  }}
+                >
+                  <SpacesContextProvider>
+                    <div className={styles.directoryContainer}>{children}</div>
+                  </SpacesContextProvider>
+                </ProfilesContext.Provider>
               </div>
-              <ProfilesContext.Provider
-                value={{
-                  searcherProfiles,
-                  setSearcherProfiles,
-                  searcherProfilesFilter,
-                  setSearcherProfilesFilter,
-                  userHousingSearchProfile,
-                  refreshUserHousingSearchProfileData,
-                }}
-              >
-                <SpacesContextProvider>
-                  <div className={styles.directoryContainer}>{children}</div>
-                </SpacesContextProvider>
-              </ProfilesContext.Provider>
+              {!isDirectoryPage && <Footer />}
             </div>
-            {!isDirectoryPage && <Footer />}
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
           </div>
-          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         </div>
-      </div>
+      </LoadScript>
     );
   } else {
     return <LoadingSpinner />;

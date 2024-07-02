@@ -2,24 +2,35 @@
   font-weight: bold;
   color: black;
   text-decoration: none;
-  border-bottom: 4px solid black;
+  border: 2px solid #1D462F;
+  color: #1D462F;
+  border-radius: 8px;
+  padding: 6px;
+  background-color: #E7E9D8;
 }
 
 .unselectedText {
   text-decoration: none;
-  color: var(--color-gray-100);
+  color: #474747;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.unselectedText:hover {
+  background-color: #F1EFDF;
 }
 
 .sectionButtons {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: 8px;
 }
 
 @media (max-width: 578px) {
   .sectionButtons {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
   }
 }

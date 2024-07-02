@@ -1,0 +1,9 @@
+.customMarker {
+    opacity: 1; /* Ensure the initial opacity is set to 1 */
+    transition: opacity 0.3s ease; /* Add a transition effect for smooth opacity change */
+  }
+  
+  .customMarker:hover {
+    opacity: 0.5; /* Set the desired opacity on hover */
+  }
+  

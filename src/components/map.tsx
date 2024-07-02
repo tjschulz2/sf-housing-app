@@ -1,76 +1,123 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { GoogleMap, LoadScript, Polygon, Marker } from '@react-google-maps/api';
+import styles from './mapstyles.module.css';
 
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
 };
 
+interface Listing {
+  id: number;
+  price: number;
+  beds: number;
+  baths: number;
+  sqft: number;
+  address: string;
+  imageUrls: string[];
+  coordinates: { lat: number; lng: number };
+  description: string;
+}
+
+interface MapProps {
+  listings: Listing[];
+  openModal: (listing: Listing) => void;
+  hoveredListingId: number | null;
+}
+
 const center = {
   lat: 37.771923,
   lng: -122.432120,
 };
 
-// Define the custom map styles
 const mapStyles = [
-    {
-      "featureType": "all",
-      "elementType": "labels",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        { "visibility": "simplified" },
-        { "color": "#ffffff" }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels",
-      "stylers": [
-        { "visibility": "on" }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        { "color": "#aadd55" }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        { "color": "#c9c9c9" }
-      ]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "geometry",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "administrative",
-      "elementType": "geometry",
-      "stylers": [
-        { "visibility": "off" }
-      ]
-    },
-    {
-      "featureType": "landscape",
-      "elementType": "geometry",
-      "stylers": [
-        { "color": "#f2f2f2" }
-      ]
-    }
-  ];
+  {
+    "featureType": "all",
+    "elementType": "labels",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      { "visibility": "simplified" },
+      { "color": "#ffffff" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels",
+    "stylers": [
+      { "visibility": "on" }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#aadd55" }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#c9c9c9" }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "landscape",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#f2f2f2" }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "labels",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  }
+];
+
+const mapOptions = {
+  styles: mapStyles,
+  streetViewControl: false,
+  mapTypeControl: false,
+  fullscreenControl: false,
+};
+
 
 const boundaries = [
   { lat: 37.7768056, lng: -122.4384756 },
@@ -97,39 +144,75 @@ const boundaries = [
   { lat: 37.7768119, lng: -122.4384571 },
 ];
 
-const listings = [
-  { id: 1, position: { lat: 37.775, lng: -122.437 }, price: "$3,500/mo" },
-  // Add more listings here
-];
+const formatPrice = (price: number): string => {
+  return `${(price / 1000).toFixed(1)}K`;
+};
 
-const Map: React.FC = () => {
+const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+  const handleLoad = (map: google.maps.Map) => {
+    mapRef.current = map;
+    setIsMapLoaded(true);
+  };
+
+  const markerRefs = useRef<(google.maps.Marker | null)[]>([]);
+
+  const getIcon = (hover: boolean) => ({
+    url: hover ? `/images/bubble-hover.svg` : `/images/bubble.svg`,
+    scaledSize: new google.maps.Size(40, 20),
+    labelOrigin: new google.maps.Point(20, 9),
+  });
+
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={14.75}
-        center={center}
-        options={{ styles: mapStyles }}
-      >
-        <Polygon
-          paths={boundaries}
-          options={{
-            fillColor: 'lightgreen',
-            fillOpacity: 0.05,
-            strokeColor: 'green',
-            strokeOpacity: 1,
-            strokeWeight: 2,
+    <GoogleMap
+      mapContainerStyle={mapContainerStyle}
+      zoom={14.75}
+      center={center}
+      options={mapOptions}
+      onLoad={handleLoad}
+    >
+      <Polygon
+        paths={boundaries}
+        options={{
+          fillColor: 'lightgreen',
+          fillOpacity: 0.05,
+          strokeColor: 'green',
+          strokeOpacity: 1,
+          strokeWeight: 2,
+        }}
+      />
+      {isMapLoaded && listings.map((listing, index) => (
+        <Marker
+          key={listing.id}
+          position={listing.coordinates}
+          icon={getIcon(listing.id === hoveredListingId)}
+          label={{
+            text: formatPrice(listing.price),
+            color: 'white',
+            fontSize: '10px',
+            fontWeight: 'bold',
+            className: styles.customMarkerLabel, // Add a custom class if you need more control over the style
           }}
+          options={{
+            optimized: false, // Ensures the custom class is applied
+          }}
+          onLoad={(marker) => {
+            markerRefs.current[index] = marker;
+          }}
+          onMouseOver={() => {
+            const marker = markerRefs.current[index];
+            if (marker) marker.setIcon(getIcon(true));
+          }}
+          onMouseOut={() => {
+            const marker = markerRefs.current[index];
+            if (marker) marker.setIcon(getIcon(false));
+          }}
+          onClick={() => openModal(listing)}
         />
-        {listings.map(listing => (
-          <Marker
-            key={listing.id}
-            position={listing.position}
-            label={listing.price}
-          />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+      ))}
+    </GoogleMap>
   );
 };
 

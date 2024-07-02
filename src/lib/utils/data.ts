@@ -4,6 +4,21 @@ import { getUserSession } from "./auth";
 import { getCurrentTimestamp, isValidUUID } from "./general";
 import { z } from "zod";
 
+interface RentalImage {
+  image_url: string;
+}
+
+interface Rental {
+  id: number;
+  monthly_rent: number;
+  bedrooms: number;
+  bathrooms: number;
+  sqft: number;
+  address: string;
+  rental_images: RentalImage[];
+  description: string;
+}
+
 // ----- Users & Profiles -----
 
 export async function getUserData(userID?: string) {
@@ -117,6 +132,24 @@ export async function getCommunities(start: number = 0, count: number = 10) {
     return data;
   }
 }
+
+export async function getRentalsWithImages(startIdx = 0, count = 25): Promise<Rental[]> {
+  const { data, error } = await supabase
+    .from('rentals')
+    .select(`
+      id, monthly_rent, bedrooms, bathrooms, sqft, address, description,
+      rental_images(image_url)
+    `)
+    .range(startIdx, startIdx + count - 1);
+
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  return data as Rental[];
+}
+
 
 export async function getSpaceDetails(spaceSlug: string) {
   if (isValidUUID(spaceSlug)) {

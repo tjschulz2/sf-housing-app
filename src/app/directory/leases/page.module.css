@@ -178,3 +178,27 @@
   overflow-y: auto;
   height: 80vh;
 }
+
+.mapContainer {
+  position: absolute;
+  top: 3.46rem;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  height: calc(100vh - 9.75rem);
+}
+
+.contentContainer {
+  width: 50%;
+  margin-left: auto;
+  overflow-y: auto;
+}
+
+@media (max-width: 1041px) {
+  .mapContainer {
+    display: none;
+  }
+  .contentContainer {
+    width: 100%;
+  }
+}
