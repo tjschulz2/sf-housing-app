@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardTop,
@@ -16,24 +17,66 @@ import { useAuthContext } from "@/contexts/auth-context";
 import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
-import CommonFollowers from '@/components/follower-intersection/CommonFollowers';
+import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
 
-
-type PropsType = {
+interface PropsType {
   profile: HousingSearchProfile;
-};
+  isFirstProfile?: boolean; // Make this prop optional
+}
 
 export default function SearcherProfileCard(props: PropsType) {
-  const { profile } = props;
+  const { profile, isFirstProfile } = props;
   const { userSession } = useAuthContext();
 
-
   const bio = profile.pref_housemate_details ?? "";
-  
-
   const daysSinceConfirmation = profile.last_updated_date
     ? dateDiff(profile.last_updated_date).diffDays
     : null;
+
+  const [commonFollowersCount, setCommonFollowersCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (isFirstProfile) {
+      const fetchCommonFollowersCount = async () => {
+        if (userSession) {
+          try {
+            const response = await fetch("/api/compute-follow-intersection", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ userID1: userSession.userID, userID2: profile.user_id }),
+            });
+  
+            if (response.status === 404) {
+              setCommonFollowersCount(0); // Handle not found case
+              return;
+            }
+  
+            const data = await response.json();
+            if (response.ok) {
+              setCommonFollowersCount(data.count);
+            } else {
+              throw new Error(data.message);
+            }
+          } catch (error) {
+            if (error instanceof Error) {
+              console.error("Failed to fetch common followers count:", error);
+              console.error("Error message:", error.message);
+              console.error("Error stack:", error.stack);
+            } else {
+              console.error("An unexpected error occurred:", error);
+            }
+            setCommonFollowersCount(null); // Hide component if there's an error
+          }
+        }
+      };
+  
+      fetchCommonFollowersCount();
+    }
+  }, [userSession, profile.user_id, isFirstProfile]);
+  
+  
 
   return (
     <Card>
@@ -56,7 +99,6 @@ export default function SearcherProfileCard(props: PropsType) {
           <Link
             href={`https://x.com/${profile.user?.twitter_handle}`}
             className="flex items-center justify-center w-full"
-            target="_blank"
           >
             <span className="text-blue-500 hover:text-blue-400 py-2 max-w-full truncate">
               @{profile.user?.twitter_handle}
@@ -71,11 +113,12 @@ export default function SearcherProfileCard(props: PropsType) {
         </div>
       </CardTop>
       <CardBottom>
-
-      {userSession && (
+        {/* {commonFollowersCount !== null && commonFollowersCount > 0 && (
           <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
-      )}
-      
+        )} */}
+
+        <p>{commonFollowersCount}</p>
+
         <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
@@ -109,9 +152,3 @@ export default function SearcherProfileCard(props: PropsType) {
     </Card>
   );
 }
-
-
-
-
-
-

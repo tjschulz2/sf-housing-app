@@ -7,18 +7,24 @@ import { headers } from "next/headers";
 import { User } from "@supabase/supabase-js";
 import { JwtPayload } from "jsonwebtoken";
 
+
+// in refresh-twitter-follows/route.ts
 export async function GET() {
   const headersList = headers();
   try {
-    const headersList = headers();
     const jwt = headersList.get("accessToken");
     if (!jwt) {
       throw new Error("Missing header: accessToken");
     }
 
-    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User &
-      JwtPayload;
+    // console.log("jwt", jwt)
+    console.log(process.env.SUPABASE_JWT_SECRET)
+    const user = verify(jwt, process.env.SUPABASE_JWT_SECRET) as User & JwtPayload;
+    // console.log("GOT HERE")
+
     const { sub: userID } = user;
+
+    console.log("user: ", user)
     const { sub: twitterID } = user.user_metadata;
 
     if (userID && typeof userID === "string") {
@@ -53,7 +59,7 @@ export async function GET() {
       );
       const followersStoragePromise = twitter.followers.setToStore(
         redisClient,
-        userID,
+        userID, 
         followersList
       );
 

@@ -1,0 +1,39 @@
+.common-followers-container {
+  display: flex;
+  align-items: center;
+}
+
+.common-followers-avatars {
+  display: flex;
+  margin-right: 8px; /* Add space between the avatars and the text */
+}
+
+.follower-avatar {
+  border-radius: 50%;
+  margin-left: -8px; /* Adjust as needed for overlap effect */
+  border: 2px solid #fff;
+}
+
+.common-followers-text {
+  font-size: 14px; /* Adjust as needed */
+  color: #4E8FE0;
+  display: flex;
+  align-items: center;
+}
+
+.common-followers-container a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.common-followers-container a:hover {
+  text-decoration: underline;
+}
+
+.common-followers-container .common-followers-text {
+  margin-top: 0px;
+}
+
+.underline-text {
+  text-decoration: underline;
+}

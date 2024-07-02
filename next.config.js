@@ -11,6 +11,10 @@ const nextConfig = {
 
     return config;
   },
+  reactStrictMode: true,
+  images: {
+    domains: ['pbs.twimg.com'],
+  },
 }
 
 module.exports = nextConfig;

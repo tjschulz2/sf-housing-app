@@ -90,6 +90,7 @@ export async function handleSignIn() {
     //   24 * 30,
     //   currentUser.accessToken
     // );
+    
   } catch (err) {
     return { status: "error", message: err };
   }
@@ -101,6 +102,7 @@ export async function handleSignIn() {
 }
 
 async function refreshTwitterFollowsIfNeeded(
+  // userData: Database["public"]["Tables"]["users"]["Row"],
   userData: Database["public"]["Tables"]["users"]["Row"],
   minCacheHours: number,
   accessToken: string
