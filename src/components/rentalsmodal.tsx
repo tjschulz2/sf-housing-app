@@ -70,6 +70,13 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
     setIsGalleryOpen(false);
   };
 
+  function handleButtonClick() {
+    const phoneNum = '17038395179'; // Replace with the actual phone number
+    const textMessage = `Hey Thomas, I am interested in setting up a tour to view ${listing?.address}!`; // Replace with the actual text message
+    const smsLink = `sms:${phoneNum}&body=${encodeURIComponent(textMessage)}`;
+    window.location.href = smsLink;
+  }
+
   return (
     <Portal zIndex={10}>
       <div className={styles.modalOverlay}>
@@ -141,7 +148,10 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                   </div>
                 </div>
                 <div className="text-sm text-[#474747] mt-4" style={{ fontSize: 'clamp(0.875rem, 1.8vw, 1.125rem)' }}>{listing.address}</div>
-                <button className="w-full bg-[#1D462F] hover:bg-[#55735E] text-white py-3 px-4 rounded-lg mb-6 mt-8" style={{ fontSize: 'clamp(0.875rem, 1.8vw, 1.125rem)' }}>
+                <button 
+                  onClick={handleButtonClick} 
+                  className="w-full bg-[#1D462F] hover:bg-[#55735E] text-white py-3 px-4 rounded-lg mb-6 mt-8" 
+                  style={{ fontSize: 'clamp(0.875rem, 1.8vw, 1.125rem)' }}>
                   Setup tour
                 </button>
                 <div className="text-sm mb-2 mt-8" style={{ color: '#1D462F', fontSize: 'clamp(0.875rem, 1.8vw, 1.125rem)' }}>
