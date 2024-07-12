@@ -177,3 +177,9 @@
   overflow: hidden;
   height: 100vh;
 }
+
+@media (max-width: 750px) {
+  .unscrollable {
+    overflow-y: auto;
+  }
+}

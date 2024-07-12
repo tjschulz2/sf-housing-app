@@ -4,6 +4,7 @@ import Portal from './portal';
 import ImageGalleryOverlay from './imagegalleryoverlay';
 import Carousel from './mobilecarousel'
 import 'react-quill/dist/quill.snow.css'; // Import styles
+import { useAuthContext } from "@/contexts/auth-context";
 
 interface Listing {
   id: number;
@@ -27,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryStartIndex, setGalleryStartIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
+  const { userData } = useAuthContext();
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -71,10 +73,11 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
   };
 
   function handleButtonClick() {
-    const phoneNum = '17038395179'; // Replace with the actual phone number
-    const textMessage = `Hey Thomas, I am interested in setting up a tour to view ${listing?.address}!`; // Replace with the actual text message
-    const smsLink = `sms:${phoneNum}&body=${encodeURIComponent(textMessage)}`;
-    window.location.href = smsLink;
+    const name = userData?.name ?? '';
+    const address = listing?.address ?? '';
+    const airtableFormUrl = 'https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form';
+    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(address)}&prefill_Name=${encodeURIComponent(name)}`;
+    window.location.href = filledFormUrl;
   }
 
   return (

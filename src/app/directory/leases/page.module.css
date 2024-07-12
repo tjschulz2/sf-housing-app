@@ -192,6 +192,7 @@
   width: 50%;
   margin-left: auto;
   overflow-y: auto;
+  padding-bottom: 24px;
 }
 
 @media (max-width: 1041px) {

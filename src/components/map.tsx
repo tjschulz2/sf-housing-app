@@ -148,6 +148,34 @@ const formatPrice = (price: number): string => {
   return `${(price / 1000).toFixed(1)}K`;
 };
 
+const groupMarkersByCoordinates = (listings: Listing[]) => {
+  const grouped: { [key: string]: Listing[] } = {};
+  listings.forEach((listing) => {
+    const key = `${listing.coordinates.lat},${listing.coordinates.lng}`;
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+    grouped[key].push(listing);
+  });
+  return grouped;
+};
+
+const applyOffsetToGroupedMarkers = (grouped: { [key: string]: Listing[] }) => {
+  const offsetDistance = 0.00002; // Adjust as necessary
+  Object.keys(grouped).forEach((key) => {
+    const listings = grouped[key];
+    if (listings.length > 1) {
+      listings.forEach((listing, index) => {
+        const angle = (index / listings.length) * 2 * Math.PI;
+        listing.coordinates.lat += offsetDistance * Math.cos(angle);
+        listing.coordinates.lng += offsetDistance * Math.sin(angle);
+      });
+    }
+  });
+  return grouped;
+};
+
+
 const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -164,6 +192,9 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
     scaledSize: new google.maps.Size(40, 20),
     labelOrigin: new google.maps.Point(20, 9),
   });
+
+  const groupedListings = groupMarkersByCoordinates(listings);
+  const offsetListings = applyOffsetToGroupedMarkers(groupedListings);
 
   return (
     <GoogleMap
@@ -183,7 +214,7 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
           strokeWeight: 2,
         }}
       />
-      {isMapLoaded && listings.map((listing, index) => (
+      {isMapLoaded && Object.values(offsetListings).flat().map((listing, index) => (
         <Marker
           key={listing.id}
           position={listing.coordinates}
