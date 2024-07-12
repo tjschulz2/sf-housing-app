@@ -179,6 +179,7 @@ const applyOffsetToGroupedMarkers = (grouped: { [key: string]: Listing[] }) => {
 const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [hoveredMarkerId, setHoveredMarkerId] = useState<number | null>(null);
 
   const handleLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -228,8 +229,7 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
           }}
           options={{
             optimized: false, // Ensures the custom class is applied
-            zIndex: listing.id === hoveredListingId ? 1000 : 1, // Add initial zIndex
-
+            zIndex: listing.id === hoveredListingId || listing.id === hoveredMarkerId ? 1000 : index + 1, // Set zIndex based on the current hover state and index
           }}
           onLoad={(marker) => {
             markerRefs.current[index] = marker;
@@ -245,7 +245,7 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
             const marker = markerRefs.current[index];
             if (marker) {
               marker.setIcon(getIcon(false));
-              marker.setZIndex(1); // Reset zIndex when not hovered
+              marker.setZIndex(index + 1); // Reset zIndex when not hovered
             }
           }}
           onClick={() => openModal(listing)}
