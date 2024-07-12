@@ -161,7 +161,7 @@ const groupMarkersByCoordinates = (listings: Listing[]) => {
 };
 
 const applyOffsetToGroupedMarkers = (grouped: { [key: string]: Listing[] }) => {
-  const offsetDistance = 0.00002; // Adjust as necessary
+  const offsetDistance = 0.0002; // Adjust as necessary
   Object.keys(grouped).forEach((key) => {
     const listings = grouped[key];
     if (listings.length > 1) {
