@@ -228,17 +228,25 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
           }}
           options={{
             optimized: false, // Ensures the custom class is applied
+            zIndex: listing.id === hoveredListingId ? 1000 : 1, // Add initial zIndex
+
           }}
           onLoad={(marker) => {
             markerRefs.current[index] = marker;
           }}
           onMouseOver={() => {
             const marker = markerRefs.current[index];
-            if (marker) marker.setIcon(getIcon(true));
+            if (marker) {
+              marker.setIcon(getIcon(true));
+              marker.setZIndex(1000); // Increase zIndex on hover
+            }
           }}
           onMouseOut={() => {
             const marker = markerRefs.current[index];
-            if (marker) marker.setIcon(getIcon(false));
+            if (marker) {
+              marker.setIcon(getIcon(false));
+              marker.setZIndex(1); // Reset zIndex when not hovered
+            }
           }}
           onClick={() => openModal(listing)}
         />
