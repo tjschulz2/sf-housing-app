@@ -80,6 +80,31 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
     window.location.href = filledFormUrl;
   }
 
+  const formatText = (text: string) => {
+    const lines = text.split('\n');
+    return lines.map((line: string, index: number) => {
+      if (line.startsWith('**')) {
+        return (
+          <div key={index} style={{ fontWeight: 'bold', marginTop: '1rem' }}>
+            {line.replace(/\*\*/g, '')}
+          </div>
+        );
+      } else if (line.startsWith('- ')) {
+        return (
+          <div key={index} style={{ marginLeft: '1rem' }}>
+            {line}
+          </div>
+        );
+      } else {
+        return (
+          <div key={index} style={{ marginTop: '1rem' }}>
+            {line}
+          </div>
+        );
+      }
+    });
+  };
+
   return (
     <Portal zIndex={10}>
       <div className={styles.modalOverlay}>
@@ -178,11 +203,9 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                 </div>
                 <div className="text-sm mb-2 mt-8" style={{ color: '#1D462F', fontSize: 'clamp(0.875rem, 1.8vw, 1.125rem)' }}>
                   <strong>Description</strong>
-                  <div
-                    className="mt-5 mb-10"
-                    dangerouslySetInnerHTML={{ __html: listing.description }}
-                    style={{ fontSize: 'clamp(0.8rem, 1.6vw, 1rem)', color: '#474747' }}
-                  />
+                  <div className="mt-5 mb-10" style={{ fontSize: 'clamp(0.8rem, 1.6vw, 1rem)', color: '#474747' }}>
+                    {formatText(listing.description)}
+                  </div>
                 </div>
                 <div className="mb-4">
                   <iframe
