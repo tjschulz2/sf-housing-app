@@ -19,7 +19,7 @@ const navConfig = [
   },
   {
     path: "/directory/leases",
-    title: "Rentals",
+    title: "Entire Homes",
   },
 ];
 
