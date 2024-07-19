@@ -45,6 +45,7 @@ interface Rental {
 }
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
+console.log("GOOGLE MAPS API KEY:", googleMapsApiKey);
 
 const geocodeAddress = async (
   address: string
@@ -160,7 +161,7 @@ const Directory: React.FC = () => {
       >
         <Map
           hoveredListingId={hoveredListingId}
-          openModal={openModal}
+          openModal={handleListingClick}
           listings={listings}
         />
       </div>
