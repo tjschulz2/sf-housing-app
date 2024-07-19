@@ -17,7 +17,7 @@ export default function Footer() {
           </Button>
         </a>
         <p className="text-neutral-500 p-2">
-          Have ideas? DM{" "}
+          Have thoughts? DM{" "}
           <a
             className="underline underline-offset-4"
             target="_blank"
