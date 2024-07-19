@@ -14,6 +14,8 @@ import Map from "@/components/map";
 import RentalsModal from "@/components/rentalsmodal";
 import { getRentalsWithImages } from "../../../lib/utils/data";
 import EmailSignup from "@/app/email-signup/page";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { number } from "zod";
 
 interface Listing {
   id: number;
@@ -67,6 +69,23 @@ const Directory: React.FC = () => {
   const [hoveredListingId, setHoveredListingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const homeID = Number(searchParams.get("id"));
+  console.log("Home ID:", homeID);
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   useEffect(() => {
     const fetchListings = async () => {
       setLoading(true);
@@ -97,12 +116,30 @@ const Directory: React.FC = () => {
     fetchListings();
   }, []);
 
+  useEffect(() => {
+    if (homeID) {
+      const targetListing = listings.find((listing) => listing.id === homeID);
+      console.log("Target listing:", targetListing);
+      if (targetListing) {
+        openModal(targetListing);
+      }
+    }
+  }, [listings]);
+
+  function handleListingClick(listing: Listing) {
+    router.push(
+      pathname + "?" + createQueryString("id", listing.id.toString())
+    );
+    openModal(listing);
+  }
+
   const openModal = (listing: Listing) => {
     setSelectedListing(listing);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
+    router.push(pathname);
     setSelectedListing(null);
     setIsModalOpen(false);
   };
@@ -123,7 +160,7 @@ const Directory: React.FC = () => {
       >
         <Map
           hoveredListingId={hoveredListingId}
-          openModal={openModal}
+          openModal={handleListingClick}
           listings={listings}
         />
       </div>
@@ -160,7 +197,7 @@ const Directory: React.FC = () => {
                 <button
                   key={listing.id}
                   className="bg-white rounded-lg overflow-hidden border border-[#C7C6C6] text-left hover:border-[#1D462F] hover:rounded-lg p-0"
-                  onClick={() => openModal(listing)}
+                  onClick={() => handleListingClick(listing)}
                   onMouseEnter={() => setHoveredListingId(listing.id)}
                   onMouseLeave={() => setHoveredListingId(null)}
                 >
