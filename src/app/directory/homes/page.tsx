@@ -76,6 +76,16 @@ const Directory: React.FC = () => {
   const homeID = Number(searchParams.get("id"));
   console.log("Home ID:", homeID);
 
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   useEffect(() => {
     const fetchListings = async () => {
       setLoading(true);
@@ -117,6 +127,9 @@ const Directory: React.FC = () => {
   }, [listings]);
 
   function handleListingClick(listing: Listing) {
+    router.push(
+      pathname + "?" + createQueryString("id", listing.id.toString())
+    );
     openModal(listing);
   }
 
