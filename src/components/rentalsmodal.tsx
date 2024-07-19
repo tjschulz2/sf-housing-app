@@ -5,6 +5,8 @@ import ImageGalleryOverlay from "./imagegalleryoverlay";
 import Carousel from "./mobilecarousel";
 import "react-quill/dist/quill.snow.css"; // Import styles
 import { useAuthContext } from "@/contexts/auth-context";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 interface Listing {
   id: number;
@@ -31,6 +33,17 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
   const { userData } = useAuthContext();
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  function genBookTourLink(listing: Listing) {
+    const name = userData?.name ?? "";
+    const address = listing?.address ?? "";
+    const airtableFormUrl =
+      "https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form";
+    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(
+      address
+    )}&prefill_Name=${encodeURIComponent(name)}`;
+    return filledFormUrl;
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -217,13 +230,16 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                 >
                   {listing.address}
                 </div>
-                <button
-                  onClick={handleButtonClick}
-                  className="w-full bg-[#1D462F] hover:bg-[#55735E] text-white py-3 px-4 rounded-lg mb-6 mt-8"
+                <Button
+                  asChild
+                  className="w-full bg-[#1D462F] hover:bg-[#55735E] text-white py-4 px-4 rounded-lg mb-6 mt-8"
                   style={{ fontSize: "clamp(0.875rem, 1.8vw, 1.125rem)" }}
                 >
-                  Book tour
-                </button>
+                  <Link target="_blank" href={genBookTourLink(listing)}>
+                    Book tour
+                  </Link>
+                </Button>
+
                 <div
                   className="text-sm mb-2 mt-8"
                   style={{
