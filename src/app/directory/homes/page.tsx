@@ -128,7 +128,7 @@ const Directory: React.FC = () => {
         />
       </div>
       <div
-        className={`ml-auto w-1/2 overflow-y-auto" ${styles.contentContainer}`}
+        className={`ml-auto w-1/2 overflow-y-auto lg:max-h-[70vh] ${styles.contentContainer}`}
       >
         <div className="p-4">
           <div className="bg-[#ECEDDC] p-6 rounded-lg mb-6 flex flex-col items-center justify-center">
