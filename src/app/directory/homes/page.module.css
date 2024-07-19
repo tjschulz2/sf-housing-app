@@ -174,10 +174,10 @@
   }
 }
 
-.directoryContent {
+/* .directoryContent {
   overflow-y: auto;
   height: 80vh;
-}
+} */
 
 .mapContainer {
   position: absolute;

@@ -14,11 +14,11 @@ const navConfig = [
   //   title: "Starting a new house",
   // },
   {
-    path: "/directory/spaces",
+    path: "/directory/rooms",
     title: "Rooms",
   },
   {
-    path: "/directory/leases",
+    path: "/directory/homes",
     title: "Entire Homes",
   },
 ];
@@ -27,20 +27,22 @@ export default function Navbar() {
   const currentPath = usePathname();
 
   return (
-    <div className={styles.sectionButtons}>
-      {navConfig.map((tab) => (
-        <Link
-          key={tab.path}
-          href={tab.path}
-          className={
-            tab.path === currentPath
-              ? styles.selectedText
-              : styles.unselectedText
-          }
-        >
-          {tab.title}
-        </Link>
-      ))}
+    <div className="flex justify-center sm:justify-start ">
+      <div className={styles.sectionButtons}>
+        {navConfig.map((tab) => (
+          <Link
+            key={tab.path}
+            href={tab.path}
+            className={
+              tab.path === currentPath
+                ? styles.selectedText
+                : styles.unselectedText
+            }
+          >
+            {tab.title}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
