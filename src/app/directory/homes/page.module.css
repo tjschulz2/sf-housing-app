@@ -185,7 +185,7 @@
   left: 0;
   bottom: 0;
   width: 50%;
-  height: calc(100vh - 9.75rem);
+  height: calc(100vh - 13rem);
 }
 
 .contentContainer {
@@ -195,7 +195,7 @@
   padding-bottom: 24px;
 }
 
-@media (max-width: 1041px) {
+@media (max-width: 1024px) {
   .mapContainer {
     display: none;
   }

@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Polygon, Marker } from '@react-google-maps/api';
-import styles from './mapstyles.module.css';
+import React, { useRef, useEffect, useState } from "react";
+import { GoogleMap, LoadScript, Polygon, Marker } from "@react-google-maps/api";
+import styles from "./mapstyles.module.css";
 
 const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
+  width: "100%",
+  height: "95%",
 };
 
 interface Listing {
@@ -27,88 +27,65 @@ interface MapProps {
 
 const center = {
   lat: 37.771923,
-  lng: -122.432120,
+  lng: -122.43212,
 };
 
 const mapStyles = [
   {
-    "featureType": "all",
-    "elementType": "labels",
-    "stylers": [
-      { "visibility": "off" }
-    ]
+    featureType: "all",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
-      { "visibility": "simplified" },
-      { "color": "#ffffff" }
-    ]
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ visibility: "simplified" }, { color: "#ffffff" }],
   },
   {
-    "featureType": "road",
-    "elementType": "labels",
-    "stylers": [
-      { "visibility": "on" }
-    ]
+    featureType: "road",
+    elementType: "labels",
+    stylers: [{ visibility: "on" }],
   },
   {
-    "featureType": "poi.park",
-    "elementType": "geometry",
-    "stylers": [
-      { "color": "#aadd55" }
-    ]
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#aadd55" }],
   },
   {
-    "featureType": "water",
-    "elementType": "geometry",
-    "stylers": [
-      { "color": "#c9c9c9" }
-    ]
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#c9c9c9" }],
   },
   {
-    "featureType": "transit",
-    "elementType": "geometry",
-    "stylers": [
-      { "visibility": "off" }
-    ]
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "administrative",
-    "elementType": "geometry",
-    "stylers": [
-      { "visibility": "off" }
-    ]
+    featureType: "administrative",
+    elementType: "geometry",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "landscape",
-    "elementType": "geometry",
-    "stylers": [
-      { "color": "#f2f2f2" }
-    ]
+    featureType: "landscape",
+    elementType: "geometry",
+    stylers: [{ color: "#f2f2f2" }],
   },
   {
-    "featureType": "poi.business",
-    "elementType": "labels",
-    "stylers": [
-      { "visibility": "off" }
-    ]
+    featureType: "poi.business",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "poi.park",
-    "elementType": "labels",
-    "stylers": [
-      { "visibility": "off" }
-    ]
+    featureType: "poi.park",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "road",
-    "elementType": "labels.icon",
-    "stylers": [
-      { "visibility": "off" }
-    ]
-  }
+    featureType: "road",
+    elementType: "labels.icon",
+    stylers: [{ visibility: "off" }],
+  },
 ];
 
 const mapOptions = {
@@ -118,11 +95,10 @@ const mapOptions = {
   fullscreenControl: false,
 };
 
-
 const boundaries = [
   { lat: 37.7768056, lng: -122.4384756 },
   { lat: 37.7776162, lng: -122.4386415 },
-  { lat: 37.7787220, lng: -122.4296528 },
+  { lat: 37.778722, lng: -122.4296528 },
   { lat: 37.7781337, lng: -122.4295247 },
   { lat: 37.7785381, lng: -122.4263272 },
   { lat: 37.7780691, lng: -122.4262306 },
@@ -133,14 +109,14 @@ const boundaries = [
   { lat: 37.7733501, lng: -122.4185172 },
   { lat: 37.7703874, lng: -122.4175322 },
   { lat: 37.7683676, lng: -122.4177696 },
-  { lat: 37.7679370, lng: -122.4291267 },
+  { lat: 37.767937, lng: -122.4291267 },
   { lat: 37.7630604, lng: -122.4354246 },
   { lat: 37.7633026, lng: -122.4387616 },
-  { lat: 37.7644575, lng: -122.4432660 },
+  { lat: 37.7644575, lng: -122.443266 },
   { lat: 37.7647019, lng: -122.4454838 },
   { lat: 37.7699462, lng: -122.4465976 },
   { lat: 37.7706808, lng: -122.4487421 },
-  { lat: 37.7754400, lng: -122.4497975 },
+  { lat: 37.77544, lng: -122.4497975 },
   { lat: 37.7768119, lng: -122.4384571 },
 ];
 
@@ -175,7 +151,6 @@ const applyOffsetToGroupedMarkers = (grouped: { [key: string]: Listing[] }) => {
   return grouped;
 };
 
-
 const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -208,49 +183,56 @@ const Map: React.FC<MapProps> = ({ listings, openModal, hoveredListingId }) => {
       <Polygon
         paths={boundaries}
         options={{
-          fillColor: 'lightgreen',
+          fillColor: "lightgreen",
           fillOpacity: 0.05,
-          strokeColor: 'green',
+          strokeColor: "green",
           strokeOpacity: 1,
           strokeWeight: 2,
         }}
       />
-      {isMapLoaded && Object.values(offsetListings).flat().map((listing, index) => (
-        <Marker
-          key={listing.id}
-          position={listing.coordinates}
-          icon={getIcon(listing.id === hoveredListingId)}
-          label={{
-            text: formatPrice(listing.price),
-            color: 'white',
-            fontSize: '10px',
-            fontWeight: 'bold',
-            className: styles.customMarkerLabel, // Add a custom class if you need more control over the style
-          }}
-          options={{
-            optimized: false, // Ensures the custom class is applied
-            zIndex: listing.id === hoveredListingId || listing.id === hoveredMarkerId ? 1000 : index + 1, // Set zIndex based on the current hover state and index
-          }}
-          onLoad={(marker) => {
-            markerRefs.current[index] = marker;
-          }}
-          onMouseOver={() => {
-            const marker = markerRefs.current[index];
-            if (marker) {
-              marker.setIcon(getIcon(true));
-              marker.setZIndex(1000); // Increase zIndex on hover
-            }
-          }}
-          onMouseOut={() => {
-            const marker = markerRefs.current[index];
-            if (marker) {
-              marker.setIcon(getIcon(false));
-              marker.setZIndex(index + 1); // Reset zIndex when not hovered
-            }
-          }}
-          onClick={() => openModal(listing)}
-        />
-      ))}
+      {isMapLoaded &&
+        Object.values(offsetListings)
+          .flat()
+          .map((listing, index) => (
+            <Marker
+              key={listing.id}
+              position={listing.coordinates}
+              icon={getIcon(listing.id === hoveredListingId)}
+              label={{
+                text: formatPrice(listing.price),
+                color: "white",
+                fontSize: "10px",
+                fontWeight: "bold",
+                className: styles.customMarkerLabel, // Add a custom class if you need more control over the style
+              }}
+              options={{
+                optimized: false, // Ensures the custom class is applied
+                zIndex:
+                  listing.id === hoveredListingId ||
+                  listing.id === hoveredMarkerId
+                    ? 1000
+                    : index + 1, // Set zIndex based on the current hover state and index
+              }}
+              onLoad={(marker) => {
+                markerRefs.current[index] = marker;
+              }}
+              onMouseOver={() => {
+                const marker = markerRefs.current[index];
+                if (marker) {
+                  marker.setIcon(getIcon(true));
+                  marker.setZIndex(1000); // Increase zIndex on hover
+                }
+              }}
+              onMouseOut={() => {
+                const marker = markerRefs.current[index];
+                if (marker) {
+                  marker.setIcon(getIcon(false));
+                  marker.setZIndex(index + 1); // Reset zIndex when not hovered
+                }
+              }}
+              onClick={() => openModal(listing)}
+            />
+          ))}
     </GoogleMap>
   );
 };
