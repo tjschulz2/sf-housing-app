@@ -222,7 +222,7 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                   className="w-full bg-[#1D462F] hover:bg-[#55735E] text-white py-3 px-4 rounded-lg mb-6 mt-8"
                   style={{ fontSize: "clamp(0.875rem, 1.8vw, 1.125rem)" }}
                 >
-                  Setup tour
+                  Book tour
                 </button>
                 <div
                   className="text-sm mb-2 mt-8"
