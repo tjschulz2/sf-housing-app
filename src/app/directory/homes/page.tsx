@@ -17,6 +17,7 @@ import EmailSignup from "@/app/email-signup/page";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { number } from "zod";
 import { useAuthContext } from "@/contexts/auth-context";
+import Link from "next/link";
 
 interface Listing {
   id: number;
@@ -167,6 +168,17 @@ const Directory: React.FC = () => {
     window.location.href = filledFormUrl;
   }
 
+  function genBookTourLink(listing: Listing) {
+    const name = userData?.name ?? "";
+    const address = listing?.address ?? "";
+    const airtableFormUrl =
+      "https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form";
+    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(
+      address
+    )}&prefill_Name=${encodeURIComponent(name)}`;
+    return filledFormUrl;
+  }
+
   return (
     <div className="flex">
       <div
@@ -232,7 +244,7 @@ const Directory: React.FC = () => {
                           })
                           .replace(/\.00$/, "") + "/mo"}
                       </div>
-                      <Button
+                      {/* <Button
                         className="rounded-3xl bg-[#1D462F] text-xs"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -240,6 +252,18 @@ const Directory: React.FC = () => {
                         }}
                       >
                         Book tour
+                      </Button> */}
+
+                      <Button
+                        asChild
+                        className="rounded-3xl bg-[#1D462F] text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Link target="_blank" href={genBookTourLink(listing)}>
+                          Book tour
+                        </Link>
                       </Button>
                     </div>
 
