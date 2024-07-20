@@ -117,11 +117,7 @@ export default function DirectoryLayout({
     return (
       // <div className={styles.container}>
       <LoadScript googleMapsApiKey={googleMapsApiKey}>
-        <div
-          className={`w-full bg-[#FEFBEB] ${
-            isDirectoryPage ? styles.unscrollable : styles.scrollable
-          }`}
-        >
+        <div className={`w-full bg-[#FEFBEB]`}>
           <HeaderBarInApp userSession={userSession} />
           <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
             <div

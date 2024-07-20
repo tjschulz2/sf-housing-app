@@ -148,9 +148,9 @@ const Directory: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // if (loading) {
+  //   return <LoadingSpinner />;
+  // }
 
   function handleConfirm() {
     window.location.href =
@@ -244,24 +244,20 @@ const Directory: React.FC = () => {
                           })
                           .replace(/\.00$/, "") + "/mo"}
                       </div>
-                      {/* <Button
-                        className="rounded-3xl bg-[#1D462F] text-xs"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBookTourClick(listing);
-                        }}
-                      >
-                        Book tour
-                      </Button> */}
 
                       <Button
                         asChild
                         className="rounded-3xl bg-[#1D462F] text-xs"
+                        size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
                       >
-                        <Link target="_blank" href={genBookTourLink(listing)}>
+                        <Link
+                          className="py-1 px-4"
+                          target="_blank"
+                          href={genBookTourLink(listing)}
+                        >
                           Book tour
                         </Link>
                       </Button>
