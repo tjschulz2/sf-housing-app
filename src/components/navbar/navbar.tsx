@@ -27,17 +27,17 @@ export default function Navbar() {
   const currentPath = usePathname();
 
   return (
-    <div className="flex justify-center sm:justify-start ">
-      <div className={styles.sectionButtons}>
+    <div className="flex justify-center sm:justify-start">
+      <div className="flex gap-2">
         {navConfig.map((tab) => (
           <Link
             key={tab.path}
             href={tab.path}
-            className={
+            className={`no-underline rounded-md py-1.5 px-3 ${
               tab.path === currentPath
-                ? styles.selectedText
-                : styles.unselectedText
-            }
+                ? "font-bold text-[#1d462f] border-2 border-[#1d462f] bg-[#e7e9d8]"
+                : "text-[#474747] border border-[#cccccc] hover:bg-[#f1efdf]"
+            }`}
           >
             {tab.title}
           </Link>

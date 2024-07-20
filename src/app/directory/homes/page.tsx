@@ -16,6 +16,8 @@ import { getRentalsWithImages } from "../../../lib/utils/data";
 import EmailSignup from "@/app/email-signup/page";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { number } from "zod";
+import { useAuthContext } from "@/contexts/auth-context";
+import Link from "next/link";
 
 interface Listing {
   id: number;
@@ -72,6 +74,8 @@ const Directory: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const { userData } = useAuthContext();
 
   const homeID = Number(searchParams.get("id"));
   console.log("Home ID:", homeID);
@@ -144,13 +148,35 @@ const Directory: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // if (loading) {
+  //   return <LoadingSpinner />;
+  // }
 
   function handleConfirm() {
     window.location.href =
       "https://airtable.com/appurOWXAegMj76UY/pagI9io5qFhw7F264/form";
+  }
+
+  function handleBookTourClick(listing: Listing) {
+    const name = userData?.name ?? "";
+    const address = listing?.address ?? "";
+    const airtableFormUrl =
+      "https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form";
+    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(
+      address
+    )}&prefill_Name=${encodeURIComponent(name)}`;
+    window.location.href = filledFormUrl;
+  }
+
+  function genBookTourLink(listing: Listing) {
+    const name = userData?.name ?? "";
+    const address = listing?.address ?? "";
+    const airtableFormUrl =
+      "https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form";
+    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(
+      address
+    )}&prefill_Name=${encodeURIComponent(name)}`;
+    return filledFormUrl;
   }
 
   return (
@@ -209,14 +235,34 @@ const Directory: React.FC = () => {
                     />
                   </div>
                   <div className="p-3">
-                    <div className="text-lg font-bold mb-2">
-                      {listing.price
-                        .toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        })
-                        .replace(/\.00$/, "") + "/mo"}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-lg font-bold ">
+                        {listing.price
+                          .toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          })
+                          .replace(/\.00$/, "") + "/mo"}
+                      </div>
+
+                      <Button
+                        asChild
+                        className="rounded-3xl bg-[#1D462F] text-xs"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Link
+                          className="py-1 px-4"
+                          target="_blank"
+                          href={genBookTourLink(listing)}
+                        >
+                          Book tour
+                        </Link>
+                      </Button>
                     </div>
+
                     <div className="text-sm text-gray-600">
                       <span className="text-[#474747]">{listing.beds}</span>
                       <span className="text-[#808080]"> bd</span>
