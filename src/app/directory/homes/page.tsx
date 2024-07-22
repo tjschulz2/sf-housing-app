@@ -157,17 +157,6 @@ const Directory: React.FC = () => {
       "https://airtable.com/appurOWXAegMj76UY/pagI9io5qFhw7F264/form";
   }
 
-  function handleBookTourClick(listing: Listing) {
-    const name = userData?.name ?? "";
-    const address = listing?.address ?? "";
-    const airtableFormUrl =
-      "https://airtable.com/appBMzjGje3fn7Ijs/pagM8PwLNM3kfEVcz/form";
-    const filledFormUrl = `${airtableFormUrl}?prefill_Property%20address=${encodeURIComponent(
-      address
-    )}&prefill_Name=${encodeURIComponent(name)}`;
-    window.location.href = filledFormUrl;
-  }
-
   function genBookTourLink(listing: Listing) {
     const name = userData?.name ?? "";
     const address = listing?.address ?? "";
