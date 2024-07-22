@@ -59,7 +59,7 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
       onClick={toggleDropdown}
     >
       <div className={styles.itemsContainer}>
-        <UserProfileImage src={higherResImageUrl} size="medium" />
+        <UserProfileImage src={higherResImageUrl} size="medium-dynamic" />
         <FiChevronDown className={styles.icon} />
       </div>
       {isOpen && (
