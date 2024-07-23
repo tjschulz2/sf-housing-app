@@ -7,6 +7,13 @@ import { Suspense } from "react";
 import Script from "next/script";
 import { GTM_ID } from "@/lib/googleAnalytics";
 import AuthContextProvider from "@/contexts/auth-context";
+import { PHProvider } from "@/lib/posthog/PostHogProvider";
+
+// import dynamic from "next/dynamic";
+
+// const PostHogPageView = dynamic(() => import("@/lib/posthog/PostHogPageView"), {
+//   ssr: false,
+// });
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSerif = Noto_Serif({ subsets: ["latin"] });
@@ -60,10 +67,14 @@ export default function RootLayout({
       </head>
       <body className={notoSerif.className}>
         <Suspense fallback={<LoadingSpinner />}>
-          <AuthContextProvider>
-            {children}
-            <Toaster />
-          </AuthContextProvider>
+          <PHProvider>
+            <AuthContextProvider>
+              {/* <PostHogPageView /> */}
+
+              {children}
+              <Toaster />
+            </AuthContextProvider>
+          </PHProvider>
         </Suspense>
         <div id="modal-root"></div>
       </body>
