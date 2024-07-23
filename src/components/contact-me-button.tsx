@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
 import { useAuthContext } from "@/contexts/auth-context";
 import { reportContactEvent } from "@/lib/googleAnalytics";
+import { usePostHog } from "posthog-js/react";
 
 function LinkButton({
   link,
@@ -48,6 +49,8 @@ export default function ContactMeButton({
   recipientName?: string | null;
 }) {
   const { userData } = useAuthContext();
+  const posthog = usePostHog();
+
   const userFirstName = userData?.name ? userData.name.split(" ")[0] : "____";
   const textMessage = encodeURIComponent(
     `👋 Hey, this is ${userFirstName}!\nI saw your profile on DirectorySF, and wanted to reach out`
@@ -65,37 +68,55 @@ export default function ContactMeButton({
         <div className="flex justify-around">
           <LinkButton
             link={phoneLink}
-            onClick={() =>
+            onClick={() => {
               reportContactEvent(
                 "SMS",
                 `${userData?.name} (@${userData?.twitter_handle})`,
                 `${recipientName} @(${twitter})`
-              )
-            }
+              );
+
+              posthog.capture("contact_attempt", {
+                channel: "sms",
+                recipient_name: recipientName,
+                recipient_handle: twitter,
+              });
+            }}
           >
             <MessageCircle className="h-4 w-4" />
           </LinkButton>
           <LinkButton
             link={emailLink}
-            onClick={() =>
+            onClick={() => {
               reportContactEvent(
                 "Email",
                 `${userData?.name} (@${userData?.twitter_handle})`,
                 `${recipientName} @(${twitter})`
-              )
-            }
+              );
+
+              posthog.capture("contact_attempt", {
+                channel: "email",
+                recipient_name: recipientName,
+                recipient_handle: twitter,
+              });
+            }}
           >
             <Mail className="h-4 w-4" />
           </LinkButton>
           <LinkButton
             link={twitterLink}
-            onClick={() =>
+            onClick={() => {
               reportContactEvent(
                 "Twitter",
                 `${userData?.name} (@${userData?.twitter_handle})`,
                 `${recipientName} @(${twitter})`
-              )
-            }
+              );
+
+              posthog.capture("contact_attempt", {
+                channel: "twitter",
+                recipient_name: recipientName,
+                recipient_handle: twitter,
+              });
+            }}
           >
             <Twitter className="h-4 w-4" />
           </LinkButton>
