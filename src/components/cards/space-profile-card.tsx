@@ -17,7 +17,7 @@ import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import { Button } from "../ui/button";
-import CommonFollowers from '@/components/follower-intersection/CommonFollowers';
+import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
 
 import {
   Tooltip,
@@ -94,6 +94,7 @@ export default function SpaceProfileCard(props: PropsType) {
               phoneNum={profile.contact_phone}
               email={profile.contact_email}
               twitter={profile.user?.twitter_handle}
+              recipientName={`${profile.user?.name} (@${profile.user?.twitter_handle})`}
             />
             <TooltipProvider delayDuration={250}>
               <Tooltip>
@@ -135,10 +136,12 @@ export default function SpaceProfileCard(props: PropsType) {
         </Link>
       </div>
       <CardBottom>
-
-      {userSession && (
-          <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
-      )}
+        {userSession && (
+          <CommonFollowers
+            userID1={userSession.userID}
+            userID2={profile.user_id}
+          />
+        )}
 
         <CardBioSection bio={bio} link={profile.website_url} />
         <div className="flex flex-col grow justify-center">

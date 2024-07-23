@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import LoadingSpinner from "../components/loading-spinner/loading-spinner";
 import { Suspense } from "react";
 import Script from "next/script";
-const GTM_ID = "GTM-KBH5Q942";
+import { GTM_ID } from "@/lib/googleAnalytics";
 import AuthContextProvider from "@/contexts/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
