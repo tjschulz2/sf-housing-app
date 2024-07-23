@@ -8,17 +8,20 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
 import { useAuthContext } from "@/contexts/auth-context";
+import { reportContactEvent } from "@/lib/googleAnalytics";
 
 function LinkButton({
   link,
   children,
+  onClick,
 }: {
   link?: string | null;
   children: ReactNode;
+  onClick?: () => void;
 }) {
   if (link) {
     return (
-      <Link target="_blank" href={link}>
+      <Link target="_blank" href={link} onClick={onClick}>
         <Button variant="outline" size="icon">
           {children}
         </Button>
@@ -37,10 +40,12 @@ export default function ContactMeButton({
   phoneNum,
   email,
   twitter,
+  recipientName,
 }: {
   phoneNum?: string | null;
   email?: string | null;
   twitter?: string | null;
+  recipientName?: string | null;
 }) {
   const { userData } = useAuthContext();
   const userFirstName = userData?.name ? userData.name.split(" ")[0] : "____";
@@ -58,13 +63,40 @@ export default function ContactMeButton({
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex justify-around">
-          <LinkButton link={phoneLink}>
+          <LinkButton
+            link={phoneLink}
+            onClick={() =>
+              reportContactEvent(
+                "SMS",
+                `${userData?.name} (@${userData?.twitter_handle})`,
+                `${recipientName} @(${twitter})`
+              )
+            }
+          >
             <MessageCircle className="h-4 w-4" />
           </LinkButton>
-          <LinkButton link={emailLink}>
+          <LinkButton
+            link={emailLink}
+            onClick={() =>
+              reportContactEvent(
+                "Email",
+                `${userData?.name} (@${userData?.twitter_handle})`,
+                `${recipientName} @(${twitter})`
+              )
+            }
+          >
             <Mail className="h-4 w-4" />
           </LinkButton>
-          <LinkButton link={twitterLink}>
+          <LinkButton
+            link={twitterLink}
+            onClick={() =>
+              reportContactEvent(
+                "Twitter",
+                `${userData?.name} (@${userData?.twitter_handle})`,
+                `${recipientName} @(${twitter})`
+              )
+            }
+          >
             <Twitter className="h-4 w-4" />
           </LinkButton>
         </div>

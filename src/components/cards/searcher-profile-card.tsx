@@ -16,8 +16,7 @@ import { useAuthContext } from "@/contexts/auth-context";
 import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
-import CommonFollowers from '@/components/follower-intersection/CommonFollowers';
-
+import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
 
 type PropsType = {
   profile: HousingSearchProfile;
@@ -27,9 +26,7 @@ export default function SearcherProfileCard(props: PropsType) {
   const { profile } = props;
   const { userSession } = useAuthContext();
 
-
   const bio = profile.pref_housemate_details ?? "";
-  
 
   const daysSinceConfirmation = profile.last_updated_date
     ? dateDiff(profile.last_updated_date).diffDays
@@ -67,15 +64,18 @@ export default function SearcherProfileCard(props: PropsType) {
             phoneNum={profile.contact_phone}
             email={profile.contact_email}
             twitter={profile.user?.twitter_handle}
+            recipientName={profile.user?.name}
           />
         </div>
       </CardTop>
       <CardBottom>
+        {userSession && (
+          <CommonFollowers
+            userID1={userSession.userID}
+            userID2={profile.user_id}
+          />
+        )}
 
-      {userSession && (
-          <CommonFollowers userID1={userSession.userID} userID2={profile.user_id} />
-      )}
-      
         <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
@@ -109,9 +109,3 @@ export default function SearcherProfileCard(props: PropsType) {
     </Card>
   );
 }
-
-
-
-
-
-
