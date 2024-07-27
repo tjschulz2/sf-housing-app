@@ -21,6 +21,7 @@ import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
 import { LoadScript } from "@react-google-maps/api";
 import Head from "next/head";
+import OnboardingModal from "@/components/onboarding/onboarding-modal";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -149,6 +150,7 @@ export default function DirectoryLayout({
             <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
           </div>
         </div>
+        <OnboardingModal />
       </LoadScript>
     );
   } else {
