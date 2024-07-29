@@ -17,10 +17,10 @@ interface Rental {
   address: string;
   rental_images: RentalImage[];
   description: string;
+  available_date: string;
 }
 // Social Data API Key
 const socialDataApiKey = process.env.SOCIALDATA_API_KEY as string;
-
 
 // ----- Users & Profiles -----
 
@@ -136,13 +136,18 @@ export async function getCommunities(start: number = 0, count: number = 10) {
   }
 }
 
-export async function getRentalsWithImages(startIdx = 0, count = 25): Promise<Rental[]> {
+export async function getRentalsWithImages(
+  startIdx = 0,
+  count = 25
+): Promise<Rental[]> {
   const { data, error } = await supabase
-    .from('rentals')
-    .select(`
-      id, monthly_rent, bedrooms, bathrooms, sqft, address, description,
+    .from("rentals")
+    .select(
+      `
+      id, monthly_rent, bedrooms, bathrooms, sqft, address, description, available_date,
       rental_images(image_url)
-    `)
+    `
+    )
     .range(startIdx, startIdx + count - 1);
 
   if (error) {
@@ -152,7 +157,6 @@ export async function getRentalsWithImages(startIdx = 0, count = 25): Promise<Re
 
   return data as Rental[];
 }
-
 
 export async function getSpaceDetails(spaceSlug: string) {
   if (isValidUUID(spaceSlug)) {
@@ -766,7 +770,6 @@ export async function getFollowIntersectionWithCaching(
 //   },
 // };
 
-
 async function fetchFromSocialData(
   url: string,
   options: RequestInit = {}
@@ -787,7 +790,6 @@ async function fetchFromSocialData(
   }
   return response;
 }
-
 
 export const twitter = {
   following: {
@@ -812,7 +814,10 @@ export const twitter = {
           }
         } while (cursor && cursor !== "0");
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Rate limit reached")) {
+        if (
+          err instanceof Error &&
+          err.message.includes("Rate limit reached")
+        ) {
           console.error(
             "Rate limit reached for following. Returning what we have so far."
           );
@@ -846,7 +851,10 @@ export const twitter = {
           }
         } while (cursor && cursor !== "0");
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Rate limit reached")) {
+        if (
+          err instanceof Error &&
+          err.message.includes("Rate limit reached")
+        ) {
           console.error(
             "Rate limit reached for followers. Returning what we have so far."
           );
@@ -864,7 +872,6 @@ export const twitter = {
   },
 };
 
-
 export async function checkTwitterFollowersAdded(userID: string) {
   const { data, error } = await supabase
     .from("twitter_followers_added")
@@ -878,4 +885,3 @@ export async function checkTwitterFollowersAdded(userID: string) {
   }
   return data;
 }
-

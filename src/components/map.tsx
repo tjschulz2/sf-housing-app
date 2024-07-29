@@ -17,6 +17,7 @@ interface Listing {
   imageUrls: string[];
   coordinates: { lat: number; lng: number };
   description: string;
+  available_date: string;
 }
 
 interface MapProps {

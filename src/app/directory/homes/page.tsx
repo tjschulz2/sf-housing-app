@@ -29,6 +29,7 @@ interface Listing {
   imageUrls: string[];
   coordinates: { lat: number; lng: number };
   description: string;
+  available_date: string;
 }
 
 interface RentalImage {
@@ -44,6 +45,7 @@ interface Rental {
   address: string;
   rental_images: RentalImage[];
   description: string;
+  available_date: string;
 }
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
@@ -110,6 +112,7 @@ const Directory: React.FC = () => {
             ),
             coordinates,
             description: rental.description,
+            available_date: rental.available_date,
           };
         })
       );
