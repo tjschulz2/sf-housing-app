@@ -7,6 +7,7 @@ import "react-quill/dist/quill.snow.css"; // Import styles
 import { useAuthContext } from "@/contexts/auth-context";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { format, parseISO } from "date-fns";
 
 interface Listing {
   id: number;
@@ -18,6 +19,7 @@ interface Listing {
   imageUrls: string[];
   coordinates: { lat: number; lng: number };
   description: string;
+  available_date: string;
 }
 
 interface ModalProps {
@@ -248,21 +250,27 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                   }}
                 >
                   <strong>Overview</strong>
-                  <div className="flex items-center mt-5">
-                    <img
-                      src="/images/availablenow.png"
-                      alt="Available Now"
-                      className="w-[21px] h-[21px] mr-2"
-                    />
-                    <p
-                      style={{
-                        fontSize: "clamp(0.8rem, 1.6vw, 1rem)",
-                        color: "#474747",
-                      }}
-                    >
-                      Available now
-                    </p>
-                  </div>
+                  {listing.available_date ? (
+                    <div className="flex items-center mt-5">
+                      <img
+                        src="/images/availablenow.png"
+                        alt="Available Now"
+                        className="w-[21px] h-[21px] mr-2"
+                      />
+                      <p
+                        style={{
+                          fontSize: "clamp(0.8rem, 1.6vw, 1rem)",
+                          color: "#474747",
+                        }}
+                      >
+                        Available{" "}
+                        {format(
+                          parseISO(listing.available_date),
+                          "MMMM d, yyyy"
+                        )}
+                      </p>
+                    </div>
+                  ) : null}{" "}
                   <div className="flex items-center mt-5">
                     <img
                       src="/images/apartment.png"
