@@ -271,7 +271,7 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                       </p>
                     </div>
                   ) : null}{" "}
-                  <div className="flex items-center mt-5">
+                  {/* <div className="flex items-center mt-5">
                     <img
                       src="/images/apartment.png"
                       alt="Apartment"
@@ -315,7 +315,7 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                     >
                       $3,500 deposit
                     </p>
-                  </div>
+                  </div> */}
                 </div>
                 <div
                   className="text-sm mb-2 mt-8"
