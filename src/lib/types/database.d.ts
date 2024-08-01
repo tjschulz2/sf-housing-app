@@ -128,6 +128,24 @@ type Database = {
           }
         ];
       };
+      function_logs: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          log_message: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          log_message?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          log_message?: string | null;
+        };
+        Relationships: [];
+      };
       housing_search_profiles: {
         Row: {
           contact_email: string | null;
@@ -283,6 +301,110 @@ type Database = {
           }
         ];
       };
+      rental_images: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          image_url: string;
+          rental_id: number;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          image_url: string;
+          rental_id: number;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          image_url?: string;
+          rental_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rental_images_rental_id_fkey";
+            columns: ["rental_id"];
+            isOneToOne: false;
+            referencedRelation: "rentals";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      rentals: {
+        Row: {
+          address: string | null;
+          available_date: string | null;
+          bathrooms: number | null;
+          bedrooms: number | null;
+          created_at: string;
+          deposit: number | null;
+          description: string | null;
+          email: string | null;
+          first_name: string | null;
+          id: number;
+          last_name: string | null;
+          monthly_rent: number | null;
+          neighborhood: string | null;
+          phone_number: string | null;
+          property_type: string | null;
+          sqft: number | null;
+          type_of_person: string | null;
+        };
+        Insert: {
+          address?: string | null;
+          available_date?: string | null;
+          bathrooms?: number | null;
+          bedrooms?: number | null;
+          created_at?: string;
+          deposit?: number | null;
+          description?: string | null;
+          email?: string | null;
+          first_name?: string | null;
+          id?: number;
+          last_name?: string | null;
+          monthly_rent?: number | null;
+          neighborhood?: string | null;
+          phone_number?: string | null;
+          property_type?: string | null;
+          sqft?: number | null;
+          type_of_person?: string | null;
+        };
+        Update: {
+          address?: string | null;
+          available_date?: string | null;
+          bathrooms?: number | null;
+          bedrooms?: number | null;
+          created_at?: string;
+          deposit?: number | null;
+          description?: string | null;
+          email?: string | null;
+          first_name?: string | null;
+          id?: number;
+          last_name?: string | null;
+          monthly_rent?: number | null;
+          neighborhood?: string | null;
+          phone_number?: string | null;
+          property_type?: string | null;
+          sqft?: number | null;
+          type_of_person?: string | null;
+        };
+        Relationships: [];
+      };
+      twitter_followers_added: {
+        Row: {
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       users: {
         Row: {
           available_referrals: number | null;
@@ -342,6 +464,44 @@ type Database = {
       decrement_available_referrals: {
         Args: Record<PropertyKey, never>;
         Returns: number;
+      };
+      delete_airtable_urls: {
+        Args: {
+          rental_id: number;
+        };
+        Returns: undefined;
+      };
+      get_total_members: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+      handle_rental_data: {
+        Args: {
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone_number: string;
+          type_of_person: string;
+          address: string;
+          monthly_rent: number;
+          bedrooms: number;
+          bathrooms: number;
+          sqft: number;
+          available_date: string;
+          property_type: string;
+          deposit: number;
+          neighborhood: string;
+          description: string;
+          image_urls: string;
+        };
+        Returns: number;
+      };
+      insert_image_url: {
+        Args: {
+          rental_id: number;
+          image_url: string;
+        };
+        Returns: undefined;
       };
       this_month_listing_count: {
         Args: Record<PropertyKey, never>;
