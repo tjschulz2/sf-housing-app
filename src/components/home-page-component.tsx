@@ -28,12 +28,10 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
 
   useEffect(() => {
     const pullMemberCount = async () => {
-      let { error, count } = await supabase
-        .from("users")
-        .select("user_id", { count: "exact" });
+      let { data, error } = await supabase.rpc("get_total_members");
 
       if (!error) {
-        setNumberOfUsers(count ?? 0);
+        setNumberOfUsers(data ?? 0);
       }
     };
 
@@ -121,48 +119,54 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     <div className="h-dvh w-full bg-[#FEFBEB]">
       <HeaderBar />
       <div className="w-full bg-[#FEFBEB] bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center mt-10">
-      <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 drop-shadow-xl">
-        <div className={styles.frameWrapper}>
-          <div className={styles.ellipseParent}>
-            <img
-              className={styles.frameChild}
-              alt=""
-              src="/ellipse-51@3x.jpg"
-            />
-            <img className={styles.frameItem} alt="" src="/ellipse-50@3x.jpg" />
-            <img
-              className={styles.frameInner}
-              alt=""
-              src="/ellipse-52@3x.jpg"
-            />
-            <img
-              className={styles.ellipseIcon}
-              alt=""
-              src="/ellipse-53@3x.jpg"
-            />
+        <div className="z-[1] max-w-screen-md flex flex-col text-center justify-center items-center gap-6 p-4 drop-shadow-xl">
+          <div className={styles.frameWrapper}>
+            <div className={styles.ellipseParent}>
+              <img
+                className={styles.frameChild}
+                alt=""
+                src="/ellipse-51@3x.jpg"
+              />
+              <img
+                className={styles.frameItem}
+                alt=""
+                src="/ellipse-50@3x.jpg"
+              />
+              <img
+                className={styles.frameInner}
+                alt=""
+                src="/ellipse-52@3x.jpg"
+              />
+              <img
+                className={styles.ellipseIcon}
+                alt=""
+                src="/ellipse-53@3x.jpg"
+              />
+            </div>
+          </div>
+          <h1 className={styles.findHousemates}>
+            Find rentals, housemates, sublets, and coliving communities in the
+            SF tech scene
+          </h1>
+          <p className={styles.thisIsAn}>
+            The SF housing directory of people you probably know
+          </p>
+          {renderContent()}
+          {/* <div className={styles.membersBox}> */}
+          <div className="flex text-sm gap-6 border-2 border-[#0000001A] p-4 px-6 rounded-full mt-8">
+            <div>
+              <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
+              members of DirectorySF
+            </div>
+            <div>
+              <span className={styles.boldAndColored}>
+                {totalWeeklyProfiles}
+              </span>{" "}
+              listings this month 🔥
+            </div>
           </div>
         </div>
-        <h1 className={styles.findHousemates}>
-          Find rentals, housemates, sublets, and coliving communities in the SF tech
-          scene
-        </h1>
-        <p className={styles.thisIsAn}>
-          The SF housing directory of people you probably know
-        </p>
-        {renderContent()}
-        {/* <div className={styles.membersBox}> */}
-        <div className="flex text-sm gap-6 border-2 border-[#0000001A] p-4 px-6 rounded-full mt-8">
-          <div>
-            <span className={styles.boldAndColored}>{numberOfUsers}</span>{" "}
-            members of DirectorySF
-          </div>
-          <div>
-            <span className={styles.boldAndColored}>{totalWeeklyProfiles}</span>{" "}
-            listings this month 🔥
-          </div>
-        </div>
-      </div>
-      {/* <p className="text-neutral-500 mt-6">
+        {/* <p className="text-neutral-500 mt-6">
         Questions? DM{" "}
         <a
           className="underline underline-offset-4"
