@@ -221,9 +221,13 @@ const Modal: React.FC<ModalProps> = ({ listing, isOpen, onClose }) => {
                     <span className="text-[#D9D9D9]"> | </span>
                     <span className="text-[#474747]">{listing.baths}</span>
                     <span className="text-[#808080]"> ba</span>
-                    <span className="text-[#D9D9D9]"> | </span>
-                    <span className="text-[#474747]">{listing.sqft}</span>
-                    <span className="text-[#808080]"> sqft</span>
+                    {listing.sqft ? (
+                      <>
+                        <span className="text-[#D9D9D9]"> | </span>
+                        <span className="text-[#474747]">{listing.sqft}</span>
+                        <span className="text-[#808080]"> sqft</span>
+                      </>
+                    ) : null}
                   </div>
                 </div>
                 <div
