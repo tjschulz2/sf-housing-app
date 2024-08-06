@@ -18,6 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { number } from "zod";
 import { useAuthContext } from "@/contexts/auth-context";
 import Link from "next/link";
+import { client } from "@/lib/utils/sanity";
 
 interface Listing {
   id: number;
@@ -81,6 +82,35 @@ const Directory: React.FC = () => {
 
   const homeID = Number(searchParams.get("id"));
   console.log("Home ID:", homeID);
+
+  useEffect(() => {
+    // Fetch content with GROQ
+    async function getContent() {
+      const CONTENT_QUERY = `*[_type == "product"] {
+    ...,
+    mainImage {
+      ...,
+      asset->
+    },
+    variants[] {
+      variant {
+        ...
+      }
+    },
+    tags[],
+    productCategory->,
+    content[] {
+      _type,
+      ...,
+      defined(string) => string
+    }
+  }
+  `;
+      const content = await client.fetch(CONTENT_QUERY);
+      return content;
+    }
+    getContent().then((content) => console.log(content));
+  }, []);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
