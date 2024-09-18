@@ -201,12 +201,6 @@ const Directory: React.FC = () => {
               drastically increase your chances of luck, living near the best
               people, and making lifelong friends.
             </p>
-            <Button
-              className="rounded-3xl mt-4 sm:mt-6 bg-[#1D462F] text-xs sm:text-base"
-              onClick={handleConfirm}
-            >
-              List a property
-            </Button>
           </div>
           <h2 className="text-2xl font-bold mb-4">Listings</h2>
           {listings.length > 0 ? (

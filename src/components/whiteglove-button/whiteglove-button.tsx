@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Home } from "lucide-react";
+import { Home, Laptop, BriefcaseBusiness } from "lucide-react";
 
 export default function WhiteGloveButton() {
   return (
@@ -11,13 +11,21 @@ export default function WhiteGloveButton() {
         e.stopPropagation();
       }}
     >
-      <Link
+      {/* <Link
         className="py-1 px-4"
         target="_blank"
         href="https://share.hsforms.com/1bNL2_LyWTvSYNhipfq5gygrh8kr"
       >
         <Home className="mr-1 sm:mr-2 size-4" />
         Help me find housing
+      </Link> */}
+      <Link
+        className="py-1 px-4"
+        target="_blank"
+        href="https://forms.gle/Se8eRH5WvS3TX9oj6"
+      >
+        <BriefcaseBusiness className="mr-1 sm:mr-2 size-4" />
+        Find an engineering role
       </Link>
     </Button>
   );
