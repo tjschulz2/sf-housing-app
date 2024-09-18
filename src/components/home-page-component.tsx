@@ -145,7 +145,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             </div>
           </div>
           <h1 className={styles.findHousemates}>
-            Find rentals, housemates, sublets, and coliving communities in the
+            Find housemates, sublets, and coliving communities in the
             SF tech scene
           </h1>
           <p className={styles.thisIsAn}>
