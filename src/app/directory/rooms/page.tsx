@@ -10,6 +10,7 @@ import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { Button } from "@/components/ui/button";
+import { RoomSponsorBanner } from "@/components/room-sponsor-banner";
 
 const Directory = () => {
   const {
@@ -90,6 +91,7 @@ const Directory = () => {
           </EditSpaceListingDialog>
         </div>
       )}
+      <RoomSponsorBanner />
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
