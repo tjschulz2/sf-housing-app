@@ -6,7 +6,9 @@ export default function WhiteGloveButton() {
   return (
     <Button
       asChild
-      className="rounded-3xl bg-[#1D462F] text-xs sm:text-base text-center"
+      variant="secondary"
+      // className="rounded-3xl bg-[#1D462F] text-xs sm:text-base text-center"
+      className="rounded-3xl bg-gray-200 text-xs sm:text-base text-center border-[#1D462F] border-2"
       onClick={(e) => {
         e.stopPropagation();
       }}
