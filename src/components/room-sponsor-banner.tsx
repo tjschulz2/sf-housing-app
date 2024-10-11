@@ -4,7 +4,7 @@ export const RoomSponsorBanner = () => {
       <a
         href="https://forms.gle/7m5F1MRicU5dVM3z9"
         target="_blank"
-        className="max-w-screen-md drop-shadow-lg hover:brightness-95 relative"
+        className="max-w-screen-md drop-shadow-md hover:brightness-95 relative"
       >
         <img src="/images/sponsorship/accelr8.png"></img>
         <p className="absolute bottom-1 right-2 text-xs text-gray-300">
