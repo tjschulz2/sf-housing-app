@@ -64,12 +64,12 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
       </div>
       {isOpen && (
         <div className={styles.dropdownMenu}>
-          <Link href="/settings" className={styles.button}>
+          {/* <Link href="/settings" className={styles.button}>
             Settings
-          </Link>
-          <a onClick={handleSubmit} className={styles.button}>
+          </Link> */}
+          {/* <a onClick={handleSubmit} className={styles.button}>
             Edit my listing
-          </a>
+          </a> */}
           <Link href="/logout" className={styles.button}>
             Sign out
           </Link>
