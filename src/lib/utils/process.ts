@@ -14,11 +14,15 @@ export async function handleSignIn() {
   let initialSignIn = false;
 
   try {
-    const currentUser = await getUserSession();
+    let currentUser = await getUserSession();
     if (!currentUser) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      currentUser = await getUserSession();
       // User doesn't have an active session, meaning they haven't authenticated with Twitter yet
-      console.log("No session found");
-      return;
+      if (!currentUser) {
+        console.log("No session found");
+        return;
+      }
     }
 
     // Checking if user exists in 'public.users' + gathering data
@@ -90,7 +94,6 @@ export async function handleSignIn() {
     //   24 * 30,
     //   currentUser.accessToken
     // );
-    
   } catch (err) {
     return { status: "error", message: err };
   }

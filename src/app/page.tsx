@@ -27,11 +27,16 @@ const Home: NextPage = () => {
           "You need to add your email address to your Twitter account. \n\nGo to Twitter -> More -> Settings and Support -> Your account -> Email. \n\nAfter you do this, try again."
         );
       } else if (errorDescription) {
-        alert(
-          "You got an error:\n\n" +
-            errorDescription +
-            "\n\nContact @thomasschulzz on Twitter to investigate."
-        );
+        if (errorDescription.includes("User is banned")) {
+          // router.replace("/");
+          window.history.replaceState(null, "", "/");
+        } else {
+          alert(
+            "You got an error:\n\n" +
+              errorDescription +
+              "\n\nContact @thomasschulzz on Twitter to investigate."
+          );
+        }
       }
       if (referralCode) {
         const referral = await getReferralDetails(referralCode);
