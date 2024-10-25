@@ -17,10 +17,10 @@ const navConfig = [
     path: "/directory/rooms",
     title: "Rooms",
   },
-  {
-    path: "/directory/homes",
-    title: "Entire Homes",
-  },
+  // {
+  //   path: "/directory/homes",
+  //   title: "Entire Homes",
+  // },
 ];
 
 export default function Navbar() {
