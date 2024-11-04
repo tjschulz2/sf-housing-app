@@ -2,6 +2,34 @@ import Link from "next/link";
 import Image from "next/image";
 import userResponseImg from "../../../public/images/sponsorship/user-response.png";
 import productStats from "../../../public/images/sponsorship/stats.png";
+import { Metadata } from "next";
+
+const siteTitle = "Sponsor DirectorySF";
+const siteImage = "/images/meta/og-sponsor.png";
+const siteURL = "https://www.directorysf.com/";
+
+export const metadata: Metadata = {
+  metadataBase: process.env.VERCEL_URL
+    ? new URL(`https://${process.env.VERCEL_URL}`)
+    : new URL(`http://localhost:${process.env.PORT || 3000}`),
+  title: siteTitle,
+  authors: [
+    { name: "Thomas Schulz", url: "https://twitter.com/thomasschulzz" },
+    { name: "Neall Seth", url: "https://neall.org" },
+  ],
+  openGraph: {
+    title: siteTitle,
+    url: siteURL,
+    siteName: siteTitle,
+    images: siteImage,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    images: [siteImage],
+  },
+};
+
 export default function SponsorPage() {
   return (
     <div className="prose max-w-prose mx-auto py-8 px-4">
@@ -153,45 +181,43 @@ export default function SponsorPage() {
             </tr>
           </tbody>
         </table>
-        <h2>Why you might sponsor</h2>
-        <ol>
-          <li>You care about the mission, or San Francisco generally</li>
-          <li>
-            Your brand benefits from exposure to our community
-            <ul>
-              <li>
-                Highly targeted channel for reaching SF-based founders and
-                engineers
-              </li>
-              <li>
-                <span className="italic">
-                  Hint hint - seeking venture deal flow? Recruiting engineers?
-                  Selling to HNIs?
-                </span>
-              </li>
-            </ul>
-            <li>
-              You’ve personally benefited from using DSF and want to give back
-            </li>
-          </li>
-        </ol>
-        <h2>Let&apos;s chat</h2>
-        <p>
-          Feel free to DM on Twitter (
-          <Link target="_blank" href="https://x.com/neallseth/">
-            @neallseth
-          </Link>
-          )
-        </p>
-        <p>
-          If you&apos;d like to make a donation or payment for sponsorship,
-          Venmo (
-          <Link target="_blank" href="https://account.venmo.com/u/neallseth">
-            @NeallSeth
-          </Link>
-          )
-        </p>
       </div>
+
+      <h2>Why you might sponsor</h2>
+      <ol>
+        <li>You care about the mission, or San Francisco generally</li>
+        <li>Your brand benefits from exposure to our community</li>
+        <ul>
+          <li>
+            Highly targeted channel for reaching SF-based founders and engineers
+          </li>
+          <li>
+            <span className="italic">
+              Hint hint - seeking venture deal flow? Recruiting engineers?
+              Selling to HNIs?
+            </span>
+          </li>
+        </ul>
+        <li>
+          You’ve personally benefited from using DSF and want to give back
+        </li>
+      </ol>
+      <h2>Let&apos;s chat</h2>
+      <p>
+        Feel free to DM on Twitter (
+        <Link target="_blank" href="https://x.com/neallseth/">
+          @neallseth
+        </Link>
+        )
+      </p>
+      <p>
+        If you&apos;d like to make a donation or payment for sponsorship, Venmo
+        (
+        <Link target="_blank" href="https://account.venmo.com/u/neallseth">
+          @NeallSeth
+        </Link>
+        )
+      </p>
     </div>
   );
 }

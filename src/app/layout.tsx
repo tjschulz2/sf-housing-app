@@ -21,9 +21,8 @@ const notoSerifDisplay = Noto_Serif_Display({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
 
 const siteTitle = "DirectorySF";
-const siteDescription =
-  "The SF housing directory with people you probably know";
-const siteImage = "/sfd.png";
+const siteDescription = "The housing directory of people you probably know";
+const siteImage = "/images/meta/og.png";
 const siteURL = "https://www.directorysf.com/";
 
 export const metadata: Metadata = {
