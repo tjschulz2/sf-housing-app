@@ -51,6 +51,15 @@ export default function SponsorPage() {
           We&apos;re lucky to get these messages so often
         </span>
 
+        <h2>TL;DR</h2>
+        <p>
+          <Link target="_blank" href="/">
+            DirectorySF
+          </Link>{" "}
+          is seeking sponsorship. Your brand will be exposed to our curated
+          community of Bay Area founders and engineers.
+        </p>
+
         <h2>Why it matters</h2>
         <ol>
           <li>
@@ -89,7 +98,8 @@ export default function SponsorPage() {
         </span>
         <ul>
           <li>
-            Most of our members are founders, or early stage startup employees.
+            Most of our members are{" "}
+            <span className="font-bold">founders and engineers.</span>
             <ul>
               <li>
                 Other represented groups include: rationality/EA, Burners, and
