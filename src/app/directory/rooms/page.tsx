@@ -91,7 +91,7 @@ const Directory = () => {
           </EditSpaceListingDialog>
         </div>
       )}
-      <RoomSponsorBanner />
+      {/* <RoomSponsorBanner /> */}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>

@@ -62,7 +62,7 @@ export default function DeleteSpaceListingDialog({
           <AlertDialogDescription>
             <span>This will delete your space </span>
             <span className="mt-2 block">
-              If you&apos;ve had success with DSF, please DM{" "}
+              If you&apos;ve had success, please DM{" "}
               <a
                 href="https://x.com/neallseth"
                 className="text-neutral-700 font-semibold underline"
