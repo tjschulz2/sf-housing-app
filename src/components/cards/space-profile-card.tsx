@@ -95,6 +95,7 @@ export default function SpaceProfileCard(props: PropsType) {
               email={profile.contact_email}
               twitter={profile.user?.twitter_handle}
               recipientName={`${profile.user?.name} (@${profile.user?.twitter_handle})`}
+              spaceSlug={profile.custom_space_slug || profile.space_slug}
             />
             <TooltipProvider delayDuration={250}>
               <Tooltip>
