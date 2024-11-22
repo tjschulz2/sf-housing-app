@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import DeleteSearcherProfileDialog from "@/components/delete-searcher-profile-dialog";
-import { ProfilesContext, ProfilesContextType } from "@/app/directory/layout";
+import { ProfilesContext, ProfilesContextType } from "@/app/(directory)/layout";
 import { useContext, useState } from "react";
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { dateDiff } from "@/lib/utils/general";

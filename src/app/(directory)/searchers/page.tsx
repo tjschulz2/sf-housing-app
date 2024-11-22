@@ -1,6 +1,5 @@
 "use client";
-import styles from "./page.module.css";
-import ProfileCard from "../../components/profile-card";
+import ProfileCard from "../../../components/profile-card";
 import SearcherProfileCard from "@/components/cards/searcher-profile-card";
 import Link from "next/link";
 import {
@@ -11,10 +10,10 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { getHousingSearchProfiles } from "../../lib/utils/data";
+import { getHousingSearchProfiles } from "../../../lib/utils/data";
 import { differenceInDays } from "date-fns";
-import { ProfilesContext, ProfilesContextType } from "./layout";
-import FilterBar from "../../components/filter-bar";
+import { ProfilesContext, ProfilesContextType } from "../layout";
+import FilterBar from "../../../components/filter-bar";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
@@ -193,7 +192,7 @@ function Directory() {
             <h2 className="text-xl font-bold mb-4">
               👋 Are you looking for housing?
             </h2>
-            <span className={styles.addInfoText}>
+            <span className="mb-4">
               Create a profile to be discovered by communities and roommates
             </span>
             <EditSearcherProfileDialog

@@ -110,7 +110,6 @@ export default function DirectoryLayout({
 
   const pathname = usePathname();
   const currentPath = pathname;
-  const isDirectoryPage = currentPath === "/directory/homes";
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
 
   if (userSession && userData) {

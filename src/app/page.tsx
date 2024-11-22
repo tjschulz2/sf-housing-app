@@ -59,7 +59,7 @@ const Home: NextPage = () => {
           }
           return;
         }
-        router.replace("/directory");
+        router.replace("/searchers");
       }
     }
     handlePageLoad();

@@ -6,21 +6,17 @@ import styles from "./navbar.module.css";
 
 const navConfig = [
   {
-    path: "/directory",
-    title: "People",
+    path: "/searchers",
+    title: "Searching for housing",
   },
-  // {
-  //   path: "/directory/people-organizing",
-  //   title: "Starting a new house",
-  // },
   {
-    path: "/directory/rooms",
+    path: "/rooms",
     title: "Rooms",
   },
-  // {
-  //   path: "/directory/homes",
-  //   title: "Entire Homes",
-  // },
+  {
+    path: "/members",
+    title: "All members",
+  },
 ];
 
 export default function Navbar() {

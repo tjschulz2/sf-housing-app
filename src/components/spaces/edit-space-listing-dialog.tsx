@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
 import SearcherProfileForm from "@/components/searcher-profile-form";
 import { useState } from "react";
-import { ProfilesContext } from "@/app/directory/layout";
+import { ProfilesContext } from "@/app/(directory)/layout";
 import { getUserSession } from "@/lib/utils/auth";
 import { useSpacesContext } from "@/contexts/spaces-context";
 import SpaceListingForm from "./space-listing-form";

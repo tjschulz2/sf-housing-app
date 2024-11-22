@@ -63,6 +63,22 @@ export async function createUser(
   }
 }
 
+export async function getUsers(batchNumber: number = 0) {
+  const batchSize = 30;
+  const { data, error } = await supabase
+    .from("users")
+    .select("user_id, name, twitter_handle, twitter_avatar_url, created_at")
+    .order("name", { ascending: false })
+    .range(batchNumber * batchSize, batchSize);
+
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else {
+    return { success: true, data };
+  }
+}
+
 export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25,
