@@ -42,19 +42,29 @@ export default function ContactMeButton({
   email,
   twitter,
   recipientName,
+  spaceSlug,
 }: {
   phoneNum?: string | null;
   email?: string | null;
   twitter?: string | null;
   recipientName?: string | null;
+  spaceSlug?: string | null;
 }) {
   const { userData } = useAuthContext();
   const posthog = usePostHog();
 
+  const baseURL = `${window.location.protocol}//${window.location.hostname}${
+    window.location.port ? ":" + window.location.port : ""
+  }`;
+
+  console.log(baseURL);
   const userFirstName = userData?.name ? userData.name.split(" ")[0] : "____";
-  const textMessage = encodeURIComponent(
-    `👋 Hey, this is ${userFirstName}!\nI saw your profile on DirectorySF, and wanted to reach out`
-  );
+  let textMessage = `👋 Hey, this is ${userFirstName}!\nI saw your profile on DirectorySF, and wanted to reach out`;
+  if (spaceSlug) {
+    textMessage += `\n\n${baseURL}/s/${spaceSlug}`;
+  }
+  textMessage = encodeURIComponent(textMessage);
+
   const phoneLink = phoneNum ? `sms:${phoneNum}&body=${textMessage}` : null;
   const emailLink = email ? `mailto:${email}` : null;
   const twitterLink = twitter ? `https://x.com/${twitter}` : null;

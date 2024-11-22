@@ -18,7 +18,7 @@ import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import { Button } from "../ui/button";
 import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
-
+import { UserHoverCard } from "@/components/cards/user-hover-card";
 import {
   Tooltip,
   TooltipContent,
@@ -95,6 +95,7 @@ export default function SpaceProfileCard(props: PropsType) {
               email={profile.contact_email}
               twitter={profile.user?.twitter_handle}
               recipientName={`${profile.user?.name} (@${profile.user?.twitter_handle})`}
+              spaceSlug={profile.custom_space_slug || profile.space_slug}
             />
             <TooltipProvider delayDuration={250}>
               <Tooltip>
@@ -124,15 +125,22 @@ export default function SpaceProfileCard(props: PropsType) {
           className="flex items-center justify-center w-full"
           target="_blank"
         >
-          {/* <UserProfileImage
+          <UserProfileImage
             size="small"
             src={profile.user?.twitter_avatar_url}
-          /> */}
+            className="mr-1"
+          />
 
+          {/* <UserHoverCard>
+            <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
+              {profile.user?.name}
+            </span>
+          </UserHoverCard> */}
           <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
-            @{profile.user?.twitter_handle}
+            {profile.user?.name}
           </span>
-          <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+
+          {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
         </Link>
       </div>
       <CardBottom>
