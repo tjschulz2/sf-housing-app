@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 import { Router } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 const BATCH_SIZE = 20;
 
@@ -34,14 +35,13 @@ export type SortByOptions =
   | "alphaAsc"
   | "alphaDesc";
 
-export default function MembersPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const pageNumber = searchParams.page
-    ? parseInt(searchParams.page as string)
-    : 0;
+export default function MembersPage() {
+  const searchParams = useSearchParams();
+  const pageNumber = parseInt(searchParams.get("page") || "0");
+  // const pageNumber = searchParams.page
+  //   ? parseInt(searchParams.page as string)
+  //   : 0;
+  console.log(pageNumber);
   const [members, setMembers] = useState<MemberUserType[]>([]);
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [sortBy, setSortBy] = useState<SortByOptions>("joinDateDesc");
@@ -115,7 +115,7 @@ export default function MembersPage({
             <PaginationItem>
               <PaginationPrevious href={`/members?page=${pageNumber - 1}`} />
             </PaginationItem>
-          ) : null}{" "}
+          ) : null}
           {pageNumber < maxPageNum - 1 ? (
             <PaginationItem>
               <PaginationNext href={`/members?page=${pageNumber + 1}`} />
