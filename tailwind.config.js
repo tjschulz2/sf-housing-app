@@ -24,6 +24,9 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        solarisgreen: { DEFAULT: "#1d462f", light: "#e7e9d8" }, // Add your custom color here
+      },
       backgroundImage: {
         "grid-slate":
           "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMiAzMicgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJyBmaWxsPSdub25lJyBzdHJva2U9JyNmMWY1ZjknPjxwYXRoIGQ9J00wIC41SDMxLjVWMzInLz48L3N2Zz4=')",

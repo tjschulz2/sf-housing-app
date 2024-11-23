@@ -3,6 +3,7 @@ import { RedisClientType } from "redis";
 import { getUserSession } from "./auth";
 import { getCurrentTimestamp, isValidUUID } from "./general";
 import { z } from "zod";
+import { SortByOptions } from "@/app/(directory)/members/page";
 
 interface RentalImage {
   image_url: string;
@@ -60,6 +61,50 @@ export async function createUser(
   } else {
     console.log(data);
     return data[0];
+  }
+}
+
+export async function getUsers(
+  batchNumber: number = 0,
+  batchSize: number = 20,
+  sortBy: SortByOptions
+) {
+  // Type the column names explicitly
+  type UserColumns = "name" | "created_at";
+
+  const sortMapping: Record<
+    SortByOptions,
+    { column: UserColumns; ascending: boolean }
+  > = {
+    joinDateAsc: { column: "created_at", ascending: true },
+    joinDateDesc: { column: "created_at", ascending: false },
+    alphaAsc: { column: "name", ascending: true },
+    alphaDesc: { column: "name", ascending: false },
+  };
+
+  const { column, ascending } = sortMapping[sortBy];
+
+  // Now column is strongly typed, so Supabase will not complain
+  const { data, error } = await supabase
+    .from("users")
+    .select("user_id, name, twitter_handle, twitter_avatar_url, created_at")
+    .order(column, { ascending })
+    .range(batchNumber * batchSize, batchNumber * batchSize + batchSize - 1);
+
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else {
+    return { success: true, data };
+  }
+}
+export async function getTotalUserCount() {
+  let { data, error } = await supabase.rpc("get_total_members");
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else if (data) {
+    return { success: true, data };
   }
 }
 

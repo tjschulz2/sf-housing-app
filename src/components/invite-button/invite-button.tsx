@@ -154,7 +154,7 @@ const InviteButton = () => {
       <Dialog onOpenChange={handleDialogOpen}>
         <DialogTrigger asChild>
           <Button className="rounded-3xl text-xs sm:text-base">
-            <UserPlus className="mr-1 sm:mr-2 size-4" /> Invite a friend
+            <UserPlus className="mr-1 sm:mr-2 size-4" /> Invite
           </Button>
         </DialogTrigger>
         <DialogContent>

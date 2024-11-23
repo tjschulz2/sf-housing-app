@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ReactNode, useContext } from "react";
 import SearcherProfileForm from "@/components/searcher-profile-form";
 import { useState } from "react";
-import { ProfilesContext } from "@/app/directory/layout";
+import { ProfilesContext } from "@/app/(directory)/layout";
 import { getUserSession } from "@/lib/utils/auth";
 
 export default function EditSearcherProfileDialog({

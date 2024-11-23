@@ -21,7 +21,7 @@ import { useContext, useState } from "react";
 import {
   ProfilesContext,
   UserHousingSearchProfile,
-} from "@/app/directory/layout";
+} from "@/app/(directory)/layout";
 import { saveUserHousingSearchProfile } from "@/lib/utils/data";
 import { getUserSession } from "@/lib/utils/auth";
 

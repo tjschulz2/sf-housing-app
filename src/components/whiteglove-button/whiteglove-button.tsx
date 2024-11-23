@@ -27,7 +27,7 @@ export default function WhiteGloveButton() {
         href="https://forms.gle/Se8eRH5WvS3TX9oj6"
       >
         <BriefcaseBusiness className="mr-1 sm:mr-2 size-4" />
-        Find an engineering role
+        Jobs in SF
       </Link>
     </Button>
   );

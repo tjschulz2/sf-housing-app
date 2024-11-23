@@ -83,3 +83,11 @@ type SpaceListingWithUserData =
       twitter_handle: string | null;
     } | null;
   };
+
+type MemberUserType = {
+  user_id: string;
+  name: string | null;
+  twitter_avatar_url: string | null;
+  twitter_handle: string | null;
+  created_at: string | null;
+};

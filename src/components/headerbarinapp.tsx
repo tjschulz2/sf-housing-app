@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./home-page-component.module.css";
-import styles1 from "../app/directory/page.module.css";
 import InviteButton from "../components/invite-button/invite-button";
 import Dropdown from "../components/dropdown/dropdown";
 import WhiteGloveButton from "../components/whiteglove-button/whiteglove-button";

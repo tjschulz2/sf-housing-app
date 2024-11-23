@@ -59,7 +59,7 @@ const Home: NextPage = () => {
           }
           return;
         }
-        router.replace("/directory");
+        router.replace("/searchers");
       }
     }
     handlePageLoad();
@@ -67,7 +67,7 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.home}>
-      {isLoading && <LoadingSpinner />}
+      {/* {isLoading && <LoadingSpinner />} */}
       <HomePageComponent referralDetails={referralDetails} />
     </div>
   );
