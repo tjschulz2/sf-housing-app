@@ -14,7 +14,7 @@ import {
 
 import { useEffect, useState } from "react";
 
-const BATCH_SIZE = 2;
+const BATCH_SIZE = 20;
 
 export default function MembersPage({
   searchParams,
@@ -50,9 +50,12 @@ export default function MembersPage({
   const maxPageNum = Math.ceil(totalUsers / BATCH_SIZE);
   return (
     <div className="flex flex-col gap-4 mb-6">
-      {members.map((member) => (
-        <MemberCard key={member.user_id} member={member} />
-      ))}
+      <p className="text-solarisgreen">{totalUsers} members</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {members.map((member) => (
+          <MemberCard key={member.user_id} member={member} />
+        ))}
+      </div>
 
       <Pagination>
         <PaginationContent>

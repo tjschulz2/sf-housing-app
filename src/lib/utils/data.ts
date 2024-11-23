@@ -70,7 +70,7 @@ export async function getUsers(
   const { data, error } = await supabase
     .from("users")
     .select("user_id, name, twitter_handle, twitter_avatar_url, created_at")
-    .order("name", { ascending: false })
+    .order("name", { ascending: true })
     .range(batchNumber * batchSize, batchNumber * batchSize + batchSize - 1);
 
   if (error) {

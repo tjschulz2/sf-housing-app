@@ -7,7 +7,7 @@ import styles from "./navbar.module.css";
 const navConfig = [
   {
     path: "/searchers",
-    title: "Searching for housing",
+    title: "Searchers",
   },
   {
     path: "/rooms",
@@ -31,7 +31,7 @@ export default function Navbar() {
             href={tab.path}
             className={`no-underline rounded-md py-1.5 px-3 ${
               tab.path === currentPath
-                ? "font-bold text-[#1d462f] border-2 border-[#1d462f] bg-[#e7e9d8]"
+                ? "font-bold text-solarisgreen border-2 border-solarisgreen bg-solarisgreen-light"
                 : "text-[#474747] border border-[#cccccc] hover:bg-[#f1efdf]"
             }`}
           >
