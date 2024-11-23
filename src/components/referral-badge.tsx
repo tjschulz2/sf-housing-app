@@ -46,7 +46,7 @@ export default function ReferralBadge({
           </span>
         ) : null}
         <span className={`text-blue-500 hover:text-blue-400 text-${textSize}`}>
-          {referrer.name}
+          {referrer.name?.split(" ").slice(0, 2).join(" ")}
         </span>
       </a>
     );

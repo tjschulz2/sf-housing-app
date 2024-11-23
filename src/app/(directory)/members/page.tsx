@@ -44,7 +44,7 @@ export default function MembersPage({
     : 0;
   const [members, setMembers] = useState<MemberUserType[]>([]);
   const [totalUsers, setTotalUsers] = useState<number>(0);
-  const [sortBy, setSortBy] = useState<SortByOptions>("joinDateAsc");
+  const [sortBy, setSortBy] = useState<SortByOptions>("joinDateDesc");
   const router = useRouter();
 
   useEffect(() => {
