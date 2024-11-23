@@ -1,8 +1,7 @@
-import { getUsers, getTotalUserCount } from "@/lib/utils/data";
-import UserProfileImage from "@/components/user-profile-image";
-import ReferralBadge from "@/components/referral-badge";
-import { Card, CardTop, CardBottom } from "@/components/cards/card";
+"use client";
 
+import { getUsers, getTotalUserCount } from "@/lib/utils/data";
+import MemberCard from "@/components/cards/member-card";
 import {
   Pagination,
   PaginationContent,
@@ -13,35 +12,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-type MemberUserType = {
-  user_id: string;
-  name: string | null;
-  twitter_avatar_url: string | null;
-  twitter_handle: string | null;
-  created_at: string | null;
-};
+import { useEffect, useState } from "react";
 
 const BATCH_SIZE = 2;
 
-const MemberCard = ({ member }: { member: MemberUserType }) => {
-  if (!member.name || !member.twitter_handle) {
-    return null;
-  }
-  return (
-    <Card className="shadow">
-      <div className="flex items-center gap-4">
-        <UserProfileImage src={member.twitter_avatar_url} size="medium" />
-        <div className="flex flex-col">
-          <div className="text-lg font-semibold">{member.name}</div>
-          <div className="text-sm">@{member.twitter_handle}</div>
-        </div>
-        <ReferralBadge userID={member.user_id} />
-      </div>
-    </Card>
-  );
-};
-
-export default async function MembersPage({
+export default function MembersPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -49,18 +24,33 @@ export default async function MembersPage({
   const pageNumber = searchParams.page
     ? parseInt(searchParams.page as string)
     : 0;
-  console.log(searchParams.page);
-  const members = await getUsers(pageNumber, BATCH_SIZE);
-  const totalUsers = (await getTotalUserCount())?.data;
+  const [members, setMembers] = useState<MemberUserType[]>([]);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
 
-  if (!members.success || !totalUsers) {
-    return <div>Failed to load members</div>;
-  }
+  useEffect(() => {
+    const fetchInScopeMembers = async () => {
+      const inScopeMembers = await getUsers(pageNumber, BATCH_SIZE);
+      if (inScopeMembers.success && inScopeMembers.data) {
+        setMembers(inScopeMembers.data);
+      }
+    };
+    fetchInScopeMembers();
+  }, [pageNumber]);
+
+  useEffect(() => {
+    const fetchTotalUsers = async () => {
+      const totalUsers = (await getTotalUserCount())?.data;
+      if (totalUsers) {
+        setTotalUsers(totalUsers);
+      }
+    };
+    fetchTotalUsers();
+  }, []);
 
   const maxPageNum = Math.ceil(totalUsers / BATCH_SIZE);
   return (
     <div className="flex flex-col gap-4 mb-6">
-      {members.data?.map((member) => (
+      {members.map((member) => (
         <MemberCard key={member.user_id} member={member} />
       ))}
 
@@ -68,16 +58,10 @@ export default async function MembersPage({
         <PaginationContent>
           {pageNumber > 0 ? (
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              <PaginationPrevious href={`/members?page=${pageNumber - 1}`} />
             </PaginationItem>
           ) : null}{" "}
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          {/* <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem> */}
-          {pageNumber < maxPageNum ? (
+          {pageNumber < maxPageNum - 1 ? (
             <PaginationItem>
               <PaginationNext href={`/members?page=${pageNumber + 1}`} />
             </PaginationItem>
