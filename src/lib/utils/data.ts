@@ -63,18 +63,30 @@ export async function createUser(
   }
 }
 
-export async function getUsers(batchNumber: number = 0) {
-  const batchSize = 30;
+export async function getUsers(
+  batchNumber: number = 0,
+  batchSize: number = 20
+) {
   const { data, error } = await supabase
     .from("users")
     .select("user_id, name, twitter_handle, twitter_avatar_url, created_at")
     .order("name", { ascending: false })
-    .range(batchNumber * batchSize, batchSize);
+    .range(batchNumber * batchSize, batchNumber * batchSize + batchSize - 1);
 
   if (error) {
     console.error(error);
     return { success: false, error };
   } else {
+    return { success: true, data };
+  }
+}
+
+export async function getTotalUserCount() {
+  let { data, error } = await supabase.rpc("get_total_members");
+  if (error) {
+    console.error(error);
+    return { success: false, error };
+  } else if (data) {
     return { success: true, data };
   }
 }
