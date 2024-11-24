@@ -131,14 +131,14 @@ export default function SpaceProfileCard(props: PropsType) {
             className="mr-1"
           />
 
-          {/* <UserHoverCard>
+          <UserHoverCard userData={profile.user}>
             <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
               {profile.user?.name}
             </span>
-          </UserHoverCard> */}
-          <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
+          </UserHoverCard>
+          {/* <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
             {profile.user?.name}
-          </span>
+          </span> */}
 
           {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
         </Link>

@@ -168,7 +168,7 @@ export async function getCommunities(start: number = 0, count: number = 10) {
     .from("communities")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url)
+      *, user:users(name, twitter_handle, twitter_avatar_url, user_id, created_at)
     `
     )
     .order("last_updated_date", { ascending: false })

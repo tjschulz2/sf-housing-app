@@ -81,6 +81,8 @@ type SpaceListingWithUserData =
       name: string | null;
       twitter_avatar_url: string | null;
       twitter_handle: string | null;
+      user_id: string;
+      created_at: string | null;
     } | null;
   };
 

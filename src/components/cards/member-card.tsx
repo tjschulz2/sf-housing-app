@@ -3,37 +3,7 @@ import ReferralBadge from "@/components/referral-badge";
 import { Card, CardTop, CardBottom } from "@/components/cards/card";
 import TwitterLogo from "@/images/twitter-logo.svg";
 import Link from "next/link";
-
-function formatDate(dateString: string) {
-  // Parse the date string into a Date object
-  const date = new Date(dateString);
-
-  // Array of month names
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  // Get the month name
-  const monthName = months[date.getUTCMonth()];
-
-  // Get the year and convert it to a 2-digit format
-  // const year = date.getUTCFullYear().toString().slice(-2);
-  const year = date.getUTCFullYear().toString();
-
-  // Return the formatted string
-  return `${monthName} ${year}`;
-}
+import { formatDateMonthYear } from "@/lib/utils/general";
 
 export default function MemberCard({ member }: { member: MemberUserType }) {
   if (!member.name || !member.twitter_handle) {
@@ -69,7 +39,7 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
           {member.created_at ? (
             <div className="flex gap-2 text-xs text-gray-600">
               {/* <span className="">Joined</span> */}
-              {formatDate(member.created_at)}
+              {formatDateMonthYear(member.created_at)}
             </div>
           ) : null}
         </div>

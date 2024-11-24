@@ -3,6 +3,7 @@ import UserProfileImage from "@/components/user-profile-image";
 import { getReferrerName } from "@/lib/utils/data";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "./loading-spinner/loading-spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ReferrerData = {
   name: string | null;
@@ -20,11 +21,13 @@ export default function ReferralBadge({
   textSize?: "xs" | "sm" | "md";
 }) {
   const [referrer, setReferrer] = useState<ReferrerData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchReferrer = async () => {
       try {
         const referrerData = await getReferrerName(userID);
         if (referrerData) setReferrer(referrerData);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -50,6 +53,8 @@ export default function ReferralBadge({
         </span>
       </a>
     );
+  } else if (isLoading) {
+    return <Skeleton className="h-4 w-[75px]" />;
   } else {
     return (
       <span className={`text-neutral-600 text-${textSize}`}>DirectorySF </span>

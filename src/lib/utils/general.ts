@@ -16,6 +16,37 @@ export function getCurrentTimestamp() {
   return timestamp;
 }
 
+export function formatDateMonthYear(dateString: string) {
+  // Parse the date string into a Date object
+  const date = new Date(dateString);
+
+  // Array of month names
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  // Get the month name
+  const monthName = months[date.getUTCMonth()];
+
+  // Get the year and convert it to a 2-digit format
+  // const year = date.getUTCFullYear().toString().slice(-2);
+  const year = date.getUTCFullYear().toString();
+
+  // Return the formatted string
+  return `${monthName} ${year}`;
+}
+
 export const dateDiff = (compDate: string) => {
   const parsedCompDate = new Date(Date.parse(compDate));
   const now = new Date();
