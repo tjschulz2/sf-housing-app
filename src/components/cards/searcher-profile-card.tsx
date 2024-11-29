@@ -37,7 +37,7 @@ export default function SearcherProfileCard(props: PropsType) {
       <CardTop>
         <UserProfileImage size="large" src={profile.user?.twitter_avatar_url} />
         <div className="flex flex-col items-center max-w-[60%]">
-          <div>
+          <div className="grid grid-cols-[1fr,25px]">
             <span className="font-semibold max-w-[12rem] truncate">
               {profile.user?.name}{" "}
             </span>
