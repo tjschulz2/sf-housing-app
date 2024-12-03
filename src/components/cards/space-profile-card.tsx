@@ -72,21 +72,24 @@ export default function SpaceProfileCard(props: PropsType) {
             <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
           </Link> */}
 
-          <div className="flex gap-4">
-            <div className="flex">
-              <img className="mr-1" src="/location.svg" />
-              <p id="location" className="text-sm md:text-md truncate">
-                {housingMap.location[profile.location || 0]}
-              </p>
-            </div>
-            <div className="flex">
-              <img className="mr-1" src="/threepeople.svg" />
-              <p className="text-sm md:text-md">
-                {typeof profile.resident_count === "number"
-                  ? `${profile.resident_count.toString()}`
-                  : null}
-              </p>
-            </div>
+          <div className="w-fit">
+            <Link
+              href={`https://x.com/${profile.user?.twitter_handle}`}
+              className="flex items-center justify-center w-full"
+              target="_blank"
+            >
+              <UserProfileImage
+                size="small"
+                src={profile.user?.twitter_avatar_url}
+                className="mr-1"
+              />
+
+              <UserHoverCard userData={profile.user}>
+                <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
+                  {profile.user?.name}
+                </span>
+              </UserHoverCard>
+            </Link>
           </div>
 
           <div className="flex gap-2">
@@ -119,30 +122,6 @@ export default function SpaceProfileCard(props: PropsType) {
           </div>
         </div>
       </CardTop>
-      <div className="w-fit">
-        <Link
-          href={`https://x.com/${profile.user?.twitter_handle}`}
-          className="flex items-center justify-center w-full"
-          target="_blank"
-        >
-          <UserProfileImage
-            size="small"
-            src={profile.user?.twitter_avatar_url}
-            className="mr-1"
-          />
-
-          {/* <UserHoverCard>
-            <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
-              {profile.user?.name}
-            </span>
-          </UserHoverCard> */}
-          <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
-            {profile.user?.name}
-          </span>
-
-          {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
-        </Link>
-      </div>
       <CardBottom>
         {userSession && (
           <CommonFollowers
@@ -152,21 +131,35 @@ export default function SpaceProfileCard(props: PropsType) {
         )}
 
         <CardBioSection bio={bio} link={profile.website_url} />
-        <div className="flex flex-col grow justify-center">
-          <div className="flex flex-col gap-2">
-            <CardListSection sectionTitle="Room price">
+        <div className="flex flex-col grow gap-2 justify-center">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-4">
+            <div>
+              <span className="mr-2">📍</span>
+              <span className="text-neutral-600">
+                {housingMap.location[profile.location || 0]}
+              </span>
+            </div>
+            <div>
+              <span className="mr-2">🏷️</span>
               <span className="text-neutral-600">
                 {profile.room_price_range
                   ? housingMap.roomPrice[profile.room_price_range]
                   : null}
               </span>
-            </CardListSection>
-            <CardListSection
-              sectionTitle="Referred by"
-              className="flex items-center"
-            >
-              <ReferralBadge userID={profile.user_id} />
-            </CardListSection>
+            </div>
+
+            <div>
+              <span className="mr-2">👥</span>
+              <span className="text-neutral-600">
+                {typeof profile.resident_count === "number"
+                  ? `${profile.resident_count.toString()}`
+                  : null}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-end">
+            <span className="text-xs text-gray-500 mr-1">Invited by</span>
+            <ReferralBadge textSize="xs" userID={profile.user_id} />
           </div>
         </div>
       </CardBottom>

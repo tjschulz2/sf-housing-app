@@ -1,6 +1,6 @@
 export const housingMap: Record<string, Record<number, string>> = {
   housingType: { 1: "1-year lease", 2: "Short-term lease" },
-  moveIn: { 1: "ASAP", 2: " in < 3 months", 3: "in 3+ months" },
+  moveIn: { 1: "ASAP", 2: " < 3 months", 3: "3+ months" },
   housemates: {
     1: "1-2 roomies",
     2: "3-5 roomies",

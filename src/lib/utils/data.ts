@@ -168,7 +168,7 @@ export async function getCommunities(start: number = 0, count: number = 10) {
     .from("communities")
     .select(
       `
-      *, user:users(name, twitter_handle, twitter_avatar_url)
+      *, user:users(name, twitter_handle, twitter_avatar_url, user_id, created_at)
     `
     )
     .order("last_updated_date", { ascending: false })
@@ -414,7 +414,9 @@ export const deleteCommunityImage = async (userID: string) => {
 //   }
 // }
 
-export async function getReferrerName(userId: string) {
+export async function getReferrerData(
+  userId: string
+): Promise<MemberUserType | undefined> {
   const { data: referralData, error: referralError } = await supabase
     .from("referral_recipients")
     .select("referral_id")
@@ -441,7 +443,7 @@ export async function getReferrerName(userId: string) {
 
   const { data: userData, error: userError } = await supabase
     .from("users")
-    .select("name, twitter_handle, twitter_avatar_url")
+    .select("name, twitter_handle, twitter_avatar_url, user_id, created_at")
     .eq("user_id", originatorId);
 
   if (userError || !userData || userData.length === 0) {
@@ -452,6 +454,8 @@ export async function getReferrerName(userId: string) {
     name: userData[0].name,
     twitter_handle: userData[0].twitter_handle,
     twitter_avatar_url: userData[0].twitter_avatar_url,
+    user_id: userData[0].user_id,
+    created_at: userData[0].created_at,
   };
 }
 

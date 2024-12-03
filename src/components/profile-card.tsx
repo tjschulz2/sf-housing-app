@@ -7,7 +7,7 @@ import { FollowedBy } from "./followed-by/followed-by";
 import TwitterLogo from "../images/twitter-logo.svg";
 import React, { useState, useEffect } from "react";
 import { getImageLink } from "../lib/utils/process";
-import { getReferrerName } from "../lib/utils/data";
+import { getReferrerData } from "../lib/utils/data";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import ActivityStatusDot from "./activity-status-dot";
@@ -109,7 +109,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
     const fetchReferrer = async () => {
       if (profile.user_id) {
         try {
-          const referrerData = await getReferrerName(profile.user_id);
+          const referrerData = await getReferrerData(profile.user_id);
           if (referrerData) setReferrer(referrerData);
         } catch (error) {
           console.error(error);
