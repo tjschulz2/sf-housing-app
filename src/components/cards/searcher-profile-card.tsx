@@ -17,6 +17,7 @@ import { ExternalLink } from "lucide-react";
 import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
+import { CalendarDays, Calendar, Mail, Handshake } from "lucide-react";
 
 type PropsType = {
   profile: HousingSearchProfile;
@@ -79,7 +80,7 @@ export default function SearcherProfileCard(props: PropsType) {
         <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
-            <CardListSection sectionTitle="Preference">
+            {/* <CardListSection sectionTitle="Preference">
               <span className="text-neutral-600">
                 {" "}
                 {profile.pref_housing_type
@@ -89,20 +90,47 @@ export default function SearcherProfileCard(props: PropsType) {
                   ? housingMap.housemates[profile.pref_housemate_count]
                   : null}
               </span>
-            </CardListSection>
-            <CardListSection sectionTitle="Moving">
+            </CardListSection> */}
+            <div>
+              <span className="mr-2">👀</span>
+              <span className="text-neutral-600">
+                {" "}
+                {profile.pref_housing_type
+                  ? housingMap.housingType[profile.pref_housing_type] + ", "
+                  : null}{" "}
+                {profile.pref_housemate_count
+                  ? housingMap.housemates[profile.pref_housemate_count]
+                  : null}
+              </span>
+            </div>
+            {/* <CardListSection sectionTitle="Moving">
               <span className="text-neutral-600">
                 {profile.pref_move_in
                   ? housingMap.moveIn[profile.pref_move_in]
                   : null}
               </span>
-            </CardListSection>
-            <CardListSection
+            </CardListSection> */}
+            <div className="flex items-center">
+              {profile.pref_move_in ? (
+                <>
+                  {/* <CalendarDays className="mr-2 h-4 w-4" /> */}
+                  <span className="mr-2">🗓️</span>
+                  <span className="text-neutral-600">
+                    {housingMap.moveIn[profile.pref_move_in]}{" "}
+                  </span>
+                </>
+              ) : null}
+            </div>
+            {/* <CardListSection
               sectionTitle="Referred by"
               className="flex items-center"
             >
               <ReferralBadge userID={profile.user_id} />
-            </CardListSection>
+            </CardListSection> */}
+            <div className="flex items-center justify-end">
+              <span className="text-xs text-gray-500 mr-1">Invited by</span>
+              <ReferralBadge textSize="xs" userID={profile.user_id} />
+            </div>
           </div>
         </div>
       </CardBottom>

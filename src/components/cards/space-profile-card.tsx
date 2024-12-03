@@ -154,19 +154,25 @@ export default function SpaceProfileCard(props: PropsType) {
         <CardBioSection bio={bio} link={profile.website_url} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
-            <CardListSection sectionTitle="Room price">
+            {/* <CardListSection sectionTitle="Room price">
               <span className="text-neutral-600">
                 {profile.room_price_range
                   ? housingMap.roomPrice[profile.room_price_range]
                   : null}
               </span>
-            </CardListSection>
-            <CardListSection
-              sectionTitle="Referred by"
-              className="flex items-center"
-            >
-              <ReferralBadge userID={profile.user_id} />
-            </CardListSection>
+            </CardListSection> */}
+            <div>
+              <span className="mr-2">🏷️</span>
+              <span className="text-neutral-600">
+                {profile.room_price_range
+                  ? housingMap.roomPrice[profile.room_price_range]
+                  : null}
+              </span>
+            </div>
+            <div className="flex items-center justify-end">
+              <span className="text-xs text-gray-500 mr-1">Invited by</span>
+              <ReferralBadge textSize="xs" userID={profile.user_id} />
+            </div>
           </div>
         </div>
       </CardBottom>
