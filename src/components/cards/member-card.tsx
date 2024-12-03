@@ -4,6 +4,7 @@ import { Card, CardTop, CardBottom } from "@/components/cards/card";
 import TwitterLogo from "@/images/twitter-logo.svg";
 import Link from "next/link";
 import { formatDateMonthYear } from "@/lib/utils/general";
+import { CalendarDays } from "lucide-react";
 
 export default function MemberCard({ member }: { member: MemberUserType }) {
   if (!member.name || !member.twitter_handle) {
@@ -38,7 +39,7 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
           </div>
           {member.created_at ? (
             <div className="flex gap-2 text-xs text-gray-600">
-              {/* <span className="">Joined</span> */}
+              <CalendarDays className="mr-1 size-4 opacity-70" />
               {formatDateMonthYear(member.created_at)}
             </div>
           ) : null}
