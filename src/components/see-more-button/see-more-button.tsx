@@ -14,11 +14,13 @@ import {
 type ChildComponentProps = {
   seeMoreText: string;
   color: string;
+  subjectName?: string;
 };
 
 export default function SeeMoreButton({
   seeMoreText,
   color,
+  subjectName,
 }: ChildComponentProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,7 +73,8 @@ export default function SeeMoreButton({
       </DialogTrigger>
       <DialogContent className="max-h-[600px] md:max-h-[750px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>About</DialogTitle>
+          <DialogTitle>{subjectName || "About"}</DialogTitle>
+
           <DialogDescription className="whitespace-pre-line">
             {seeMoreText}
           </DialogDescription>

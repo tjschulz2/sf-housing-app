@@ -110,18 +110,18 @@ export async function getTotalUserCount() {
 
 // Jobs
 
-export async function getJobs(startIdx: number = 0, count: number = 25) {
-  const { data, error } = await supabase
-    .from("jobs")
-    .select("*")
-    .range(startIdx, startIdx + count - 1);
+export async function getJobs(startIdx = 0, count = 25) {
+  const { data, error } = await supabase.from("jobs").select("*");
 
   if (error) {
     console.error(error);
-    return { success: false, error: error.message };
-  } else {
-    return { success: true, data };
+    return {
+      success: false,
+      error: error.message || "An unknown error occurred",
+    };
   }
+
+  return { success: true, data };
 }
 
 // Housing data
