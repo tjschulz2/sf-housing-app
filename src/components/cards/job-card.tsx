@@ -8,8 +8,9 @@ import { CalendarDays } from "lucide-react";
 
 export default function JobCard() {
   return (
-    <Card className="shadow">
+    <Card>
       <div className="flex items-center justify-between gap-4">
+        JOBBY
         <div className="flex flex-col gap-2 basis-1/3"></div>
         <div className="flex flex-col gap-2 grow">
           <div className="flex gap-2 text-sm">

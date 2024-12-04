@@ -108,6 +108,24 @@ export async function getTotalUserCount() {
   }
 }
 
+// Jobs
+
+export async function getJobs(startIdx: number = 0, count: number = 25) {
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .range(startIdx, startIdx + count - 1);
+
+  if (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  } else {
+    return { success: true, data };
+  }
+}
+
+// Housing data
+
 export async function getHousingSearchProfiles(
   startIdx: number = 0,
   count: number = 25,
