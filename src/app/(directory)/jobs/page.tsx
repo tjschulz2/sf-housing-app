@@ -5,7 +5,6 @@ import CardGrid from "@/components/cards/card-grid";
 
 export default async function JobsPage() {
   const jobsPayload = await getJobs();
-  console.log(jobsPayload);
   if (!jobsPayload.success) {
     console.error(jobsPayload.error);
     return <div>Failed to load jobs</div>;
