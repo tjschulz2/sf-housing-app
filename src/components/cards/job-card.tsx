@@ -29,13 +29,13 @@ export default function JobCard({ jobData }: JobCardProps) {
             ) : null}
 
             {jobData.company_name ? (
-              <p className="text-md text-gray-600">{jobData.company_name}</p>
+              <p className="text-md text-gray-600">@ {jobData.company_name}</p>
             ) : null}
           </div>
 
           <Button
             asChild
-            className="w-fit bg-solarisgreen text-solarisgreen-light hover:bg-solarisgreen/80"
+            className="p-3 w-fit bg-solarisgreen text-solarisgreen-light hover:bg-solarisgreen/80"
           >
             <Link
               href={`https://twitter.com/${jobData.job_contact_twitter}`}
@@ -63,7 +63,9 @@ export default function JobCard({ jobData }: JobCardProps) {
         {jobData.job_levels && (
           <div className="flex gap-2 flex-wrap">
             {jobData.job_levels.map((level) => (
-              <Badge variant="outline"> {LEVEL_TAGS[level]}</Badge>
+              <Badge key={level} variant="outline">
+                {LEVEL_TAGS[level]}
+              </Badge>
             ))}
           </div>
         )}
@@ -72,7 +74,9 @@ export default function JobCard({ jobData }: JobCardProps) {
         {jobData.job_location && (
           <div className="flex gap-2 flex-wrap">
             {jobData.job_location.map((location) => (
-              <Badge variant="secondary">{LOCATION_TAGS[location]}</Badge>
+              <Badge key={location} variant="secondary">
+                {LOCATION_TAGS[location]}
+              </Badge>
             ))}
           </div>
         )}

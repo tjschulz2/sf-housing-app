@@ -75,80 +75,45 @@ export default function DirectoryLayout({
     handleAuthCheck();
   }, [authLoading, router, userData, userSession]);
 
-  // useEffect(() => {
-  //   async function pullUserData() {
-  //     const userSession = await getUserSession();
-  //     if (!userSession) {
-  //       router.replace("/");
-  //       return;
-  //     }
-
-  //     const userData = await getUserData(userSession.userID);
-  //     if (!userData) {
-  //       await signout();
-  //       router.replace("/");
-  //       return;
-  //     }
-  //     if (!userData.contact_email) {
-  //       router.push("/email-signup");
-  //     }
-
-  //     await refreshUserHousingSearchProfileData(userSession.userID);
-
-  //     const user = {
-  //       twitterAvatarUrl: userSession.twitterAvatarURL,
-  //     };
-  //     setUser(user);
-  //   }
-  //   pullUserData();
-  // }, [router]);
-
   async function refreshUserHousingSearchProfileData(userID: string) {
     const userSearchProfile = await getUserHousingSearchProfile(userID);
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
-  const pathname = usePathname();
-  const currentPath = pathname;
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
-
   if (userSession && userData) {
     return (
-      // <div className={styles.container}>
-      <LoadScript googleMapsApiKey={googleMapsApiKey}>
-        <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
-          <HeaderBarInApp userSession={userSession} />
-          <div className="bg-grid-blue-300/[0.2] relative flex flex-col items-center justify-center">
-            <div
-              className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
-            >
-              <div>
-                <div className={styles.topArea}>
-                  <div className={styles.navbarContainer}>
-                    <Navbar />
-                  </div>
+      <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
+        <HeaderBarInApp userSession={userSession} />
+        <div className="bg-grid-green-800/[0.1] relative flex flex-col items-center justify-center">
+          <div
+            className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
+          >
+            <div>
+              <div className={styles.topArea}>
+                <div className={styles.navbarContainer}>
+                  <Navbar />
                 </div>
-                <ProfilesContext.Provider
-                  value={{
-                    searcherProfiles,
-                    setSearcherProfiles,
-                    searcherProfilesFilter,
-                    setSearcherProfilesFilter,
-                    userHousingSearchProfile,
-                    refreshUserHousingSearchProfileData,
-                  }}
-                >
-                  <SpacesContextProvider>
-                    <div className={styles.directoryContainer}>{children}</div>
-                  </SpacesContextProvider>
-                </ProfilesContext.Provider>
               </div>
-              <Footer />
+              <ProfilesContext.Provider
+                value={{
+                  searcherProfiles,
+                  setSearcherProfiles,
+                  searcherProfilesFilter,
+                  setSearcherProfilesFilter,
+                  userHousingSearchProfile,
+                  refreshUserHousingSearchProfileData,
+                }}
+              >
+                <SpacesContextProvider>
+                  <div className={styles.directoryContainer}>{children}</div>
+                </SpacesContextProvider>
+              </ProfilesContext.Provider>
             </div>
-            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+            <Footer />
           </div>
+          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         </div>
-      </LoadScript>
+      </div>
     );
   } else {
     return <LoadingSpinner />;
