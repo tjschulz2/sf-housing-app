@@ -130,7 +130,11 @@ export default function SpaceProfileCard(props: PropsType) {
           />
         )}
 
-        <CardBioSection bio={bio} link={profile.website_url} />
+        <CardBioSection
+          bio={bio}
+          link={profile.website_url}
+          title={profile.name || ""}
+        />
         <div className="flex flex-col grow gap-2 justify-center">
           <div className="flex flex-col lg:flex-row gap-2 lg:gap-4">
             <div>

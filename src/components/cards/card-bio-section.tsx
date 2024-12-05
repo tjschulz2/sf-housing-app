@@ -9,12 +9,14 @@ export default function CardBioSection({
   bio,
   link,
   bioPreviewSize = "small",
-  subjectName,
+  title,
+  description,
 }: {
   bio: string;
   link?: string | null;
   bioPreviewSize?: "small" | "medium" | "large";
-  subjectName?: string;
+  title: string;
+  description?: string;
 }) {
   const bioRef = useRef<HTMLParagraphElement>(null); // Create a ref for the bio paragraph
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -57,9 +59,10 @@ export default function CardBioSection({
         <div className="flex justify-between">
           {isOverflowing ? (
             <SeeMoreButton
-              color={"blue"}
               seeMoreText={bio ?? ""}
-              subjectName={subjectName}
+              title={title}
+              description={description}
+              followOnLink={link || ""}
             />
           ) : null}
           {validatedURL ? (

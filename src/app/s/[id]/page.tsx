@@ -7,7 +7,6 @@ import TwitterLogo from "@/images/twitter-logo.svg";
 import { housingMap } from "@/lib/configMaps";
 import { ExternalLink, Mail } from "lucide-react";
 import ContactMeButton from "@/components/contact-me-button";
-import CardBioSection from "@/components/cards/card-bio-section";
 import { CircleDollarSign, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";

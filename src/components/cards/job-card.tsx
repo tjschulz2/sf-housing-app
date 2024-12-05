@@ -50,11 +50,8 @@ export default function JobCard({ jobData }: JobCardProps) {
         bio={jobData.job_description || ""}
         link={jobData.company_site}
         bioPreviewSize="medium"
-        subjectName={
-          jobData.company_name && jobData.job_title
-            ? `${jobData.job_title} @ ${jobData.company_name}`
-            : "null"
-        }
+        title={jobData.job_title || ""}
+        description={jobData.company_name ? `@ ${jobData.company_name}` : ""}
       />
 
       {/* Middle Section: Job Description & Tags */}

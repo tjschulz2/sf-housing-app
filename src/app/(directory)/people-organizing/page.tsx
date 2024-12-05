@@ -1,7 +1,6 @@
 "use client";
 import styles from "./page.module.css";
 import { NextPage } from "next";
-import ProfileCard from "../../../components/profile-card";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { getOrganizerProfiles } from "../../../lib/utils/data";
@@ -60,60 +59,28 @@ const Directory: NextPage = () => {
       {todayProfiles && todayProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Today</h2>
-          <div className={styles.containerGrid}>
-            {todayProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="purple"
-              />
-            ))}
-          </div>
+          <div className={styles.containerGrid}></div>
         </>
       )}
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Week</h2>
-          <div className={styles.containerGrid}>
-            {thisWeekProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="purple"
-              />
-            ))}
-          </div>
+          <div className={styles.containerGrid}></div>
         </>
       )}
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">This Month</h2>
-          <div className={styles.containerGrid}>
-            {thisMonthProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="purple"
-              />
-            ))}
-          </div>
+          <div className={styles.containerGrid}></div>
         </>
       )}
 
       {olderProfiles && olderProfiles.length > 0 && (
         <>
           <h2 className="text-2xl font-bold my-4">Older</h2>
-          <div className={styles.containerGrid}>
-            {olderProfiles.map((profile) => (
-              <ProfileCard
-                key={profile.user_id}
-                profile={profile}
-                color="purple"
-              />
-            ))}
-          </div>
+          <div className={styles.containerGrid}></div>
         </>
       )}
     </>

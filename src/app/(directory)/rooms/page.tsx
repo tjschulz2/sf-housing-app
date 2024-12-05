@@ -1,6 +1,5 @@
 "use client";
 import styles from "./page.module.css";
-import ProfileCard from "../../../components/profile-card";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { differenceInDays } from "date-fns";
 import ActiveSpaceBanner from "@/components/spaces/active-space-banner";

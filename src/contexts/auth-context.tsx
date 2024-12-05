@@ -48,30 +48,30 @@ export default function AuthContextProvider({
         });
 
         // Check if the user is new or needs a refresh
-        const twitterFollowersAdded = await checkTwitterFollowersAdded(
-          session.userID
-        );
-        const needsRefresh = twitterFollowersAdded
-          ? (new Date().getTime() -
-              new Date(twitterFollowersAdded.updated_at).getTime()) /
-              (1000 * 60 * 60 * 24) >
-            30
-          : true;
+        // const twitterFollowersAdded = await checkTwitterFollowersAdded(
+        //   session.userID
+        // );
+        // const needsRefresh = twitterFollowersAdded
+        //   ? (new Date().getTime() -
+        //       new Date(twitterFollowersAdded.updated_at).getTime()) /
+        //       (1000 * 60 * 60 * 24) >
+        //     30
+        //   : true;
 
-        if (needsRefresh) {
-          // Make the request without awaiting it
-          axios
-            .post("/api/store-follow-redis", {
-              twitterID: session.twitterID,
-              uuid: session.userID,
-            })
-            .then(() => {
-              console.log("Twitter followers data refreshed successfully");
-            })
-            .catch((error) => {
-              console.error("Error refreshing Twitter followers data:", error);
-            });
-        }
+        // if (needsRefresh) {
+        //   // Make the request without awaiting it
+        //   axios
+        //     .post("/api/store-follow-redis", {
+        //       twitterID: session.twitterID,
+        //       uuid: session.userID,
+        //     })
+        //     .then(() => {
+        //       console.log("Twitter followers data refreshed successfully");
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error refreshing Twitter followers data:", error);
+        //     });
+        // }
       }
     }
     setAuthLoading(false);
