@@ -21,14 +21,14 @@ export default function WhiteGloveButton() {
         <Home className="mr-1 sm:mr-2 size-4" />
         Help me find housing
       </Link> */}
-      <Link
+      {/* <Link
         className="py-1 px-4"
         target="_blank"
         href="https://forms.gle/Se8eRH5WvS3TX9oj6"
       >
         <BriefcaseBusiness className="mr-1 sm:mr-2 size-4" />
         Jobs in SF
-      </Link>
+      </Link> */}
     </Button>
   );
 }
