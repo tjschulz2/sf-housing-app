@@ -14,8 +14,13 @@ const navConfig = [
     title: "Rooms",
   },
   {
+    path: "/jobs",
+    title: "Jobs",
+  },
+
+  {
     path: "/members",
-    title: "All members",
+    title: "Members",
   },
 ];
 

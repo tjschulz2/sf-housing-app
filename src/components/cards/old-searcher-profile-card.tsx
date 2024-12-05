@@ -15,7 +15,6 @@ import { addProtocolToURL, cleanURL, dateDiff } from "@/lib/utils/general";
 import ActivityStatusDot from "@/components/activity-status-dot";
 import { useAuthContext } from "@/contexts/auth-context";
 import { ExternalLink } from "lucide-react";
-import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
 
@@ -33,7 +32,9 @@ export default function SearcherProfileCard(props: PropsType) {
     ? dateDiff(profile.last_updated_date).diffDays
     : null;
 
-  const [commonFollowersCount, setCommonFollowersCount] = useState<number | null>(null);
+  const [commonFollowersCount, setCommonFollowersCount] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     if (isFirstProfile) {
@@ -45,14 +46,17 @@ export default function SearcherProfileCard(props: PropsType) {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ userID1: userSession.userID, userID2: profile.user_id }),
+              body: JSON.stringify({
+                userID1: userSession.userID,
+                userID2: profile.user_id,
+              }),
             });
-  
+
             if (response.status === 404) {
               setCommonFollowersCount(0); // Handle not found case
               return;
             }
-  
+
             const data = await response.json();
             if (response.ok) {
               setCommonFollowersCount(data.count);
@@ -71,12 +75,10 @@ export default function SearcherProfileCard(props: PropsType) {
           }
         }
       };
-  
+
       fetchCommonFollowersCount();
     }
   }, [userSession, profile.user_id, isFirstProfile]);
-  
-  
 
   return (
     <Card>
@@ -119,7 +121,6 @@ export default function SearcherProfileCard(props: PropsType) {
 
         <p>{commonFollowersCount}</p>
 
-        <CardBioSection bio={bio} link={profile.link} />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
             <CardListSection sectionTitle="Preference">

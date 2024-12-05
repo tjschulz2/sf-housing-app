@@ -77,7 +77,11 @@ export default function SearcherProfileCard(props: PropsType) {
           />
         )}
 
-        <CardBioSection bio={bio} link={profile.link} />
+        <CardBioSection
+          bio={bio}
+          link={profile.link}
+          title={profile.user?.name || ""}
+        />
         <div className="flex flex-col grow justify-center">
           <div className="flex flex-col gap-2">
             {/* <CardListSection sectionTitle="Preference">

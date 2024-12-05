@@ -31,14 +31,18 @@ const UserProfileImage = ({
   })();
 
   return (
-    <img
-      className={`rounded-full ${imgSizeClass} ${className}`}
-      alt="User profile image"
-      onError={() => {
-        setError(true);
-      }}
-      src={!src || error ? defaultAvatar : src}
-    />
+    <div
+      className={`rounded-full overflow-hidden bg-gray-200 ${imgSizeClass} ${className}`}
+    >
+      <img
+        className="w-full h-full object-cover"
+        alt="User profile image"
+        onError={() => {
+          setError(true);
+        }}
+        src={!src || error ? defaultAvatar : src}
+      />
+    </div>
   );
 };
 

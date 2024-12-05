@@ -7,7 +7,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`p-4 md:p-6 bg-[#FFFDF3] rounded-2xl flex flex-col gap-4 ${className}`}
+      className={`p-4 md:p-6 bg-[#FFFDF3] rounded-2xl flex flex-col gap-4 shadow-md hover:shadow-lg transition ${className}`}
       style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
     >
       {children}

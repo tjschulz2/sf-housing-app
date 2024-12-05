@@ -237,17 +237,6 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 {isHousingSearchProfile(profile)
                   ? housingDescription
                   : organizerDescription}
-                {isHousingSearchProfile(profile) ? (
-                  <SeeMoreButton
-                    color={color}
-                    seeMoreText={profile.pref_housemate_details ?? ""}
-                  />
-                ) : isOrganizerProfile(profile) ? (
-                  <SeeMoreButton
-                    color={color}
-                    seeMoreText={profile.pref_house_details ?? ""}
-                  />
-                ) : null}
               </div>
             </div>
             <p className={styles.wants1YearLeaseContainer} id="wants-text">
@@ -269,8 +258,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 {isHousingSearchProfile(profile) && profile.pref_move_in
                   ? housingMap.moveIn[profile.pref_move_in]
                   : isOrganizerProfile(profile) && profile.pref_lease_start
-                  ? housingMap.moveIn[profile.pref_lease_start]
-                  : null}
+                    ? housingMap.moveIn[profile.pref_lease_start]
+                    : null}
               </span>
             </p>
             {renderReferrer()}
@@ -387,10 +376,6 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
               <div className={styles.content}>
                 <span className={styles.wants}>About us: </span>
                 {communityDescription}{" "}
-                <SeeMoreButton
-                  color={color}
-                  seeMoreText={profile.description ?? ""}
-                />
               </div>
             </div>
             <p className={styles.wants1YearLeaseContainer} id="wants-text">
