@@ -53,14 +53,17 @@ export default function JobCard({ jobData }: JobCardProps) {
         title={jobData.job_title || ""}
         description={jobData.company_name ? `@ ${jobData.company_name}` : ""}
       />
-
       {/* Middle Section: Job Description & Tags */}
-      <div className="flex justify-between">
+      <div className="flex flex-wrap justify-between items-start w-full overflow-hidden gap-4">
         {/* Tags for Job Levels */}
         {jobData.job_levels && (
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap max-w-full overflow-hidden">
             {jobData.job_levels.map((level) => (
-              <Badge key={level} variant="outline">
+              <Badge
+                key={level}
+                variant="outline"
+                className="truncate max-w-full"
+              >
                 {LEVEL_TAGS[level]}
               </Badge>
             ))}
@@ -69,15 +72,19 @@ export default function JobCard({ jobData }: JobCardProps) {
 
         {/* Tags for Job Location */}
         {jobData.job_location && (
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap max-w-full overflow-hidden">
             {jobData.job_location.map((location) => (
-              <Badge key={location} variant="secondary">
+              <Badge
+                key={location}
+                variant="secondary"
+                className="truncate max-w-full"
+              >
                 {LOCATION_TAGS[location]}
               </Badge>
             ))}
           </div>
         )}
-      </div>
+      </div>{" "}
     </Card>
   );
 }
