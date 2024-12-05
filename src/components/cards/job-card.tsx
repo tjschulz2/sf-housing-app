@@ -19,7 +19,11 @@ export default function JobCard({ jobData }: JobCardProps) {
   return (
     <Card>
       <div className="flex justify-between gap-4">
-        <UserProfileImage size="large" src={jobData.company_logo_link || ""} />
+        <UserProfileImage
+          className="shrink-0"
+          size="large"
+          src={jobData.company_logo_link || ""}
+        />
         <div className="flex flex-col text-end items-end gap-4 lg:gap-8">
           <div>
             {jobData.job_title ? (
