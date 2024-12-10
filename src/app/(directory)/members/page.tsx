@@ -70,9 +70,11 @@ export default function MembersPage() {
   const maxPageNum = Math.ceil(totalUsers / BATCH_SIZE);
   return (
     <div className="flex flex-col gap-4 mb-6">
-      {/* <p className="text-solarisgreen">{totalUsers} members</p> */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-4 max-w-64">
-        <div id="pref-filter-group" className="flex flex-col gap-2 grow">
+      <div className="flex flex-row gap-4 mb-4 justify-between items-center">
+        <div
+          id="pref-filter-group"
+          className="flex flex-col gap-2 grow max-w-64"
+        >
           <Label htmlFor="Preferences">Sort by</Label>
           <div className="flex flex-row gap-2">
             <Select
@@ -103,6 +105,7 @@ export default function MembersPage() {
             </Select>
           </div>
         </div>
+        <p className="text-gray-500">{totalUsers} total members</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {members.map((member) => (

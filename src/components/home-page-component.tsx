@@ -144,12 +144,11 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
               />
             </div>
           </div>
-          <h1 className={styles.findHousemates}>
-            Find housemates, sublets, and coliving communities in the
-            SF tech scene
+          <h1 className="font-bold text-4xl leading-[2.75rem] py-4">
+            Find housemates, sublets, and coliving communities in the SF scene
           </h1>
           <p className={styles.thisIsAn}>
-            The SF housing directory of people you probably know
+            The housing directory of people you probably know
           </p>
           {renderContent()}
           {/* <div className={styles.membersBox}> */}
