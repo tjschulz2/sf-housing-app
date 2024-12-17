@@ -186,7 +186,7 @@ function Directory() {
   return (
     <>
       <div className="mb-8 flex gap-4 max-h-64">
-        <div className="grow">
+        <div className="grow min-w-[50%]">
           {userHousingSearchProfile ? (
             <ActiveProfileBanner refreshProfileData={refreshProfileData} />
           ) : (
@@ -208,7 +208,7 @@ function Directory() {
             </div>
           )}
         </div>
-        <div className="hidden lg:flex">
+        <div className="hidden xl:flex">
           <img
             className="rounded-md object-contain w-auto"
             src="/images/sponsorship/bind/bind-desktop.jpeg"
