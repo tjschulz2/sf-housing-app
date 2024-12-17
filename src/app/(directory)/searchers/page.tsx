@@ -185,7 +185,19 @@ function Directory() {
 
   return (
     <>
-      <div className="mb-8 flex gap-4">
+      <div className="mb-8 flex gap-4 flex-col xl:flex-row">
+        <Link
+          href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
+          target="_blank"
+          className="flex xl:hidden justify-center"
+        >
+          <img
+            className="rounded-md object-contain max-h-44"
+            src="/images/sponsorship/bind/bind-mobile.jpeg"
+            alt="Bind"
+          />
+        </Link>
+
         <div className="grow min-w-[50%]">
           {userHousingSearchProfile ? (
             <ActiveProfileBanner refreshProfileData={refreshProfileData} />
@@ -208,13 +220,17 @@ function Directory() {
             </div>
           )}
         </div>
-        <div className="hidden xl:flex max-h-52">
+        <Link
+          href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
+          target="_blank"
+          className="hidden xl:flex max-h-44"
+        >
           <img
             className="rounded-md object-contain w-auto"
             src="/images/sponsorship/bind/bind-desktop.jpeg"
             alt="Bind"
           />
-        </div>
+        </Link>
       </div>
       <FilterBar
         onFilterChange={handleFilterChange}
