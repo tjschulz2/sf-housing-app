@@ -19,6 +19,7 @@ import ActiveProfileBanner from "@/components/active-profile-banner";
 import EditSearcherProfileDialog from "@/components/edit-searcher-profile-dialog";
 import CardGrid from "@/components/cards/card-grid";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 function Directory() {
   const {
@@ -184,27 +185,53 @@ function Directory() {
 
   return (
     <>
-      <div className="mb-8">
-        {userHousingSearchProfile ? (
-          <ActiveProfileBanner refreshProfileData={refreshProfileData} />
-        ) : (
-          <div className="flex flex-col p-6 border-[1px] bg-[#F5F8F7] rounded-xl">
-            <h2 className="text-xl font-bold mb-4">
-              👋 Are you looking for housing?
-            </h2>
-            <span className="mb-4">
-              Create a profile to be discovered by communities and roommates
-            </span>
-            <EditSearcherProfileDialog
-              newProfile={true}
-              refreshProfileData={refreshProfileData}
-            >
-              <Button className="rounded-3xl p-6 bg-[#5279E0] hover:bg-[#7493E2] w-fit">
-                Add me
-              </Button>
-            </EditSearcherProfileDialog>
-          </div>
-        )}
+      <div className="mb-8 flex gap-4 flex-col xl:flex-row">
+        <div className="flex xl:hidden justify-center">
+          <Link
+            href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
+            target="_blank"
+          >
+            <img
+              className="rounded-md object-contain max-h-44"
+              src="/images/sponsorship/bind/bind-mobile.jpeg"
+              alt="Bind"
+            />
+          </Link>
+        </div>
+
+        <div className="grow min-w-[50%]">
+          {userHousingSearchProfile ? (
+            <ActiveProfileBanner refreshProfileData={refreshProfileData} />
+          ) : (
+            <div className="flex flex-col p-6 border-[1px] bg-[#F5F8F7] rounded-xl">
+              <h2 className="text-xl font-bold mb-4">
+                👋 Are you looking for housing?
+              </h2>
+              <span className="mb-4">
+                Create a profile to be discovered by communities and roommates
+              </span>
+              <EditSearcherProfileDialog
+                newProfile={true}
+                refreshProfileData={refreshProfileData}
+              >
+                <Button className="rounded-3xl p-6 bg-[#5279E0] hover:bg-[#7493E2] w-fit">
+                  Add me
+                </Button>
+              </EditSearcherProfileDialog>
+            </div>
+          )}
+        </div>
+        <Link
+          href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
+          target="_blank"
+          className="hidden xl:inline-block shrink"
+        >
+          <img
+            className="object-contain max-h-44 rounded-lg"
+            src="/images/sponsorship/bind/bind-desktop.jpeg"
+            alt="Bind"
+          />
+        </Link>
       </div>
       <FilterBar
         onFilterChange={handleFilterChange}
