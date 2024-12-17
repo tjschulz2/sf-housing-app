@@ -223,10 +223,10 @@ function Directory() {
         <Link
           href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
           target="_blank"
-          className="hidden xl:flex max-h-44"
+          className="hidden xl:inline-block  rounded-md shrink"
         >
           <img
-            className="rounded-md object-contain w-auto"
+            className="object-contain max-h-44"
             src="/images/sponsorship/bind/bind-desktop.jpeg"
             alt="Bind"
           />
