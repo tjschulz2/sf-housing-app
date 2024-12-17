@@ -186,17 +186,18 @@ function Directory() {
   return (
     <>
       <div className="mb-8 flex gap-4 flex-col xl:flex-row">
-        <Link
-          href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
-          target="_blank"
-          className="flex xl:hidden justify-center"
-        >
-          <img
-            className="rounded-md object-contain max-h-44"
-            src="/images/sponsorship/bind/bind-mobile.jpeg"
-            alt="Bind"
-          />
-        </Link>
+        <div className="flex xl:hidden justify-center">
+          <Link
+            href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
+            target="_blank"
+          >
+            <img
+              className="rounded-md object-contain max-h-44"
+              src="/images/sponsorship/bind/bind-mobile.jpeg"
+              alt="Bind"
+            />
+          </Link>
+        </div>
 
         <div className="grow min-w-[50%]">
           {userHousingSearchProfile ? (
