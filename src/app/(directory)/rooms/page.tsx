@@ -10,7 +10,8 @@ import CardGrid from "@/components/cards/card-grid";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { RoomSponsorBanner } from "@/components/room-sponsor-banner";
-
+import accelr8Ski from "/public/images/sponsorship/accelr8/accelr8-ski.png";
+import Image from "next/image";
 const Directory = () => {
   const {
     userSpaceListing,
@@ -72,24 +73,44 @@ const Directory = () => {
 
   return (
     <>
-      {userSpaceListing ? (
-        <ActiveSpaceBanner />
-      ) : (
-        <div className="flex flex-col p-6 border-[1px] bg-[#F7FCEF] rounded-xl">
-          <h2 className="text-xl font-bold mb-4">
-            🏡 Have a co-living space, sublet, or vacant room?
-          </h2>
-          <span className={styles.addInfoText}>
-            Add your space to be discovered by people looking for housing
-          </span>
-          <EditSpaceListingDialog newListing={true}>
-            {/* <button className={styles.addMeButton}> Add my space</button> */}
-            <Button className="rounded-3xl p-6 bg-[#519F69] hover:bg-[#74B183] w-fit">
-              Add my space
-            </Button>
-          </EditSpaceListingDialog>
+      <div className="flex flex-col lg:flex-row">
+        <div className="flex justify-center lg:hidden mb-4">
+          <Image
+            src={accelr8Ski}
+            className="max-h-40 w-auto"
+            alt="accelr8 sponsorship banner"
+          />
         </div>
-      )}
+        <div className="grow">
+          {userSpaceListing ? (
+            <ActiveSpaceBanner />
+          ) : (
+            <div className="flex flex-col p-6 border-[1px] bg-[#F7FCEF] rounded-xl">
+              <h2 className="text-xl font-bold mb-4">
+                🏡 Have a co-living space, sublet, or vacant room?
+              </h2>
+              <span className={styles.addInfoText}>
+                Add your space to be discovered by people looking for housing
+              </span>
+              <EditSpaceListingDialog newListing={true}>
+                {/* <button className={styles.addMeButton}> Add my space</button> */}
+                <Button className="rounded-3xl p-6 bg-[#519F69] hover:bg-[#74B183] w-fit">
+                  Add my space
+                </Button>
+              </EditSpaceListingDialog>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col justify-center hidden lg:flex ml-4">
+          <Image
+            src={accelr8Ski}
+            className="max-h-48 w-auto"
+            alt="accelr8 sponsorship banner"
+          />
+        </div>
+      </div>
+
       {/* <RoomSponsorBanner /> */}
       {todayProfiles && todayProfiles.length > 0 && (
         <>
