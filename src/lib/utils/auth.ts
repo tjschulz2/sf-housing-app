@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import { createClient } from "@/utils/supabase/server";
 
 export async function getUserSession() {
   // Returns most pertinent data from active session
@@ -71,6 +72,8 @@ export async function signout() {
 }
 
 export async function signInWithTwitter() {
+  "use server";
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "twitter",
     options: {
