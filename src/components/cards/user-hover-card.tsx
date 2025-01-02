@@ -36,7 +36,7 @@ export function UserHoverCard({
           <UserProfileImage src={userData?.twitter_avatar_url} size="medium" />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <TwitterLogo className="overflow-visible" fill="#3191e7" />
+              {/* <TwitterLogo className="overflow-visible" fill="#3191e7" /> */}
               <h4 className="text-xs">@{userData?.twitter_handle}</h4>
             </div>
             <div className="flex items-center">

@@ -12,11 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import { addProtocolToURL } from "@/lib/utils/general";
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ id: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   const spaceDetails = await getSpaceDetails(params.id);
   const metaTitle = spaceDetails?.name || "";
@@ -120,7 +118,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
                   @{userDetails?.twitter_handle}
                 </span>
-                <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+                {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
               </Link>
             </div>
             {/* {spaceDetails.contact_email ? (

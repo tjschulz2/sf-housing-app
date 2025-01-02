@@ -59,7 +59,7 @@ export default function SearcherProfileCard(props: PropsType) {
             <span className="text-blue-500 hover:text-blue-400 py-2 max-w-full truncate">
               @{profile.user?.twitter_handle}
             </span>
-            <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+            {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
           </Link>
           <ContactMeButton
             phoneNum={profile.contact_phone}

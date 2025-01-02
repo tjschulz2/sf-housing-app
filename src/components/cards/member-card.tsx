@@ -45,7 +45,7 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
           ) : null}
         </div>
         <Link target="_blank" href={`https://x.com/${member.twitter_handle}`}>
-          <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+          {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
         </Link>
       </div>
     </Card>

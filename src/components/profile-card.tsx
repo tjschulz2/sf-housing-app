@@ -226,7 +226,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   >
                     @{twitterHandle}
                   </div>
-                  <TwitterLogo fill={svgImage} className={styles.vectorIcon1} />
+                  {/* <TwitterLogo fill={svgImage} className={styles.vectorIcon1} /> */}
                 </div>
                 {/* <FollowedBy profile={profile} /> */}
               </a>
@@ -258,8 +258,8 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                 {isHousingSearchProfile(profile) && profile.pref_move_in
                   ? housingMap.moveIn[profile.pref_move_in]
                   : isOrganizerProfile(profile) && profile.pref_lease_start
-                    ? housingMap.moveIn[profile.pref_lease_start]
-                    : null}
+                  ? housingMap.moveIn[profile.pref_lease_start]
+                  : null}
               </span>
             </p>
             {renderReferrer()}
@@ -367,7 +367,7 @@ const ProfileCard = ({ profile, color }: ProfileCardProps) => {
                   >
                     @{user?.twitter_handle}
                   </div>
-                  <TwitterLogo fill={svgImage} className={styles.vectorIcon1} />
+                  {/* <TwitterLogo fill={svgImage} className={styles.vectorIcon1} /> */}
                 </div>
                 {/* <FollowedBy profile={profile} /> */}
               </div>

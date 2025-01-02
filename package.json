@@ -59,7 +59,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.0.1",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node-fetch": "^3.0.0",
     "autoprefixer": "^10.4.15",
