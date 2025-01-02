@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import { addProtocolToURL } from "@/lib/utils/general";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ id: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const spaceDetails = await getSpaceDetails(params.id);
   const metaTitle = spaceDetails?.name || "";
   const metaImage = spaceDetails?.image_url || "";
@@ -44,7 +45,8 @@ export async function generateMetadata({
   return metadata;
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const spaceDetails = await getSpaceDetails(params.id);
   const userDetails = await getUserData(spaceDetails?.user_id);
   if (!spaceDetails || !userDetails) {

@@ -55,25 +55,25 @@ export default function DirectoryLayout({
 
   const { userData, userSession, authLoading } = useAuthContext();
 
-  useEffect(() => {
-    async function handleAuthCheck() {
-      if (!authLoading) {
-        if (!userSession) {
-          router.replace("/");
-          return;
-        }
+  // useEffect(() => {
+  //   async function handleAuthCheck() {
+  //     if (!authLoading) {
+  //       if (!userSession) {
+  //         router.replace("/");
+  //         return;
+  //       }
 
-        if (!userData) {
-          await signout();
-          router.replace("/");
-          return;
-        }
+  //       if (!userData) {
+  //         await signout();
+  //         router.replace("/");
+  //         return;
+  //       }
 
-        await refreshUserHousingSearchProfileData(userSession.userID);
-      }
-    }
-    handleAuthCheck();
-  }, [authLoading, router, userData, userSession]);
+  //       await refreshUserHousingSearchProfileData(userSession.userID);
+  //     }
+  //   }
+  //   handleAuthCheck();
+  // }, [authLoading, router, userData, userSession]);
 
   async function refreshUserHousingSearchProfileData(userID: string) {
     const userSearchProfile = await getUserHousingSearchProfile(userID);

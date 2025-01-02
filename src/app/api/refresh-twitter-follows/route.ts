@@ -10,7 +10,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 // in refresh-twitter-follows/route.ts
 export async function GET() {
-  const headersList = headers();
+  const headersList = await headers();
   try {
     const jwt = headersList.get("accessToken");
     if (!jwt) {

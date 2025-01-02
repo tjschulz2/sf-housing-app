@@ -15,6 +15,7 @@ import { signInWithTwitter } from "../lib/utils/auth";
 import { differenceInDays } from "date-fns";
 import { MovingBorderButton } from "./ui/moving-border-button";
 import Head from "next/head";
+import { signInWithTwitterAction } from "@/app/auth/actions";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -103,7 +104,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
           <Link
             href=""
             className={styles.signInSmall}
-            onClick={signInWithTwitter}
+            onClick={signInWithTwitterAction}
           >
             Have an account? Sign in
           </Link>

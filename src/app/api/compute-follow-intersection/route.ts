@@ -43,7 +43,7 @@ async function computeFollowIntersectionServerSide(
 export async function POST(request: Request) {
     try {
         console.log("got here");
-        const headersList = headers();
+        const headersList = await headers();
         const reqBody = await request.json();
         const { userID1, userID2 }: { userID1: string; userID2: string } =
             reqBody;

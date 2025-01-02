@@ -72,7 +72,6 @@ export async function signout() {
 }
 
 export async function signInWithTwitter() {
-  "use server";
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "twitter",
