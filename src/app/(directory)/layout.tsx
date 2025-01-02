@@ -19,7 +19,6 @@ import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
-import { LoadScript } from "@react-google-maps/api";
 import Head from "next/head";
 
 export type ProfilesContextType = {
