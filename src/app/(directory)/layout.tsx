@@ -79,42 +79,38 @@ export default function DirectoryLayout({
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
-  if (userSession && userData) {
-    return (
-      <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
-        <HeaderBarInApp userSession={userSession} />
-        <div className="bg-grid-green-800/[0.1] relative flex flex-col items-center justify-center">
-          <div
-            className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
-          >
-            <div>
-              <div className={styles.topArea}>
-                <div className={styles.navbarContainer}>
-                  <Navbar />
-                </div>
+  return (
+    <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
+      <HeaderBarInApp />
+      <div className="bg-grid-green-800/[0.1] relative flex flex-col items-center justify-center">
+        <div
+          className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
+        >
+          <div>
+            <div className={styles.topArea}>
+              <div className={styles.navbarContainer}>
+                <Navbar />
               </div>
-              <ProfilesContext.Provider
-                value={{
-                  searcherProfiles,
-                  setSearcherProfiles,
-                  searcherProfilesFilter,
-                  setSearcherProfilesFilter,
-                  userHousingSearchProfile,
-                  refreshUserHousingSearchProfileData,
-                }}
-              >
-                <SpacesContextProvider>
-                  <div className={styles.directoryContainer}>{children}</div>
-                </SpacesContextProvider>
-              </ProfilesContext.Provider>
             </div>
-            <Footer />
+            <ProfilesContext.Provider
+              value={{
+                searcherProfiles,
+                setSearcherProfiles,
+                searcherProfilesFilter,
+                setSearcherProfilesFilter,
+                userHousingSearchProfile,
+                refreshUserHousingSearchProfileData,
+              }}
+            >
+              <SpacesContextProvider>
+                <div className={styles.directoryContainer}>{children}</div>
+              </SpacesContextProvider>
+            </ProfilesContext.Provider>
           </div>
-          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+          <Footer />
         </div>
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
       </div>
-    );
-  } else {
-    return <LoadingSpinner />;
-  }
+    </div>
+  );
 }

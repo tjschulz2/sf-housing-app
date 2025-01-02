@@ -23,7 +23,6 @@ export function UserHoverCard({
   if (!userData) {
     return null;
   }
-  console.log(userData);
   return (
     <HoverCard openDelay={100} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>

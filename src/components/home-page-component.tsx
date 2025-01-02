@@ -101,13 +101,23 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
               Apply
             </MovingBorderButton> */}
           </Link>
-          <Link
+          {/* <Link
             href=""
             className={styles.signInSmall}
-            onClick={signInWithTwitterAction}
+            onClick={() => signInWithTwitterAction()}
           >
             Have an account? Sign in
-          </Link>
+          </Link> */}
+          <form>
+            <input type="hidden" name="referralCode" value={"3534"} />
+            <button
+              formAction={signInWithTwitterAction}
+              type="submit"
+              className={styles.signInSmall}
+            >
+              Have an account? Sign in
+            </button>
+          </form>
         </div>
       );
     }

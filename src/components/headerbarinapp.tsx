@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./home-page-component.module.css";
 import InviteButton from "../components/invite-button/invite-button";
 import Dropdown from "../components/dropdown/dropdown";
 import WhiteGloveButton from "../components/whiteglove-button/whiteglove-button";
+import { createClient } from "@/utils/supabase/client";
+import { type Session } from "@supabase/supabase-js";
 
 interface HeaderBarInAppProps {
   userSession: {
@@ -11,12 +13,30 @@ interface HeaderBarInAppProps {
   };
 }
 
-export default function HeaderBarInApp({ userSession }: HeaderBarInAppProps) {
+export default function HeaderBarInApp() {
   const [isOpen, setIsOpen] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    async function pullSessionData() {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.getSession();
+      if (data.session) {
+        setSession(data.session);
+      }
+    }
+    pullSessionData();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!session) {
+    console.log("no session");
+    return null;
+  }
+  console.log(session);
 
   return (
     <header
@@ -56,7 +76,7 @@ export default function HeaderBarInApp({ userSession }: HeaderBarInAppProps) {
           <InviteButton />
         </div>
 
-        <Dropdown userAvatarURL={userSession.twitterAvatarURL} />
+        <Dropdown userAvatarURL={session.user.user_metadata.avatar_url} />
       </div>
     </header>
   );

@@ -16,6 +16,7 @@ function isAccessibleWithoutAuth(pathname: string) {
 export async function middleware(request: NextRequest) {
   const { response, user, supabase } = await updateSession(request);
 
+  console.log("MIDDLEWARE - USER: ", user.data.user?.email);
   if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && user.error) {
     return NextResponse.redirect(new URL("/", request.url));
   }
