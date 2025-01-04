@@ -89,7 +89,7 @@ export async function handleSignIn(referralCode: string | null) {
           console.error(error);
         }
       }
-      return;
+      return { success: "true", message: null };
     }
 
     if (!userData && !referralCode) {
@@ -104,14 +104,17 @@ export async function handleSignIn(referralCode: string | null) {
       if (referral.status !== "unclaimed") {
         // TODO: display message to user: `This referral is ${referral.status}`
 
-        console.error("This referral is", referral.status);
-        return;
+        console.error("This referral is");
+        return {
+          success: "false",
+          message: `This referral is ${referral.status}`,
+        };
       }
 
       const claimResult = await claimReferral(referralCode);
       if (claimResult?.status !== "success") {
         console.error("Failed to claim referral");
-        return;
+        return { success: "false", message: "failed to claim referral" };
         // TODO: display failed to claim referral message to user
       }
 
@@ -134,11 +137,11 @@ export async function handleSignIn(referralCode: string | null) {
       initialSignIn = true;
     }
   } catch (err) {
-    return { status: "error", message: err };
+    return { success: false, message: err };
   }
 
   return {
-    status: "success",
+    success: true,
     message: initialSignIn ? "initial sign in" : null,
   };
 }

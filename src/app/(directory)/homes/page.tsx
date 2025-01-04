@@ -9,7 +9,7 @@ import SpaceProfileCard from "@/components/cards/space-profile-card";
 import CardGrid from "@/components/cards/card-grid";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { Button } from "@/components/ui/button";
-import Map from "@/components/map";
+// import Map from "@/components/map";
 import RentalsModal from "@/components/rentalsmodal";
 import { getRentalsWithImages } from "../../../lib/utils/data";
 import EmailSignup from "@/app/email-signup/page";
@@ -175,11 +175,11 @@ const Directory: React.FC = () => {
       <div
         className={`absolute top-[3.46rem] left-0 bottom-0 w-1/2 h-[calc(100vh-9.75rem)] ${styles.mapContainer}`}
       >
-        <Map
+        {/* <Map
           hoveredListingId={hoveredListingId}
           openModal={handleListingClick}
           listings={listings}
-        />
+        /> */}
       </div>
       <div
         className={`ml-auto w-1/2 overflow-y-auto lg:max-h-[70vh] ${styles.contentContainer}`}

@@ -17,7 +17,8 @@ export async function GET(request: Request) {
     if (data.session) {
       // if valid session, confirm presence in users table. if not, initialize as new user with 'referralCode' (update referrals tables + users table)
       // (middleware will confirm users table presence during each route)
-      await handleSignIn(referralCode);
+      const signInResult = await handleSignIn(referralCode);
+      console.log({ signInResult });
     }
   }
 
