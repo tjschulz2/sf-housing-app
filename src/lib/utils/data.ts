@@ -513,7 +513,6 @@ export async function getReferralDetails(referralCode: string) {
     referralCreatedAt: data?.created_at,
     originatorID: data?.originator_id,
     referralID: data?.referral_id,
-    // @ts-ignore
     originatorName: data?.originator.name,
     status,
   };

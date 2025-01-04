@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
+import { handleSignIn } from "../actions";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -14,8 +15,9 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data } = await supabase.auth.exchangeCodeForSession(code);
     if (data.session) {
-      // on clicking sign in with twitter, should do serverside check of code and insetion into users table (if already exists in table, continue straight to twitter signin)
-      // after successful twitter signin, redirect here. if valid session, continue (middleware will confirm users table presence during each route)
+      // if valid session, confirm presence in users table. if not, initialize as new user with 'referralCode' (update referrals tables + users table)
+      // (middleware will confirm users table presence during each route)
+      await handleSignIn(referralCode);
     }
   }
 
