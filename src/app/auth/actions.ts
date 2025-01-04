@@ -4,21 +4,54 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-async function getAuthUserRecord() {
+export async function getIsFullUser() {
+  const supabase = await createClient(); // Initialize Supabase client
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
+
+  if (sessionError) {
+    console.error("Error fetching session:", sessionError);
+    return false;
+  }
+
+  const userId = sessionData.session?.user?.id;
+
+  if (!userId) {
+    console.error("No user ID found in session.");
+    return false;
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("user_id") // Selecting only the primary key for efficiency
+    .eq("user_id", userId)
+    .limit(1) // Limit to one record since we only need to check existence
+    .single(); // Fetch a single record
+
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 is the error code for no rows found
+    console.error("Error querying users table:", error);
+    return false;
+  }
+
+  return !!data; // Returns true if data exists, false otherwise
+}
+
+export async function getAuthUserRecord() {
   const supabase = await createClient();
-  const session = await supabase.auth.getSession();
-  const userId = session.data.session?.user?.id;
+  const { data, error } = await supabase.auth.getSession();
+  const userId = data.session?.user?.id;
   if (!userId) {
     console.error("No user ID found");
     return;
   }
-  const { data, error } = await supabase
+  const { data: userData, error: userError } = await supabase
     .from("users")
     .select("*")
     .eq("user_id", userId)
     .maybeSingle();
 
-  return data;
+  return userData;
 }
 
 export async function signInWithTwitterAction(formData: FormData) {
