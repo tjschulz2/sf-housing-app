@@ -135,6 +135,7 @@ export default function SpaceListingForm({
   const [submitted, setSubmitted] = useState(false);
 
   const parseResult = formSchema.safeParse(userSpaceListing);
+  console.log({ userSpaceListing });
   const parsedSpaceData = parseResult.success ? parseResult.data : null;
   if (!parseResult.success) {
     console.error({ parseResult });
