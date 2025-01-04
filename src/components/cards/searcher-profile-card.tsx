@@ -70,12 +70,12 @@ export default function SearcherProfileCard(props: PropsType) {
         </div>
       </CardTop>
       <CardBottom>
-        {userSession && (
+        {/* {userSession && (
           <CommonFollowers
             userID1={userSession.userID}
             userID2={profile.user_id}
           />
-        )}
+        )} */}
 
         <CardBioSection
           bio={bio}

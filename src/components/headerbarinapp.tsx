@@ -36,8 +36,6 @@ export default function HeaderBarInApp() {
     console.log("no session");
     return null;
   }
-  console.log(session);
-
   return (
     <header
       className={`

@@ -20,6 +20,7 @@ import { getUserSession } from "@/lib/utils/auth";
 import { confirmHousingSearchProfileActive } from "@/lib/utils/data";
 import { useToast } from "@/components/ui/use-toast";
 import deriveActivityLevel from "@/lib/configMaps";
+import { createClient } from "@/utils/supabase/client";
 
 export default function ActiveProfileBanner({
   refreshProfileData,
@@ -39,26 +40,35 @@ export default function ActiveProfileBanner({
     daysSinceConfirmed !== null ? daysSinceConfirmed < 1 : false;
 
   async function handleConfirm() {
-    setConfirmationPending(true);
-    const session = await getUserSession();
-    if (!session?.userID) {
-      return;
-    }
-    const { data, error } = await confirmHousingSearchProfileActive(
-      session.userID
-    );
-    setConfirmationPending(false);
-    if (error) {
+    try {
+      setConfirmationPending(true);
+      const supabase = createClient();
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+      const userId = sessionData.session?.user.id;
+      if (!userId) {
+        return;
+      }
+      const { data, error } = await confirmHousingSearchProfileActive(userId);
+      if (error) {
+        toast({
+          title: "Failed to confirm status",
+        });
+      } else {
+        await refreshUserHousingSearchProfileData?.(userId);
+        refreshProfileData();
+
+        toast({
+          title: "Successfully confirmed search status",
+        });
+      }
+    } catch (err) {
+      console.error(err);
       toast({
         title: "Failed to confirm status",
       });
-    } else {
-      await refreshUserHousingSearchProfileData?.(session.userID);
-      refreshProfileData();
-
-      toast({
-        title: "Successfully confirmed search status",
-      });
+    } finally {
+      setConfirmationPending(false);
     }
   }
 

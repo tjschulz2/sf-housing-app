@@ -11,7 +11,6 @@ import {
 } from "../lib/utils/data";
 import Link from "next/link";
 import React from "react";
-import { signInWithTwitter } from "../lib/utils/auth";
 import { differenceInDays } from "date-fns";
 import { MovingBorderButton } from "./ui/moving-border-button";
 import Head from "next/head";

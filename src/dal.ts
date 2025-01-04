@@ -40,3 +40,64 @@ export async function genReferralLink() {
 
   return newLink;
 }
+
+export async function getUserHousingSearchProfile() {
+  const supabase = await createClient();
+  const session = await supabase.auth.getSession();
+  const userId = session.data.session?.user.id;
+  if (!userId) {
+    console.error("No user ID found");
+    return;
+  }
+  const { data, error } = await supabase
+    .from("housing_search_profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}
+
+export async function getHousingSearchProfiles(
+  startIdx: number = 0,
+  count: number = 25,
+  filters: SearcherProfilesFilterType = {}
+) {
+  const { leaseLength, housemateCount, movingTime } = filters;
+  const supabase = await createClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error(userError);
+    return;
+  }
+  let query = supabase
+    .from("housing_search_profiles")
+    .select(
+      `
+      *, user:users(name, twitter_handle, twitter_avatar_url)
+    `
+    )
+    .range(startIdx, startIdx + count - 1)
+    .order("last_updated_date", { ascending: false });
+
+  if (leaseLength) {
+    query = query.eq("pref_housing_type", leaseLength);
+  }
+  if (housemateCount) {
+    query = query.eq("pref_housemate_count", housemateCount);
+  }
+  if (movingTime) {
+    query = query.eq("pref_move_in", movingTime);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}

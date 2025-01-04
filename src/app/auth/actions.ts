@@ -6,15 +6,14 @@ import { redirect } from "next/navigation";
 
 export async function getIsFullUser() {
   const supabase = await createClient(); // Initialize Supabase client
-  const { data: sessionData, error: sessionError } =
-    await supabase.auth.getSession();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (sessionError) {
-    console.error("Error fetching session:", sessionError);
+  if (userError) {
+    console.error("Error fetching session:", userError);
     return false;
   }
 
-  const userId = sessionData.session?.user?.id;
+  const userId = userData.user.id;
 
   if (!userId) {
     console.error("No user ID found in session.");

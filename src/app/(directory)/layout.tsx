@@ -13,13 +13,14 @@ import {
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { getUserSession } from "../../lib/utils/auth";
-import { getUserData, getUserHousingSearchProfile } from "../../lib/utils/data";
+import { getUserData } from "../../lib/utils/data";
 import Dropdown from "../../components/dropdown/dropdown";
 import Footer from "@/components/footer";
 import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
 import Head from "next/head";
+import { getUserHousingSearchProfile } from "@/dal";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -54,28 +55,12 @@ export default function DirectoryLayout({
 
   const { userData, userSession, authLoading } = useAuthContext();
 
-  // useEffect(() => {
-  //   async function handleAuthCheck() {
-  //     if (!authLoading) {
-  //       if (!userSession) {
-  //         router.replace("/");
-  //         return;
-  //       }
+  useEffect(() => {
+    refreshUserHousingSearchProfileData();
+  }, [authLoading, router, userData, userSession]);
 
-  //       if (!userData) {
-  //         await signout();
-  //         router.replace("/");
-  //         return;
-  //       }
-
-  //       await refreshUserHousingSearchProfileData(userSession.userID);
-  //     }
-  //   }
-  //   handleAuthCheck();
-  // }, [authLoading, router, userData, userSession]);
-
-  async function refreshUserHousingSearchProfileData(userID: string) {
-    const userSearchProfile = await getUserHousingSearchProfile(userID);
+  async function refreshUserHousingSearchProfileData() {
+    const userSearchProfile = await getUserHousingSearchProfile();
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 

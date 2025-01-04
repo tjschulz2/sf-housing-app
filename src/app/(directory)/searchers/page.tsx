@@ -10,7 +10,8 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { getHousingSearchProfiles } from "../../../lib/utils/data";
+// import { getHousingSearchProfiles } from "../../../lib/utils/data";
+import { getHousingSearchProfiles } from "@/dal";
 import { differenceInDays } from "date-fns";
 import { ProfilesContext, ProfilesContextType } from "../layout";
 import FilterBar from "../../../components/filter-bar";
