@@ -15,10 +15,10 @@ function isAccessibleWithoutAuth(pathname: string) {
 }
 
 export async function middleware(request: NextRequest) {
-  const startTime = performance.now(); // Millisecond precision with sub-millisecond accuracy
+  const startTime = performance.now();
 
   const startUpdateSession = performance.now();
-  const { response, user, supabase } = await updateSession(request);
+  const { response, user, supabase, isFullUser } = await updateSession(request);
   const durationUpdateSession = performance.now() - startUpdateSession;
   console.log(
     `Middleware updateSession execution time: ${durationUpdateSession.toFixed(
@@ -28,21 +28,22 @@ export async function middleware(request: NextRequest) {
 
   // const isFullUser = await getIsFullUser();
 
-  if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && user.error) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && !isFullUser) {
+  // if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && user.error) {
   //   return NextResponse.redirect(new URL("/", request.url));
   // }
 
-  if (request.nextUrl.pathname === "/" && !user.error) {
+  if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && !isFullUser) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // if (request.nextUrl.pathname === "/" && !user.error) {
+  //   return NextResponse.redirect(new URL("/searchers", request.url));
+  // }
+
+  if (request.nextUrl.pathname === "/" && isFullUser) {
     return NextResponse.redirect(new URL("/searchers", request.url));
   }
 
-  // if (request.nextUrl.pathname === "/" && isFullUser) {
-  //   return NextResponse.redirect(new URL("/searchers", request.url));
-  // }
   const durationInMs = performance.now() - startTime;
   console.log(`Middleware execution time: ${durationInMs.toFixed(3)} ms`);
 

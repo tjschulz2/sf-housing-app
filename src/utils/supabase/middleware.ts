@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { getIsFullUser } from "@/app/auth/actions";
 
 export const updateSession = async (request: NextRequest) => {
   // Create an unmodified response
@@ -34,7 +35,12 @@ export const updateSession = async (request: NextRequest) => {
 
   // This will refresh session if expired - required for Server Components
   // https://supabase.com/docs/guides/auth/server-side/nextjs
-  const user = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  return { response, user, supabase };
+  const isFullUser = user ? await getIsFullUser(user.id) : false;
+
+  return { response, user, supabase, isFullUser };
 };

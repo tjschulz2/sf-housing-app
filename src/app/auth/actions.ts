@@ -4,20 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function getIsFullUser() {
+export async function getIsFullUser(userId: string) {
   const supabase = await createClient(); // Initialize Supabase client
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  const userId = user?.id;
-
-  if (!userId) {
-    console.error("Error fetching session:", userError);
-    return false;
-  }
 
   const { data, error } = await supabase
     .from("users")
