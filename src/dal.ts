@@ -121,3 +121,22 @@ export async function getUserSpaceListing() {
     return data;
   }
 }
+
+export async function getCommunities(start: number = 0, count: number = 10) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("communities")
+    .select(
+      `
+      *, user:users(name, twitter_handle, twitter_avatar_url, user_id, created_at)
+    `
+    )
+    .order("last_updated_date", { ascending: false })
+    .range(start, start + count - 1);
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+}

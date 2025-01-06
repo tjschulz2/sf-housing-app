@@ -19,6 +19,7 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
             <UserProfileImage
               src={member.twitter_avatar_url}
               size="medium-dynamic"
+              className="flex-shrink-0"
             />
             <div className="text-sm font-semibold md:text-md break-words">
               {member.name}

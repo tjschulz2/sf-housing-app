@@ -1,6 +1,7 @@
 "use client";
 
-import { getCommunities } from "@/lib/utils/data";
+// import { getCommunities } from "@/lib/utils/data";
+import { getCommunities } from "@/dal";
 import { getUserSpaceListing } from "@/dal";
 import {
   createContext,

@@ -246,7 +246,7 @@ function Directory() {
 
       {todayProfiles && todayProfiles.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold my-4">Today</h2>
+          <h2 className="text-2xl font-bold my-4">Updated today</h2>
           <CardGrid>
             {todayProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
@@ -257,7 +257,7 @@ function Directory() {
 
       {thisWeekProfiles && thisWeekProfiles.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold my-4">This Week</h2>
+          <h2 className="text-2xl font-bold my-4">This week</h2>
           <CardGrid>
             {thisWeekProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
@@ -298,7 +298,7 @@ function Directory() {
 
       {thisMonthProfiles && thisMonthProfiles.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold my-4">This Month</h2>
+          <h2 className="text-2xl font-bold my-4">This month</h2>
           <CardGrid>
             {thisMonthProfiles.map((profile) => (
               <SearcherProfileCard key={profile.user_id} profile={profile} />
