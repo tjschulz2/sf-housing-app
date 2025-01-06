@@ -16,12 +16,12 @@ export default function ReferralBadge({
   userID,
   showAvatar = true,
   textSize = "sm",
-  withLink = true,
+  allowHoverCard = true,
 }: {
   userID: string;
   showAvatar?: boolean;
   textSize?: "xs" | "sm" | "md";
-  withLink?: boolean;
+  allowHoverCard?: boolean;
 }) {
   const [referrer, setReferrer] = useState<MemberUserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +40,7 @@ export default function ReferralBadge({
   }, [userID]);
 
   if (referrer) {
-    if (withLink) {
+    if (allowHoverCard) {
       return (
         <UserHoverCard userData={referrer}>
           <a
@@ -66,23 +66,19 @@ export default function ReferralBadge({
       );
     } else {
       return (
-        <UserHoverCard userData={referrer} withLink={withLink}>
-          <div className="flex items-center no-underline">
-            {showAvatar ? (
-              <span className="mx-1">
-                <UserProfileImage
-                  size="small"
-                  src={referrer.twitter_avatar_url}
-                />
-              </span>
-            ) : null}
-            <span
-              className={`text-blue-500 hover:text-blue-400 text-${textSize}`}
-            >
-              {referrer.name?.split(" ").slice(0, 2).join(" ")}
+        <div className="flex items-center no-underline">
+          {showAvatar ? (
+            <span className="mx-1">
+              <UserProfileImage
+                size="small"
+                src={referrer.twitter_avatar_url}
+              />
             </span>
-          </div>
-        </UserHoverCard>
+          ) : null}
+          <span className={`text-blue-500 text-${textSize}`}>
+            {referrer.name?.split(" ").slice(0, 2).join(" ")}
+          </span>
+        </div>
       );
     }
   } else if (isLoading) {

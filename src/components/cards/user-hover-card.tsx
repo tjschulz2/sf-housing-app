@@ -17,11 +17,9 @@ import {
 export function UserHoverCard({
   children,
   userData,
-  withLink = true,
 }: {
   children: React.ReactNode;
   userData: MemberUserType | null;
-  withLink?: boolean;
 }) {
   if (!userData) {
     return null;
@@ -62,7 +60,7 @@ export function UserHoverCard({
               <ReferralBadge
                 textSize="xs"
                 userID={userData.user_id}
-                withLink={withLink}
+                allowHoverCard={false}
               />
             </div>
           </div>

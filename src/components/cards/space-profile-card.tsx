@@ -74,7 +74,7 @@ export default function SpaceProfileCard(props: PropsType) {
                 className="mr-1"
               />
 
-              <UserHoverCard userData={profile.user} withLink={false}>
+              <UserHoverCard userData={profile.user}>
                 <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
                   {profile.user?.name}
                 </span>
