@@ -6,7 +6,7 @@ import {
 } from "@/components/cards/card";
 import UserProfileImage from "@/components/user-profile-image";
 import ContactMeButton from "@/components/contact-me-button";
-import TwitterLogo from "@/images/twitter-logo.svg";
+import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import Link from "next/link";
 import SeeMoreButton from "@/components/see-more-button/see-more-button";
 import deriveActivityLevel, { housingMap } from "@/lib/configMaps";
@@ -18,6 +18,7 @@ import CardBioSection from "./card-bio-section";
 import ReferralBadge from "@/components/referral-badge";
 import CommonFollowers from "@/components/follower-intersection/CommonFollowers";
 import { CalendarDays, Calendar, Mail, Handshake } from "lucide-react";
+import Image from "next/image";
 
 type PropsType = {
   profile: HousingSearchProfile;
@@ -59,7 +60,13 @@ export default function SearcherProfileCard(props: PropsType) {
             <span className="text-blue-500 hover:text-blue-400 py-2 max-w-full truncate">
               @{profile.user?.twitter_handle}
             </span>
-            {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
+            <Image
+              src={TwitterLogo}
+              width={20}
+              height={20}
+              alt="Twitter icon"
+              className="ml-1 overflow-visible"
+            />
           </Link>
           <ContactMeButton
             phoneNum={profile.contact_phone}

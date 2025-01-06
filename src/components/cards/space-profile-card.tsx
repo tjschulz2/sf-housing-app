@@ -6,7 +6,6 @@ import {
 } from "@/components/cards/card";
 import UserProfileImage from "@/components/user-profile-image";
 import ContactMeButton from "@/components/contact-me-button";
-import TwitterLogo from "@/images/twitter-logo.svg";
 import Link from "next/link";
 import SeeMoreButton from "@/components/see-more-button/see-more-button";
 import deriveActivityLevel, { housingMap } from "@/lib/configMaps";
@@ -25,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Image from "next/image";
 
 type PropsType = {
   profile: SpaceListingWithUserData;
@@ -62,16 +62,6 @@ export default function SpaceProfileCard(props: PropsType) {
             ) : null}
           </div>
 
-          {/* <Link
-            href={`https://x.com/${profile.user?.twitter_handle}`}
-            className="flex items-center justify-center w-full"
-          >
-            <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
-              @{profile.user?.twitter_handle}
-            </span>
-            <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
-          </Link> */}
-
           <div className="w-fit">
             <Link
               href={`https://x.com/${profile.user?.twitter_handle}`}
@@ -84,7 +74,7 @@ export default function SpaceProfileCard(props: PropsType) {
                 className="mr-1"
               />
 
-              <UserHoverCard userData={profile.user}>
+              <UserHoverCard userData={profile.user} withLink={false}>
                 <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
                   {profile.user?.name}
                 </span>

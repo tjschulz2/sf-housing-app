@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { getSpaceDetails, getUserData } from "@/lib/utils/data";
 import UserProfileImage from "@/components/user-profile-image";
 import Link from "next/link";
-import TwitterLogo from "@/images/twitter-logo.svg";
+import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import { housingMap } from "@/lib/configMaps";
 import { ExternalLink, Mail } from "lucide-react";
 import ContactMeButton from "@/components/contact-me-button";
@@ -11,6 +11,7 @@ import { CircleDollarSign, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import { addProtocolToURL } from "@/lib/utils/general";
+import Image from "next/image";
 
 export async function generateMetadata(props: {
   params: Promise<{ id: string }>;
@@ -118,7 +119,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                 <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
                   @{userDetails?.twitter_handle}
                 </span>
-                {/* <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" /> */}
+                <Image
+                  src={TwitterLogo}
+                  width={20}
+                  height={20}
+                  alt="Twitter icon"
+                  className="ml-1 overflow-visible"
+                />
               </Link>
             </div>
             {/* {spaceDetails.contact_email ? (

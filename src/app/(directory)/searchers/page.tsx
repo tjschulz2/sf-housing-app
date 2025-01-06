@@ -1,5 +1,4 @@
 "use client";
-import ProfileCard from "../../../components/profile-card";
 import SearcherProfileCard from "@/components/cards/searcher-profile-card";
 import Link from "next/link";
 import {

@@ -1,7 +1,7 @@
 import UserProfileImage from "@/components/user-profile-image";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/cards/card";
-import TwitterLogo from "@/images/twitter-logo.svg";
+import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import Link from "next/link";
 import { formatDateMonthYear } from "@/lib/utils/general";
 import { CalendarDays } from "lucide-react";
