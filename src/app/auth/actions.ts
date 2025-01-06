@@ -6,17 +6,16 @@ import { redirect } from "next/navigation";
 
 export async function getIsFullUser() {
   const supabase = await createClient(); // Initialize Supabase client
-  const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (userError) {
-    console.error("Error fetching session:", userError);
-    return false;
-  }
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  const userId = userData.user.id;
+  const userId = user?.id;
 
   if (!userId) {
-    console.error("No user ID found in session.");
+    console.error("Error fetching session:", userError);
     return false;
   }
 
@@ -38,19 +37,24 @@ export async function getIsFullUser() {
 
 export async function getAuthUserRecord() {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getSession();
-  const userId = data.session?.user?.id;
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  const userId = user?.id;
+
   if (!userId) {
-    console.error("No user ID found");
-    return;
+    console.error("Error fetching user:", userError);
+    return null;
   }
-  const { data: userData, error: userError } = await supabase
+  const { data, error } = await supabase
     .from("users")
     .select("*")
     .eq("user_id", userId)
     .maybeSingle();
 
-  return userData;
+  return data;
 }
 
 export async function signInWithTwitterAction(formData: FormData) {
@@ -82,8 +86,13 @@ export async function signInWithTwitterAction(formData: FormData) {
 export async function handleSignIn(referralCode: string | null) {
   // Handle post-authentication flow
   const supabase = await createClient();
-  const userSession = (await supabase.auth.getSession()).data.session;
-  if (!userSession) {
+  // const userSession = (await supabase.auth.getSession()).data.session;
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (!user) {
     console.error("No Twitter-authenticated user found");
     // TODO: display error message to user
     return;
@@ -99,23 +108,22 @@ export async function handleSignIn(referralCode: string | null) {
 
       // if avatar, username, or handle have changed since last sign-in, update accordingly
 
-      const twitterImageUrl = userSession.user.user_metadata.avatar_url;
+      const twitterImageUrl = user.user_metadata.avatar_url;
       let higherResImageUrl = twitterImageUrl?.replace("_normal", "_400x400");
 
       if (
         userData.twitter_avatar_url !== higherResImageUrl ||
-        userData.name !== userSession.user.user_metadata.full_name ||
-        userData.twitter_handle !==
-          userSession.user.user_metadata.preferred_username
+        userData.name !== user.user_metadata.full_name ||
+        userData.twitter_handle !== user.user_metadata.preferred_username
       ) {
         const { error } = await supabase
           .from("users")
           .update({
             twitter_avatar_url: higherResImageUrl,
-            name: userSession.user.user_metadata.full_name,
-            twitter_handle: userSession.user.user_metadata.preferred_username,
+            name: user.user_metadata.full_name,
+            twitter_handle: user.user_metadata.preferred_username,
           })
-          .eq("user_id", userSession.user.id);
+          .eq("user_id", user.id);
 
         if (error) {
           console.error(error);
@@ -151,19 +159,30 @@ export async function handleSignIn(referralCode: string | null) {
       }
 
       // const twitterImageUrl = currentUser.twitterAvatarURL;
-      const twitterImageUrl = userSession.user.user_metadata.avatar_url;
+      const twitterImageUrl = user.user_metadata.avatar_url;
       let higherResImageUrl = twitterImageUrl?.replace("_normal", "_400x400");
       // At this point, we have successfully claimed a referral for a user. Add them to 'public.users'
       userData = await createUser({
-        user_id: userSession.user.id,
-        email: userSession.user.email,
-        twitter_id: userSession.user.user_metadata.provider_id,
-        name: userSession.user.user_metadata.full_name,
+        user_id: user.id,
+        email: user.email,
+        twitter_id: user.user_metadata.provider_id,
+        name: user.user_metadata.full_name,
         twitter_avatar_url: higherResImageUrl,
-        twitter_handle: userSession.user.user_metadata.preferred_username,
+        twitter_handle: user.user_metadata.preferred_username,
       });
+
       if (!userData) {
         throw "Failed to create new user";
+      }
+
+      // TODO: add metadata 'is_full_user'
+      const { data, error } = await supabase.auth.updateUser({
+        data: { ...user.user_metadata, is_full_user: true },
+      });
+
+      if (error) {
+        console.error(error);
+        throw "failed to update user metadata";
       }
 
       initialSignIn = true;

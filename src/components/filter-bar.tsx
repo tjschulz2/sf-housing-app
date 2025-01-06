@@ -33,7 +33,7 @@ export default function FilterBar({
               <SelectItem value="1">1-year Lease</SelectItem>
               <SelectItem value="2">Short-term Lease</SelectItem>
               <SelectSeparator />
-              <SelectItem value="">Any lease</SelectItem>
+              <SelectItem value="any">Any lease</SelectItem>
             </SelectContent>
           </Select>
 
@@ -50,7 +50,7 @@ export default function FilterBar({
               <SelectItem value="3">6-12 housemates</SelectItem>
               <SelectItem value="4">12+ housemates</SelectItem>
               <SelectSeparator />
-              <SelectItem value="">Any count</SelectItem>
+              <SelectItem value="any">Any count</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -71,7 +71,7 @@ export default function FilterBar({
             <SelectItem value="2">{`< 3 months`}</SelectItem>
             <SelectItem value="3">{`3+ months`}</SelectItem>
             <SelectSeparator />
-            <SelectItem value="">Any timeline</SelectItem>
+            <SelectItem value="any">Any timeline</SelectItem>
           </SelectContent>
         </Select>
       </div>

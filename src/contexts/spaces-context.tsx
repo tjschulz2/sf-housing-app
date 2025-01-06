@@ -1,6 +1,7 @@
 "use client";
 
-import { getCommunities, getUserSpaceListing } from "@/lib/utils/data";
+import { getCommunities } from "@/lib/utils/data";
+import { getUserSpaceListing } from "@/dal";
 import {
   createContext,
   useCallback,
@@ -36,13 +37,10 @@ export default function SpacesContextProvider({
 
   const { authLoading, userData } = useAuthContext();
 
-  const pullUserSpaceListing = useCallback(
-    async (userID: string) => {
-      const spaceListing = await getUserSpaceListing(userID);
-      setUserSpaceListing(spaceListing || null);
-    },
-    [setUserSpaceListing]
-  );
+  const pullUserSpaceListing = useCallback(async () => {
+    const spaceListing = await getUserSpaceListing();
+    setUserSpaceListing(spaceListing || null);
+  }, [setUserSpaceListing]);
 
   const refreshSpaceListings = useCallback(async () => {
     const spaces = await getCommunities();
@@ -67,7 +65,7 @@ export default function SpacesContextProvider({
 
   useEffect(() => {
     if (!authLoading && userData) {
-      pullUserSpaceListing(userData.user_id);
+      pullUserSpaceListing();
     }
   }, [authLoading, pullUserSpaceListing, userData]);
 

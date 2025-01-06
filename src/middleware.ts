@@ -19,13 +19,14 @@ export async function middleware(request: NextRequest) {
 
   const startUpdateSession = performance.now();
   const { response, user, supabase } = await updateSession(request);
-  // const isFullUser = await getIsFullUser();
   const durationUpdateSession = performance.now() - startUpdateSession;
   console.log(
     `Middleware updateSession execution time: ${durationUpdateSession.toFixed(
       3
     )} ms`
   );
+
+  // const isFullUser = await getIsFullUser();
 
   if (!isAccessibleWithoutAuth(request.nextUrl.pathname) && user.error) {
     return NextResponse.redirect(new URL("/", request.url));

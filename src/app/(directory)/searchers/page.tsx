@@ -234,10 +234,10 @@ function Directory() {
           />
         </Link>
       </div>
-      {/* <FilterBar
+      <FilterBar
         onFilterChange={handleFilterChange}
         filterState={searcherProfilesFilter}
-      /> */}
+      />
       {dataLoading && !searcherProfiles?.length ? (
         <LoadingSpinner overlay={false} />
       ) : null}
