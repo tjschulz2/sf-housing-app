@@ -71,13 +71,15 @@ export default function SpaceProfileCard(props: PropsType) {
               <UserProfileImage
                 size="small"
                 src={profile.user?.twitter_avatar_url}
-                className="mr-1"
+                className="mr-1 flex-shrink-0"
               />
 
               <UserHoverCard userData={profile.user}>
-                <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
-                  {profile.user?.name}
-                </span>
+                <div className="grid grid-cols-1">
+                  <span className="text-blue-500 hover:text-blue-400 max-w-full truncate">
+                    {profile.user?.name}
+                  </span>
+                </div>
               </UserHoverCard>
             </Link>
           </div>

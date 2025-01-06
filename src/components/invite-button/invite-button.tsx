@@ -95,8 +95,8 @@ const InviteButton = () => {
           <DialogHeader>
             <DialogTitle>Invite a friend</DialogTitle>
             <DialogDescription>
-              Only refer people you know, trust, and would be willing to live
-              with yourself.
+              Only refer people you trust and would be willing to live with
+              yourself.
             </DialogDescription>
           </DialogHeader>
           <ReferralLink link={referralLink} />
