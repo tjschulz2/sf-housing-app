@@ -36,7 +36,7 @@ export default function SponsorPage() {
       <div className="prose max-w-prose mx-auto py-8 px-4">
         <h1 className="">Sponsor DirectorySF! 🏡</h1>
         <p>
-          A curated housing platform for the Bay Area{" "}
+          A curated housing (+ jobs) platform for the Bay Area{" "}
           <Link target="_blank" href="https://bayarea.wiki/megascene">
             Megascene
           </Link>
@@ -99,7 +99,7 @@ export default function SponsorPage() {
         <ul>
           <li>
             Most of our members are{" "}
-            <span className="font-bold">founders and engineers.</span>
+            <span className="font-bold">early stage founders and engineers.</span>
             <ul>
               <li>
                 Other represented groups include: rationality/EA, Burners, and
@@ -110,7 +110,7 @@ export default function SponsorPage() {
 
           <li>Acceptance rate is roughly 60%</li>
           <li>
-            Over <span className="font-bold">400</span> housing placements have
+            Over <span className="font-bold">500</span> housing placements have
             been made in the last year!
           </li>
         </ul>
