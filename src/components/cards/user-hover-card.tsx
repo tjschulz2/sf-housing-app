@@ -1,6 +1,6 @@
 import { CalendarDays, Mail } from "lucide-react";
 import Image from "next/image";
-import TwitterLogo from "@/../public/images/twitter-logo.svg";
+// import TwitterLogo from "@/../public/images/twitter-logo.svg";
 
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -36,13 +36,22 @@ export function UserHoverCard({
           <UserProfileImage src={userData?.twitter_avatar_url} size="medium" />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Image
+              {/* <Image
                 src={TwitterLogo}
                 width={20}
                 height={20}
                 alt="Twitter icon"
                 className="overflow-visible"
+              /> */}
+              <Image
+                src="/images/twitter-logo.svg"
+                unoptimized={true}
+                width={20}
+                height={20}
+                alt="Twitter icon"
+                className="overflow-visible"
               />
+
               <h4 className="text-xs">@{userData?.twitter_handle}</h4>
             </div>
             <div className="flex items-center">

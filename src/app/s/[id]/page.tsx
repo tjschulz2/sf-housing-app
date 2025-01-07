@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { getSpaceDetails, getUserData } from "@/lib/utils/data";
 import UserProfileImage from "@/components/user-profile-image";
 import Link from "next/link";
-import TwitterLogo from "@/../public/images/twitter-logo.svg";
+// import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import { housingMap } from "@/lib/configMaps";
 import { ExternalLink, Mail } from "lucide-react";
 import ContactMeButton from "@/components/contact-me-button";
@@ -120,7 +120,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
                   @{userDetails?.twitter_handle}
                 </span>
                 <Image
-                  src={TwitterLogo}
+                  src="/images/twitter-logo.svg"
+                  unoptimized={true}
                   width={20}
                   height={20}
                   alt="Twitter icon"

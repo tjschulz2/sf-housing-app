@@ -1,7 +1,7 @@
 import UserProfileImage from "@/components/user-profile-image";
 import ReferralBadge from "@/components/referral-badge";
 import { Card, CardTop, CardBottom } from "@/components/cards/card";
-import TwitterLogo from "@/../public/images/twitter-logo.svg";
+// import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import Link from "next/link";
 import { formatDateMonthYear } from "@/lib/utils/general";
 import { CalendarDays } from "lucide-react";
@@ -47,8 +47,17 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
           ) : null}
         </div>
         <Link target="_blank" href={`https://x.com/${member.twitter_handle}`}>
-          <Image
+          {/* <Image
             src={TwitterLogo}
+            width={20}
+            height={20}
+            alt="Twitter icon"
+            className="ml-1 overflow-visible"
+          />
+        </Link> */}
+          <Image
+            src="/images/twitter-logo.svg"
+            unoptimized={true}
             width={20}
             height={20}
             alt="Twitter icon"
