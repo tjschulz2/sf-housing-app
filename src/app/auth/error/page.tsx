@@ -13,7 +13,7 @@ export default function ErrorPage() {
           <h1 className="font-bold text-xl">Authentication Error</h1>
           <p>
             Please confirm you have an email associated with your Twitter
-            account. If you're still having issues signing in, please{" "}
+            account. If you&apos;re still having issues signing in, please{" "}
             <Link
               className="font-bold underline"
               href="https://x.com/neallseth"
