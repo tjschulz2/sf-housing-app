@@ -9,6 +9,7 @@ import { getCurrentTimestamp } from "./general";
 import { supabase } from "../supabaseClient";
 
 export async function handleSignIn() {
+  console.log("running handleSignIn");
   // Process handles the full sign-in process for: existing users, new users, unadmitted users
 
   let initialSignIn = false;
@@ -33,7 +34,7 @@ export async function handleSignIn() {
       const referralID = localStorage.getItem("referral-code");
       if (!referralID) {
         // New user attempting to sign in without a referral code
-        throw "Referral required";
+        throw "Referral required!!!";
       }
 
       const referral = await getReferralDetails(referralID);

@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 import { handleSignIn } from "../actions";
+import { error } from "console";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -8,6 +9,14 @@ export async function GET(request: Request) {
   const origin = requestUrl.origin;
   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
   const referralCode = requestUrl.searchParams.get("referral-code");
+  const errorDescription = requestUrl.searchParams.get("error_description");
+  if (errorDescription) {
+    if (errorDescription.includes("User is banned")) {
+      return NextResponse.redirect("/");
+    } else {
+      return NextResponse.redirect(`/auth/error`);
+    }
+  }
 
   console.log({ referralCode });
 

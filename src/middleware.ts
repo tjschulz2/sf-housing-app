@@ -5,12 +5,14 @@ import { getIsFullUser } from "./app/auth/actions";
 function isAccessibleWithoutAuth(pathname: string) {
   const permittedUnauthenticatedPaths = new Set([
     "/",
-    "/auth/callback",
+    // "/auth/callback",
     "/sponsor",
   ]);
 
   return (
-    permittedUnauthenticatedPaths.has(pathname) || pathname.startsWith("/s/")
+    permittedUnauthenticatedPaths.has(pathname) ||
+    pathname.startsWith("/s/") ||
+    pathname.startsWith("/auth/")
   );
 }
 

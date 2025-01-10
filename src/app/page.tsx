@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HomePageComponent from "../components/home-page-component";
 import { useState } from "react";
-import { getReferralDetails } from "../lib/utils/data";
+// import { getReferralDetails } from "../lib/utils/data";
+import { getReferralDetails } from "./auth/actions";
 import { useRouter } from "next/navigation";
 import { handleSignIn } from "../lib/utils/process";
 import LoadingSpinner from "../components/loading-spinner/loading-spinner";
@@ -18,48 +19,15 @@ const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // TODO: replace with pure server-side logic within RSC
     async function handlePageLoad() {
-      // Check for error query parameter in URL
-      if (
-        errorDescription === "Error getting user email from external provider"
-      ) {
-        alert(
-          "You need to add your email address to your Twitter account. \n\nGo to Twitter -> More -> Settings and Support -> Your account -> Email. \n\nAfter you do this, try again."
-        );
-      } else if (errorDescription) {
-        if (errorDescription.includes("User is banned")) {
-          // router.replace("/");
-          window.history.replaceState(null, "", "/");
-        } else {
-          alert(
-            "You got an error:\n\n" +
-              errorDescription +
-              "\n\nContact @thomasschulzz on Twitter to investigate."
-          );
-        }
-      }
       if (referralCode) {
         const referral = await getReferralDetails(referralCode);
         if (referral.status === "unclaimed") {
-          localStorage.setItem("referral-code", referralCode);
+          setReferralDetails(referral);
         } else {
           alert(`This referral is ${referral.status}`);
         }
-        setReferralDetails(referral);
-      } else {
-        //localStorage.setItem("referral-code", "")
-        setIsLoading(true);
-        const signInResult = await handleSignIn();
-        console.log(signInResult);
-        setIsLoading(false);
-
-        if (signInResult?.status !== "success") {
-          if (signInResult?.status === "error") {
-            alert(signInResult.message);
-          }
-          return;
-        }
-        router.replace("/searchers");
       }
     }
     handlePageLoad();
