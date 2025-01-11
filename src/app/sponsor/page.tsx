@@ -56,7 +56,7 @@ export default function SponsorPage() {
           <Link target="_blank" href="/">
             DirectorySF
           </Link>{" "}
-          is seeking sponsorship. Your brand will be exposed to our curated
+          is open to sponsorship. Your brand will be exposed to our curated
           community of Bay Area founders and engineers.
         </p>
 
