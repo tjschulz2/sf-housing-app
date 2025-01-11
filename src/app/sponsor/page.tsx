@@ -36,7 +36,7 @@ export default function SponsorPage() {
       <div className="prose max-w-prose mx-auto py-8 px-4">
         <h1 className="">Sponsor DirectorySF! 🏡</h1>
         <p>
-          A curated housing (+ jobs) platform for the Bay Area{" "}
+          The curated housing (+ jobs) platform for the Bay Area{" "}
           <Link target="_blank" href="https://bayarea.wiki/megascene">
             Megascene
           </Link>
