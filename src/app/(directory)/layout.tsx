@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import Navbar from "../../components/navbar/navbar";
 import InviteButton from "../../components/invite-button/invite-button";
 import HeaderBarInApp from "@/components/headerbarinapp";
-import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
   SetStateAction,
@@ -11,15 +10,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { getUserSession } from "../../lib/utils/auth";
-import { getUserData } from "../../lib/utils/data";
-import Dropdown from "../../components/dropdown/dropdown";
+import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
-import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
-import Head from "next/head";
 import { getUserHousingSearchProfile } from "@/dal";
 
 export type ProfilesContextType = {

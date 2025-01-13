@@ -4,6 +4,7 @@ import { getUserData, checkTwitterFollowersAdded } from "@/lib/utils/data";
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { usePostHog } from "posthog-js/react";
+import { getAuthUserRecord } from "@/app/auth/actions";
 
 type UserDataType = Database["public"]["Tables"]["users"]["Row"];
 type UserSessionType = {
@@ -37,7 +38,7 @@ export default function AuthContextProvider({
     const session = await getUserSession();
     if (session) {
       setUserSession(session);
-      const userData = await getUserData(session.userID);
+      const userData = await getAuthUserRecord();
       if (userData) {
         setUserData(userData);
 

@@ -12,9 +12,10 @@ export async function GET(request: Request) {
   const errorDescription = requestUrl.searchParams.get("error_description");
   if (errorDescription) {
     if (errorDescription.includes("User is banned")) {
-      return NextResponse.redirect("/");
+      console.log("CALLBACK IDENTIFIED BANNED USER");
+      return NextResponse.redirect(`${origin}#`);
     } else {
-      return NextResponse.redirect(`/auth/error`);
+      return NextResponse.redirect(`${origin}/auth/error?code=1`);
     }
   }
 
@@ -24,10 +25,15 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data } = await supabase.auth.exchangeCodeForSession(code);
     if (data.session) {
-      // if valid session, confirm presence in users table. if not, initialize as new user with 'referralCode' (update referrals tables + users table)
-      // (middleware will confirm users table presence during each route)
       const signInResult = await handleSignIn(referralCode);
       console.log({ signInResult });
+      if (!signInResult.success) {
+        if (signInResult?.message === "no-referral") {
+          return NextResponse.redirect(`${origin}/auth/referral-required`);
+        } else {
+          return NextResponse.redirect(`${origin}/auth/error?code=2`);
+        }
+      }
     }
   }
 

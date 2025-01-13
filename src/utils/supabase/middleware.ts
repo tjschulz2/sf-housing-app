@@ -40,7 +40,13 @@ export const updateSession = async (request: NextRequest) => {
     error: userError,
   } = await supabase.auth.getUser();
 
-  const isFullUser = user ? await getIsFullUser(user.id) : false;
+  // @ts-ignore
+  console.log("user banned: ", user?.banned_until);
+
+  const isFullUser = user
+    ? // @ts-ignore
+      (await getIsFullUser(user.id)) && !user.banned_until
+    : false;
 
   return { response, user, supabase, isFullUser };
 };

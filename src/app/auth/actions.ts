@@ -71,7 +71,10 @@ export async function signInWithTwitterAction(formData: FormData) {
   }
 }
 
-export async function handleSignIn(referralCode: string | null) {
+export async function handleSignIn(referralCode: string | null): Promise<{
+  success: boolean;
+  message: string | null;
+}> {
   // Handle post-authentication flow
   const supabase = await createClient();
   // const userSession = (await supabase.auth.getSession()).data.session;
@@ -83,7 +86,7 @@ export async function handleSignIn(referralCode: string | null) {
   if (!user) {
     console.error("No Twitter-authenticated user found");
     // TODO: display error message to user
-    return;
+    return { success: false, message: "session-not-found" };
   }
   let initialSignIn = false;
 
@@ -117,12 +120,13 @@ export async function handleSignIn(referralCode: string | null) {
           console.error(error);
         }
       }
-      return { success: "true", message: null };
+      return { success: true, message: null };
     }
 
     if (!userData && !referralCode) {
       // New user attempting to sign in without a referral code - display message to user
       // TODO: display error message to user
+      return { success: false, message: "no-referral" };
     }
 
     if (!userData && referralCode) {
@@ -134,7 +138,7 @@ export async function handleSignIn(referralCode: string | null) {
 
         console.error("This referral is");
         return {
-          success: "false",
+          success: false,
           message: `This referral is ${referral.status}`,
         };
       }
@@ -142,7 +146,7 @@ export async function handleSignIn(referralCode: string | null) {
       const claimResult = await claimReferral(referralCode);
       if (claimResult?.status !== "success") {
         console.error("Failed to claim referral");
-        return { success: "false", message: "failed to claim referral" };
+        return { success: false, message: "failed to claim referral" };
         // TODO: display failed to claim referral message to user
       }
 
@@ -164,19 +168,19 @@ export async function handleSignIn(referralCode: string | null) {
       }
 
       // TODO: add metadata 'is_full_user'
-      const { data, error } = await supabase.auth.updateUser({
-        data: { ...user.user_metadata, is_full_user: true },
-      });
+      // const { data, error } = await supabase.auth.updateUser({
+      //   data: { ...user.user_metadata, is_full_user: true },
+      // });
 
-      if (error) {
-        console.error(error);
-        throw "failed to update user metadata";
-      }
+      // if (error) {
+      //   console.error(error);
+      //   throw "failed to update user metadata";
+      // }
 
       initialSignIn = true;
     }
   } catch (err) {
-    return { success: false, message: err };
+    return { success: false, message: JSON.stringify(err) };
   }
 
   return {
