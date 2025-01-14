@@ -14,7 +14,7 @@ export default function ReferralRequiredPage() {
         <div className="flex flex-col gap-2">
           <h1 className="font-bold text-xl">Referral Required</h1>
           <p>
-            DirectorySF is referral-only. If you don't have one, please{" "}
+            DirectorySF is referral-only. If you don&apos;t have one, please{" "}
             <Link
               className="font-semibold underline"
               target="_blank"
