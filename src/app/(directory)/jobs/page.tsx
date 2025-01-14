@@ -5,6 +5,8 @@ import CardGrid from "@/components/cards/card-grid";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+// export const revalidate = 60 * 10;
+
 export default async function JobsPage() {
   const jobsPayload = await getJobs();
   if (!jobsPayload.success) {

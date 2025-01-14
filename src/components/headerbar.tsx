@@ -32,7 +32,7 @@ export default function HeaderBar() {
           src="/solaris_ai_logo.png"
           alt="Solaris logo"
         />
-        <text className={styles.branding}>SOLARIS</text>
+        <span className={styles.branding}>SOLARIS</span>
       </a>
       <div className="md:hidden">
         <button

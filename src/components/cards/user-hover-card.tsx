@@ -1,5 +1,6 @@
 import { CalendarDays, Mail } from "lucide-react";
-import TwitterLogo from "@/images/twitter-logo.svg";
+import Image from "next/image";
+// import TwitterLogo from "@/../public/images/twitter-logo.svg";
 
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,6 @@ export function UserHoverCard({
   if (!userData) {
     return null;
   }
-  console.log(userData);
   return (
     <HoverCard openDelay={100} closeDelay={100}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
@@ -36,7 +36,22 @@ export function UserHoverCard({
           <UserProfileImage src={userData?.twitter_avatar_url} size="medium" />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <TwitterLogo className="overflow-visible" fill="#3191e7" />
+              {/* <Image
+                src={TwitterLogo}
+                width={20}
+                height={20}
+                alt="Twitter icon"
+                className="overflow-visible"
+              /> */}
+              <Image
+                src="/images/twitter-logo.svg"
+                unoptimized={true}
+                width={20}
+                height={20}
+                alt="Twitter icon"
+                className="overflow-visible"
+              />
+
               <h4 className="text-xs">@{userData?.twitter_handle}</h4>
             </div>
             <div className="flex items-center">
@@ -51,7 +66,11 @@ export function UserHoverCard({
             </div>
             <div className="flex items-center">
               <Mail className="mr-2 h-4 w-4 opacity-70" />{" "}
-              <ReferralBadge textSize="xs" userID={userData.user_id} />
+              <ReferralBadge
+                textSize="xs"
+                userID={userData.user_id}
+                allowHoverCard={false}
+              />
             </div>
           </div>
         </div>

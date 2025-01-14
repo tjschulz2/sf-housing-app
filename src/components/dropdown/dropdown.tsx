@@ -6,6 +6,7 @@ import { getDataFromDirectory } from "../../lib/utils/process";
 import { getUserSession } from "../../lib/utils/auth";
 import { useRouter } from "next/navigation";
 import UserProfileImage from "../user-profile-image";
+import { createClient } from "@/utils/supabase/client";
 
 type User = {
   twitterAvatarUrl: string;
@@ -21,6 +22,7 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
   const router = useRouter();
   let higherResImageUrl = userAvatarURL?.replace("_normal", "_400x400");
   const toggleDropdown = () => setIsOpen(!isOpen);
+  const supabase = createClient();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,6 +54,11 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
     }
   };
 
+  async function handleSignout() {
+    await supabase.auth.signOut();
+    router.push("/");
+  }
+
   return (
     <div
       className={styles.container}
@@ -70,9 +77,16 @@ const Dropdown = ({ userAvatarURL }: { userAvatarURL: string }) => {
           {/* <a onClick={handleSubmit} className={styles.button}>
             Edit my listing
           </a> */}
-          <Link href="/logout" className={styles.button}>
+          {/* <Link href="/logout" className={styles.button}>
             Sign out
-          </Link>
+          </Link> */}
+          <span
+            className={styles.button}
+            onClick={async () => await handleSignout()}
+          >
+            {" "}
+            Sign out
+          </span>
         </div>
       )}
     </div>

@@ -1,10 +1,11 @@
 import UserProfileImage from "@/components/user-profile-image";
 import ReferralBadge from "@/components/referral-badge";
 import { Card, CardTop, CardBottom } from "@/components/cards/card";
-import TwitterLogo from "@/images/twitter-logo.svg";
+// import TwitterLogo from "@/../public/images/twitter-logo.svg";
 import Link from "next/link";
 import { formatDateMonthYear } from "@/lib/utils/general";
 import { CalendarDays } from "lucide-react";
+import Image from "next/image";
 
 export default function MemberCard({ member }: { member: MemberUserType }) {
   if (!member.name || !member.twitter_handle) {
@@ -18,6 +19,7 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
             <UserProfileImage
               src={member.twitter_avatar_url}
               size="medium-dynamic"
+              className="flex-shrink-0"
             />
             <div className="text-sm font-semibold md:text-md break-words">
               {member.name}
@@ -45,7 +47,22 @@ export default function MemberCard({ member }: { member: MemberUserType }) {
           ) : null}
         </div>
         <Link target="_blank" href={`https://x.com/${member.twitter_handle}`}>
-          <TwitterLogo className="ml-1 overflow-visible" fill="#3191e7" />
+          {/* <Image
+            src={TwitterLogo}
+            width={20}
+            height={20}
+            alt="Twitter icon"
+            className="ml-1 overflow-visible"
+          />
+        </Link> */}
+          <Image
+            src="/images/twitter-logo.svg"
+            unoptimized={true}
+            width={20}
+            height={20}
+            alt="Twitter icon"
+            className="ml-1 overflow-visible"
+          />
         </Link>
       </div>
     </Card>

@@ -60,7 +60,6 @@ export default function DeleteSpaceListingDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            <span>This will delete your space </span>
             <span className="mt-2 block">
               If you&apos;ve had success, please DM{" "}
               <a

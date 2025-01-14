@@ -11,10 +11,10 @@ import {
 } from "../lib/utils/data";
 import Link from "next/link";
 import React from "react";
-import { signInWithTwitter } from "../lib/utils/auth";
 import { differenceInDays } from "date-fns";
 import { MovingBorderButton } from "./ui/moving-border-button";
 import Head from "next/head";
+import { signInWithTwitterAction } from "@/app/auth/actions";
 
 type HomePageComponentProps = {
   referralDetails: ReferralDetails;
@@ -52,7 +52,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
     if (referralDetails?.status === "unclaimed") {
       return (
         <div className={styles.signInWithTwitterParent}>
-          <Link
+          {/* <Link
             className={styles.signInWithTwitter}
             href={`/?referralCode=${referralDetails.referralID}`}
             onClick={signInWithTwitter}
@@ -61,7 +61,26 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
               <img className={styles.vectorIcon} alt="" src="/vector.svg" />
               <div className={styles.signInWith}>Sign up with Twitter</div>
             </div>
-          </Link>
+          </Link> */}
+
+          <form>
+            <input
+              type="hidden"
+              name="referralCode"
+              value={referralDetails.referralID?.toString()}
+            />
+            <button
+              formAction={signInWithTwitterAction}
+              type="submit"
+              className={styles.signInWithTwitter}
+            >
+              <div className={styles.vectorParent}>
+                <img className={styles.vectorIcon} alt="" src="/vector.svg" />
+                <div className={styles.signInWith}>Sign up with Twitter</div>
+              </div>
+            </button>
+          </form>
+
           <div className={styles.vectorGroup}>
             <img className={styles.vectorIcon1} alt="" src="/vector1.svg" />
             <p className={styles.youHaveBeenContainer}>
@@ -100,13 +119,22 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
               Apply
             </MovingBorderButton> */}
           </Link>
-          <Link
+          {/* <Link
             href=""
             className={styles.signInSmall}
-            onClick={signInWithTwitter}
+            onClick={() => signInWithTwitterAction()}
           >
             Have an account? Sign in
-          </Link>
+          </Link> */}
+          <form>
+            <button
+              formAction={signInWithTwitterAction}
+              type="submit"
+              className={styles.signInSmall}
+            >
+              Have an account? Sign in
+            </button>
+          </form>
         </div>
       );
     }

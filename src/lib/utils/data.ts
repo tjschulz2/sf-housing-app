@@ -1,9 +1,11 @@
-import { supabase } from "../supabaseClient";
+// import { supabase } from "../supabaseClient";
 import { RedisClientType } from "redis";
 import { getUserSession } from "./auth";
 import { getCurrentTimestamp, isValidUUID } from "./general";
 import { z } from "zod";
 import { SortByOptions } from "@/app/(directory)/members/page";
+import { createClient } from "@/utils/supabase/client";
+const supabase = createClient();
 
 interface RentalImage {
   image_url: string;
@@ -447,6 +449,11 @@ export async function getReferrerData(
 
   const referralCode = referralData[0].referral_id;
 
+  if (!referralCode) {
+    console.error("No referral code found");
+    return;
+  }
+
   const { data: referralInfo, error: referralInfoError } = await supabase
     .from("referrals")
     .select("originator_id")
@@ -506,7 +513,6 @@ export async function getReferralDetails(referralCode: string) {
     referralCreatedAt: data?.created_at,
     originatorID: data?.originator_id,
     referralID: data?.referral_id,
-    // @ts-ignore
     originatorName: data?.originator.name,
     status,
   };

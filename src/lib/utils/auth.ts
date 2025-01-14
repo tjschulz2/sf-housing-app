@@ -1,7 +1,9 @@
 import { supabase } from "../supabaseClient";
+import { createClient } from "@/utils/supabase/client";
 
 export async function getUserSession() {
   // Returns most pertinent data from active session
+  const supabase = createClient();
   const { data, error } = await supabase.auth.getSession();
   if (error) {
     console.error(error);
@@ -70,14 +72,15 @@ export async function signout() {
   const { error } = await supabase.auth.signOut();
 }
 
-export async function signInWithTwitter() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "twitter",
-    options: {
-      redirectTo: window.location.origin,
-    },
-  });
-  if (error) {
-    return { status: "error", message: "failed to authenticate user" };
-  }
-}
+// export async function signInWithTwitter() {
+//   const supabase = await createClient();
+//   const { data, error } = await supabase.auth.signInWithOAuth({
+//     provider: "twitter",
+//     options: {
+//       redirectTo: window.location.origin,
+//     },
+//   });
+//   if (error) {
+//     return { status: "error", message: "failed to authenticate user" };
+//   }
+// }

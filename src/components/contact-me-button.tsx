@@ -57,7 +57,6 @@ export default function ContactMeButton({
     window.location.port ? ":" + window.location.port : ""
   }`;
 
-  console.log(baseURL);
   const userFirstName = userData?.name ? userData.name.split(" ")[0] : "____";
   let textMessage = `👋 Hey, this is ${userFirstName}!\nI saw your profile on DirectorySF, and wanted to reach out`;
   if (spaceSlug) {

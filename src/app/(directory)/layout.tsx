@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import Navbar from "../../components/navbar/navbar";
 import InviteButton from "../../components/invite-button/invite-button";
 import HeaderBarInApp from "@/components/headerbarinapp";
-import { signout } from "../../lib/utils/auth";
 import {
   Dispatch,
   SetStateAction,
@@ -11,16 +10,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { getUserSession } from "../../lib/utils/auth";
-import { getUserData, getUserHousingSearchProfile } from "../../lib/utils/data";
-import Dropdown from "../../components/dropdown/dropdown";
+import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
-import LoadingSpinner from "@/components/loading-spinner/loading-spinner";
 import { useAuthContext } from "@/contexts/auth-context";
 import SpacesContextProvider from "@/contexts/spaces-context";
-import { LoadScript } from "@react-google-maps/api";
-import Head from "next/head";
+import { getUserHousingSearchProfile } from "@/dal";
 
 export type ProfilesContextType = {
   searcherProfiles: HousingSearchProfile[] | null;
@@ -56,66 +50,46 @@ export default function DirectoryLayout({
   const { userData, userSession, authLoading } = useAuthContext();
 
   useEffect(() => {
-    async function handleAuthCheck() {
-      if (!authLoading) {
-        if (!userSession) {
-          router.replace("/");
-          return;
-        }
-
-        if (!userData) {
-          await signout();
-          router.replace("/");
-          return;
-        }
-
-        await refreshUserHousingSearchProfileData(userSession.userID);
-      }
-    }
-    handleAuthCheck();
+    refreshUserHousingSearchProfileData();
   }, [authLoading, router, userData, userSession]);
 
-  async function refreshUserHousingSearchProfileData(userID: string) {
-    const userSearchProfile = await getUserHousingSearchProfile(userID);
+  async function refreshUserHousingSearchProfileData() {
+    const userSearchProfile = await getUserHousingSearchProfile();
     setUserHousingSearchProfile(userSearchProfile || null);
   }
 
-  if (userSession && userData) {
-    return (
-      <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
-        <HeaderBarInApp userSession={userSession} />
-        <div className="bg-grid-green-800/[0.1] relative flex flex-col items-center justify-center">
-          <div
-            className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
-          >
-            <div>
-              <div className={styles.topArea}>
-                <div className={styles.navbarContainer}>
-                  <Navbar />
-                </div>
+  return (
+    <div className={`w-full bg-[#FEFBEB] min-h-dvh`}>
+      <HeaderBarInApp />
+      <div className="bg-grid-green-800/[0.1] relative flex flex-col items-center justify-center">
+        <div
+          className={`mx-auto w-full z-10 px-10 ${styles.responsivePadding}`}
+        >
+          <div>
+            <div className={styles.topArea}>
+              <div className={styles.navbarContainer}>
+                <Navbar />
               </div>
-              <ProfilesContext.Provider
-                value={{
-                  searcherProfiles,
-                  setSearcherProfiles,
-                  searcherProfilesFilter,
-                  setSearcherProfilesFilter,
-                  userHousingSearchProfile,
-                  refreshUserHousingSearchProfileData,
-                }}
-              >
-                <SpacesContextProvider>
-                  <div className={styles.directoryContainer}>{children}</div>
-                </SpacesContextProvider>
-              </ProfilesContext.Provider>
             </div>
-            <Footer />
+            <ProfilesContext.Provider
+              value={{
+                searcherProfiles,
+                setSearcherProfiles,
+                searcherProfilesFilter,
+                setSearcherProfilesFilter,
+                userHousingSearchProfile,
+                refreshUserHousingSearchProfileData,
+              }}
+            >
+              <SpacesContextProvider>
+                <div className={styles.directoryContainer}>{children}</div>
+              </SpacesContextProvider>
+            </ProfilesContext.Provider>
           </div>
-          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+          <Footer />
         </div>
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-[#FEFBEB] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
       </div>
-    );
-  } else {
-    return <LoadingSpinner />;
-  }
+    </div>
+  );
 }
