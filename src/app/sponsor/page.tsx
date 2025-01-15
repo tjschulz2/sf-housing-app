@@ -56,8 +56,8 @@ export default function SponsorPage() {
           <Link target="_blank" href="/">
             DirectorySF
           </Link>{" "}
-          is open to sponsorship. Your brand will be exposed to our curated
-          community of Bay Area founders and engineers.
+          is open to sponsorship and donations. Your brand will be exposed to
+          our curated community of Bay Area founders and engineers.
         </p>
 
         <h2>Why it matters</h2>
@@ -72,9 +72,9 @@ export default function SponsorPage() {
             complexity.
           </li>
           <li>
-            DSF eases this complexity, making the housing sorting process as
-            frictionless as possible (it’s why we charge users{" "}
-            <span className="italic">nothing</span>, and why this page exists!)
+            DSF makes the housing sorting process as frictionless as possible
+            (it’s why we charge users <span className="italic">nothing</span>,
+            and why this page exists!)
           </li>
         </ol>
         <p>
@@ -99,7 +99,9 @@ export default function SponsorPage() {
         <ul>
           <li>
             Most of our members are{" "}
-            <span className="font-bold">early stage founders and engineers.</span>
+            <span className="font-bold">
+              early stage founders and engineers.
+            </span>
             <ul>
               <li>
                 Other represented groups include: rationality/EA, Burners, and

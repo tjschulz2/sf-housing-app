@@ -6,7 +6,17 @@ export async function genReferralLink() {
   const referralBaseLink = "https://directorysf.com/?referralCode=";
   const supabase = await createClient();
 
-  const user = await getAuthUserRecord();
+  // const user = await getAuthUserRecord();
+  // if (!user) {
+  //   console.error("No user found");
+  //   return;
+  // }
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
   if (!user) {
     console.error("No user found");
     return;
@@ -30,7 +40,7 @@ export async function genReferralLink() {
   const { error: insertError } = await supabase.from("referrals").insert([
     {
       referral_id: referralCode,
-      originator_id: user.user_id,
+      originator_id: user.id,
       usage_limit: 1,
       usage_count: 0,
     },
@@ -69,11 +79,11 @@ export async function getHousingSearchProfiles(
 ) {
   const { leaseLength, housemateCount, movingTime } = filters;
   const supabase = await createClient();
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError) {
-    console.error(userError);
-    return;
-  }
+  // const { data: userData, error: userError } = await supabase.auth.getUser();
+  // if (userError) {
+  //   console.error(userError);
+  //   return;
+  // }
   let query = supabase
     .from("housing_search_profiles")
     .select(
