@@ -186,7 +186,7 @@ function Directory() {
   return (
     <>
       <div className="mb-8 flex gap-4 flex-col xl:flex-row">
-        <div className="flex xl:hidden justify-center">
+        {/* <div className="flex xl:hidden justify-center">
           <Link
             href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
             target="_blank"
@@ -197,7 +197,7 @@ function Directory() {
               alt="Bind"
             />
           </Link>
-        </div>
+        </div> */}
 
         <div className="grow min-w-[50%]">
           {userHousingSearchProfile ? (
@@ -221,7 +221,7 @@ function Directory() {
             </div>
           )}
         </div>
-        <Link
+        {/* <Link
           href="https://joinbind.com/?utm_source=directorysf&utm_medium=display&utm_campaign=waitlist"
           target="_blank"
           className="hidden xl:inline-block shrink"
@@ -231,7 +231,7 @@ function Directory() {
             src="/images/sponsorship/bind/bind-desktop.jpeg"
             alt="Bind"
           />
-        </Link>
+        </Link> */}
       </div>
       <FilterBar
         onFilterChange={handleFilterChange}
