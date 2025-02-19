@@ -552,6 +552,12 @@ type Database = {
           website_url: string | null;
         };
       };
+      get_referral_by_id: {
+        Args: {
+          referralcode: number;
+        };
+        Returns: Json;
+      };
       handle_image_upload: {
         Args: {
           image_url: string;

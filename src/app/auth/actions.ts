@@ -259,24 +259,52 @@ export async function claimReferral(referralID: string) {
 }
 
 export async function getReferralDetails(referralCode: string) {
+  // async function getDetails(referralCode: string) {
+  //   const supabase = await createClient();
+  //   const { data, error } = await supabase.rpc("get_referral_by_id", {
+  //     referralcode: referralCode,
+  //   }); // lowercase parameter
+
+  //   if (error) {
+  //     console.error("Error fetching referral:", error);
+  //     return null;
+  //   }
+  //   console.log("rawdata", data);
+  //   return {
+  //     ...data, // Spread all returned fields
+  //     originator: { name: data?.originator_name }, // Match the alias structure
+  //   };
+  // }
+  // const supabase = await createClient();
+  // const { data, error } = await supabase
+  //   .from("referrals")
+  //   .select(
+  //     `
+  // *,
+  // originator:originator_id(name)`
+  //   )
+  //   .eq("referral_id", referralCode)
+  //   .maybeSingle();
+  // const data = await getDetails(referralCode);
+  // console.log("data", data);
+
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("referrals")
-    .select(
-      `
-  *,
-  originator:originator_id(name)`
-    )
-    .eq("referral_id", referralCode)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("get_referral_by_id", {
+    referralcode: Number(referralCode),
+  });
+
+  console.log("data", data);
 
   let status;
 
   if (!data) {
     status = "invalid";
   } else if (
+    // @ts-ignore
     data.usage_count &&
+    // @ts-ignore
     data.usage_limit &&
+    // @ts-ignore
     data.usage_count >= data.usage_limit
   ) {
     status = "claimed";
@@ -285,9 +313,13 @@ export async function getReferralDetails(referralCode: string) {
   }
 
   return {
+    // @ts-ignore
     referralCreatedAt: data?.created_at,
+    // @ts-ignore
     originatorID: data?.originator_id,
+    // @ts-ignore
     referralID: data?.referral_id,
+    // @ts-ignore
     originatorName: data?.originator.name,
     status,
   };
