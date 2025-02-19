@@ -96,7 +96,7 @@ type Database = {
             isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
-          },
+          }
         ];
       };
       confirmation_codes: {
@@ -143,7 +143,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
-          },
+          }
         ];
       };
       function_logs: {
@@ -214,7 +214,7 @@ type Database = {
             isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
-          },
+          }
         ];
       };
       jobs: {
@@ -303,7 +303,7 @@ type Database = {
             isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
-          },
+          }
         ];
       };
       referral_recipients: {
@@ -326,7 +326,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "referrals";
             referencedColumns: ["referral_id"];
-          },
+          }
         ];
       };
       referrals: {
@@ -358,7 +358,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["user_id"];
-          },
+          }
         ];
       };
       rental_images: {
@@ -387,7 +387,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "rentals";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       rentals: {
@@ -530,6 +530,27 @@ type Database = {
       get_total_members: {
         Args: Record<PropertyKey, never>;
         Returns: number;
+      };
+      get_user_by_id: {
+        Args: {
+          userid: string;
+        };
+        Returns: {
+          available_referrals: number | null;
+          community_id: number | null;
+          contact_email: string | null;
+          created_at: string | null;
+          email: string | null;
+          follows_last_refresh: string | null;
+          is_super: boolean | null;
+          name: string | null;
+          phone_number: string | null;
+          twitter_avatar_url: string | null;
+          twitter_handle: string | null;
+          twitter_id: string | null;
+          user_id: string;
+          website_url: string | null;
+        };
       };
       handle_image_upload: {
         Args: {
@@ -698,7 +719,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "buckets";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       s3_multipart_uploads: {
@@ -742,7 +763,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "buckets";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       s3_multipart_uploads_parts: {
@@ -796,7 +817,7 @@ type Database = {
             isOneToOne: false;
             referencedRelation: "s3_multipart_uploads";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
     };
@@ -912,7 +933,7 @@ type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -921,14 +942,14 @@ type Tables<
     ? R
     : never
   : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R;
-      }
-      ? R
-      : never
-    : never;
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : never;
 
 type TablesInsert<
   PublicTableNameOrOptions extends
@@ -936,7 +957,7 @@ type TablesInsert<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
@@ -944,12 +965,12 @@ type TablesInsert<
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I;
-      }
-      ? I
-      : never
-    : never;
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : never;
 
 type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -957,7 +978,7 @@ type TablesUpdate<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
@@ -965,12 +986,12 @@ type TablesUpdate<
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U;
-      }
-      ? U
-      : never
-    : never;
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : never;
 
 type Enums<
   PublicEnumNameOrOptions extends
@@ -978,12 +999,12 @@ type Enums<
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never = never
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never;
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+  : never;
 
 type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
@@ -993,9 +1014,9 @@ type CompositeTypes<
     schema: keyof Database;
   }
     ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never = never
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+  ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never;

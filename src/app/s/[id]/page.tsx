@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import { addProtocolToURL } from "@/lib/utils/general";
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/client";
 
 export async function generateMetadata(props: {
   params: Promise<{ id: string }>;
@@ -45,9 +46,18 @@ export async function generateMetadata(props: {
 }
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const supabase = createClient();
   const params = await props.params;
   const spaceDetails = await getSpaceDetails(params.id);
-  const userDetails = await getUserData(spaceDetails?.user_id);
+  // const userDetails = await getUserData(spaceDetails?.user_id);
+  const { data: userDetails, error } = await supabase.rpc("get_user_by_id", {
+    userid: spaceDetails?.user_id || "",
+  });
+
+  console.log({ userDetails });
+
+  console.log(error);
+
   if (!spaceDetails || !userDetails) {
     return <p>404</p>;
   }
