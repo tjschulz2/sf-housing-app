@@ -40,31 +40,18 @@ export default function HeaderBarInApp() {
     <header
       className={`
       bg-[#FEFBEB]
-      flex items-center
+      flex items-center justify-between
       px-4 sm:px-10 py-5
       border-b border-black border-opacity-10
       relative
-      ${styles.responsiveHeaderPadding}
     `}
     >
-      <a
-        href="https://solarissf.com"
-        className={`
-          flex flex-row items-center space-x-3 
-          hover:bg-[#E7E8D9] hover:text-[#005B41] 
-          px-3 py-4 transition-all duration-300
-          -my-5 ${styles.hiddenOnVerySmallScreens} // Negative margin to extend to top and bottom
-        `}
-      >
-        <img
-          className="w-7 h-9"
-          src="/solaris_ai_logo.png"
-          alt="Solaris logo"
-        />
-        <span className={`${styles.branding} hidden md:block`}>SOLARIS</span>
-      </a>
       <h1
-        className={`text-3xl font-bold absolute left-1/2 transform -translate-x-1/2 hidden xl:block`}
+        className={`
+          text-3xl font-bold 
+          xl:absolute xl:left-1/2 xl:transform xl:-translate-x-1/2
+          block xl:block
+        `}
       >
         DirectorySF
       </h1>

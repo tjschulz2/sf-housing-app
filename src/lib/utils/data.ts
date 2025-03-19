@@ -113,7 +113,10 @@ export async function getTotalUserCount() {
 // Jobs
 
 export async function getJobs(startIdx = 0, count = 25) {
-  const { data, error } = await supabase.from("jobs").select("*");
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error(error);
