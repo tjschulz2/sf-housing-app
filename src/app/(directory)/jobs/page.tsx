@@ -24,17 +24,25 @@ export default async function JobsPage() {
     <div>
       <div className=" py-8 px-4 sm:px-8 rounded-lg flex justify-center items-center">
         <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-xl font-bold text-gray-500">
-            Looking for a job?
+          <h2 className="text-xl font-semibold text-solarisgreen">
+            <a
+              href="https://x.com/neallseth"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative inline-block overflow-hidden group"
+            >
+              Hiring? DM
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-solarisgreen transition-all duration-300 group-hover:w-full"></span>
+            </a>
           </h2>
-          <Button
+          {/* <Button
             asChild
             className="mt-4 px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-700 transition duration-200"
           >
             <Link href="https://forms.gle/Se8eRH5WvS3TX9oj6" target="_blank">
-              Add me to the match pool
+              Want to list your role? DM @neallseth
             </Link>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <div className="mt-8">
