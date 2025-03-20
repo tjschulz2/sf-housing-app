@@ -24,7 +24,7 @@ export default async function JobsPage() {
     <div>
       <div className=" py-8 px-4 sm:px-8 rounded-lg flex justify-center items-center">
         <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-xl font-semibold text-solarisgreen">
+          <h2 className="text-lg font-semibold text-solarisgreen">
             <a
               href="https://x.com/neallseth"
               target="_blank"
@@ -32,7 +32,7 @@ export default async function JobsPage() {
               className="relative inline-block overflow-hidden group"
             >
               Hiring? DM
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-solarisgreen transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-solarisgreen/30 transition-all duration-300 group-hover:bg-solarisgreen"></span>
             </a>
           </h2>
           {/* <Button

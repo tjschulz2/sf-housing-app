@@ -50,7 +50,7 @@ export default function HeaderBarInApp() {
         className={`
           text-3xl font-bold 
           xl:absolute xl:left-1/2 xl:transform xl:-translate-x-1/2
-          block xl:block
+          md:block xl:block hidden
         `}
       >
         DirectorySF
