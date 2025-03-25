@@ -138,7 +138,7 @@ export default function SponsorPage() {
                   Sponsors section (landing page)
                 </th>
                 <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  Sponsors section (GitHub repo)
+                  Job listing
                 </th>
               </tr>
             </thead>
@@ -151,11 +151,9 @@ export default function SponsorPage() {
                   Up to you!
                 </td>
                 <td className="py-3 px-4 text-center align-middle text-red-500">
-                  ⭕
+                  ⚪
                 </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (small)
-                </td>
+                <td className="py-3 px-4 text-center align-middle">⚪</td>
                 <td className="py-3 px-4 text-center align-middle">✅</td>
               </tr>
               <tr className="border-b">
@@ -166,10 +164,10 @@ export default function SponsorPage() {
                   $500
                 </td>
                 <td className="py-3 px-4 text-center align-middle text-red-500">
-                  ⭕
+                  ⚪
                 </td>
                 <td className="py-3 px-4 text-center align-middle">
-                  ✅ (medium)
+                  ✅ (small)
                 </td>
                 <td className="py-3 px-4 text-center align-middle">✅</td>
               </tr>
@@ -181,10 +179,10 @@ export default function SponsorPage() {
                   $1,000
                 </td>
                 <td className="py-3 px-4 text-center align-middle">
-                  ✅ (single)
+                  ✅ (one page)
                 </td>
                 <td className="py-3 px-4 text-center align-middle">
-                  ✅ (large)
+                  ✅ (medium)
                 </td>
                 <td className="py-3 px-4 text-center align-middle">✅</td>
               </tr>
@@ -195,9 +193,11 @@ export default function SponsorPage() {
                 <td className="py-3 px-4 text-gray-700 text-center align-middle">
                   $2,000
                 </td>
-                <td className="py-3 px-4 text-center align-middle">✅</td>
                 <td className="py-3 px-4 text-center align-middle">
-                  ✅ (x-large)
+                  ✅ (two pages)
+                </td>
+                <td className="py-3 px-4 text-center align-middle">
+                  ✅ (large)
                 </td>
                 <td className="py-3 px-4 text-center align-middle">✅</td>
               </tr>
@@ -234,12 +234,18 @@ export default function SponsorPage() {
           )
         </p>
         <p>
-          If you&apos;d like to make a donation or payment for sponsorship,
-          Venmo (
-          <Link target="_blank" href="https://account.venmo.com/u/neallseth">
-            @NeallSeth
-          </Link>
-          )
+          If you&apos;d like to make a one-off donation,{" "}
+          <Link target="_blank" href="https://venmo.com/NeallSeth">
+            Venmo
+          </Link>{" "}
+          and{" "}
+          <Link
+            target="_blank"
+            href="https://donate.stripe.com/00g4kcgAuaMybSw4gi"
+          >
+            Stripe
+          </Link>{" "}
+          work well!
         </p>
       </div>
     </div>
