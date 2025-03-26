@@ -82,8 +82,8 @@ export default function SponsorPage() {
           </li>
           <li>
             DSF makes the housing sorting process as frictionless as possible
-            (it's why we charge users <span className="italic">nothing</span>,
-            and why this page exists!)
+            (it&apos;s why we charge users{" "}
+            <span className="italic">nothing</span>, and why this page exists!)
           </li>
         </ol>
         <p>
@@ -197,7 +197,8 @@ export default function SponsorPage() {
             </li>
           </ul>
           <li>
-            You've personally benefited from using DSF and want to give back
+            You&apos;ve personally benefited from using DSF and want to give
+            back
           </li>
         </ol>
         <h2>Let&apos;s chat</h2>
