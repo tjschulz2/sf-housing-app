@@ -176,7 +176,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = ({
             Find housemates, sublets, and coliving communities in the SF scene
           </h1>
           <p className={styles.thisIsAn}>
-            The housing directory of people you probably know
+            The directory of people you probably know
           </p>
           {renderContent()}
           {/* <div className={styles.membersBox}> */}

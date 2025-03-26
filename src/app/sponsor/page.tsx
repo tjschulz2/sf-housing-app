@@ -130,7 +130,7 @@ export default function SponsorPage() {
           This is <span className="italic">roughly</span> what sponsorship could
           look like. More than happy to chat about custom arrangements!
         </p>
-        <Table>
+        <Table className="text-xs md:text-sm">
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Tier</TableHead>
