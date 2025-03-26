@@ -3,6 +3,15 @@ import Image from "next/image";
 import userResponseImg from "../../../public/images/sponsorship/user-response.png";
 import productStats from "../../../public/images/sponsorship/stats.png";
 import { Metadata } from "next";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const siteTitle = "Sponsor DirectorySF";
 const siteImage = "/images/meta/og-sponsor.png";
@@ -73,7 +82,7 @@ export default function SponsorPage() {
           </li>
           <li>
             DSF makes the housing sorting process as frictionless as possible
-            (it’s why we charge users <span className="italic">nothing</span>,
+            (it's why we charge users <span className="italic">nothing</span>,
             and why this page exists!)
           </li>
         </ol>
@@ -121,89 +130,55 @@ export default function SponsorPage() {
           This is <span className="italic">roughly</span> what sponsorship could
           look like. More than happy to chat about custom arrangements!
         </p>
-        <div className="max-w-full overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr className="bg-gray-200 text-gray-700">
-                <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  Tier
-                </th>
-                <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  $ / mo
-                </th>
-                <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  In-app banner
-                </th>
-                <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  Sponsors section (landing page)
-                </th>
-                <th className="py-3 px-4 border-b text-center align-middle font-semibold">
-                  Job listing
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b">
-                <td className="py-3 px-4 text-gray-700 font-medium text-center align-middle">
-                  Friend 🤗
-                </td>
-                <td className="py-3 px-4 text-gray-700 text-center align-middle">
-                  Up to you!
-                </td>
-                <td className="py-3 px-4 text-center align-middle text-red-500">
-                  ⚪
-                </td>
-                <td className="py-3 px-4 text-center align-middle">⚪</td>
-                <td className="py-3 px-4 text-center align-middle">✅</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-3 px-4 text-gray-700 font-medium text-center align-middle">
-                  Silver 🥈
-                </td>
-                <td className="py-3 px-4 text-gray-700 text-center align-middle">
-                  $500
-                </td>
-                <td className="py-3 px-4 text-center align-middle text-red-500">
-                  ⚪
-                </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (small)
-                </td>
-                <td className="py-3 px-4 text-center align-middle">✅</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-3 px-4 text-gray-700 font-medium text-center align-middle">
-                  Gold 🥇
-                </td>
-                <td className="py-3 px-4 text-gray-700 text-center align-middle">
-                  $1,000
-                </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (one page)
-                </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (medium)
-                </td>
-                <td className="py-3 px-4 text-center align-middle">✅</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 text-gray-700 font-medium text-center align-middle">
-                  Diamond 💎
-                </td>
-                <td className="py-3 px-4 text-gray-700 text-center align-middle">
-                  $2,000
-                </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (two pages)
-                </td>
-                <td className="py-3 px-4 text-center align-middle">
-                  ✅ (large)
-                </td>
-                <td className="py-3 px-4 text-center align-middle">✅</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Tier</TableHead>
+              <TableHead className="text-center">$ / mo</TableHead>
+              <TableHead className="text-center">In-app banner</TableHead>
+              <TableHead className="text-center">
+                Landing page mention
+              </TableHead>
+              <TableHead className="text-center">Job listing</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="text-center font-medium">
+                Friend 🤗
+              </TableCell>
+              <TableCell className="text-center">Up to you!</TableCell>
+              <TableCell className="text-center">⚪</TableCell>
+              <TableCell className="text-center">⚪</TableCell>
+              <TableCell className="text-center">✅</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center font-medium">
+                Silver 🥈
+              </TableCell>
+              <TableCell className="text-center">$500</TableCell>
+              <TableCell className="text-center">⚪</TableCell>
+              <TableCell className="text-center">✅ (small)</TableCell>
+              <TableCell className="text-center">✅</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center font-medium">Gold 🥇</TableCell>
+              <TableCell className="text-center">$1,000</TableCell>
+              <TableCell className="text-center">✅ (one page)</TableCell>
+              <TableCell className="text-center">✅ (medium)</TableCell>
+              <TableCell className="text-center">✅</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center font-medium">
+                Diamond 💎
+              </TableCell>
+              <TableCell className="text-center">$2,000</TableCell>
+              <TableCell className="text-center">✅ (two pages)</TableCell>
+              <TableCell className="text-center">✅ (large)</TableCell>
+              <TableCell className="text-center">✅</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
 
         <h2>Why you might sponsor</h2>
         <ol>
@@ -222,7 +197,7 @@ export default function SponsorPage() {
             </li>
           </ul>
           <li>
-            You’ve personally benefited from using DSF and want to give back
+            You've personally benefited from using DSF and want to give back
           </li>
         </ol>
         <h2>Let&apos;s chat</h2>
