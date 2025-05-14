@@ -32,7 +32,7 @@ export default function ActiveSpaceBanner() {
     ? dateDiff(userSpaceListing.last_updated_date).diffDays
     : null;
   const recentlyConfirmed =
-    daysSinceConfirmed !== null ? daysSinceConfirmed < 1 : false;
+    daysSinceConfirmed !== null ? daysSinceConfirmed < 3 : false;
 
   async function handleConfirm() {
     try {
